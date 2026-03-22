@@ -7,7 +7,7 @@ export function Footer() {
   const ua = lang === "ua";
 
   return (
-    <footer className="border-t border-white/5 py-12 relative z-10">
+    <footer className="border-t border-white/5 py-12 relative z-10 bg-[#0a0a0f]">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="font-display font-bold text-lg tracking-[-0.04em]">
           <span className="bg-gradient-to-r from-white via-white to-[#0090f0] bg-clip-text text-transparent">

@@ -21,12 +21,9 @@ export function CTA() {
   return (
     <section id="cta" className="relative py-32 overflow-hidden" ref={ref}>
       <div className={`reveal-hidden ${v} max-w-2xl mx-auto px-6 relative z-10 text-center`}>
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-display tracking-tight">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-10 font-display tracking-tight">
           {ua ? <>Готові замінити<br />телефонну команду?</> : <>Ready to replace<br />your phone team?</>}
         </h2>
-        <p className="text-white/40 mb-10 text-lg">
-          {ua ? "Приєднуйтесь до приватної бети. Обмежена кількість місць для ранніх користувачів." : "Join the private beta. Limited spots available for early adopters."}
-        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
           <input
@@ -40,7 +37,7 @@ export function CTA() {
           </GlassButton>
         </form>
         <p className="text-white/20 text-xs mt-4">
-          {ua ? "Без кредитної картки. Ми зв\u0027яжемося протягом 24 годин." : "No credit card required. We\u0027ll reach out within 24 hours."}
+          {ua ? "Ми зв\u0027яжемося протягом 24 годин." : "We\u0027ll reach out within 24 hours."}
         </p>
       </div>
     </section>
