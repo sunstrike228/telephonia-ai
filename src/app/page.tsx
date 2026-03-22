@@ -12,7 +12,7 @@ import { Footer } from "@/components/blocks/footer";
 
 const pricingPlans = [
   {
-    name: "STARTER",
+    name: "Starter",
     price: "40",
     yearlyPrice: "32",
     period: "per month",
@@ -29,7 +29,7 @@ const pricingPlans = [
     isPopular: false,
   },
   {
-    name: "GROWTH",
+    name: "Growth",
     price: "99",
     yearlyPrice: "79",
     period: "per month",
@@ -48,7 +48,7 @@ const pricingPlans = [
     isPopular: true,
   },
   {
-    name: "ENTERPRISE",
+    name: "Enterprise",
     price: "299",
     yearlyPrice: "239",
     period: "per month",

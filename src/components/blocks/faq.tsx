@@ -1,86 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { useInView } from "@/hooks/use-in-view";
 
 const faqs = [
-  {
-    q: "Can people tell it's not a real person?",
-    a: "In blind tests, 98% of listeners couldn't distinguish our AI agents from human callers. We use state-of-the-art voice synthesis with natural pauses, filler words, and emotional intonation.",
-  },
-  {
-    q: "What languages do you support?",
-    a: "Ukrainian and English — both spoken natively. The agent can switch languages mid-conversation if the caller prefers a different language.",
-  },
-  {
-    q: "How fast does the AI respond?",
-    a: "Under 0.5 second end-to-end latency. The conversation feels completely natural — no awkward pauses or robotic delays.",
-  },
-  {
-    q: "Can I use my own phone number?",
-    a: "Yes. Port your existing number or get new ones from us. We support Ukrainian, European and US phone numbers via SIP trunking.",
-  },
-  {
-    q: "Is it legal to use AI for calls?",
-    a: "Yes, when used in compliance with local regulations. We help you stay compliant with disclosure requirements and do-not-call lists. Enterprise plans include a compliance consultation.",
-  },
+  { q: "Can people tell it's not a real person?", a: "In blind tests, 98% of listeners couldn't distinguish our AI agents from human callers. We use state-of-the-art voice synthesis with natural pauses, filler words, and emotional intonation." },
+  { q: "What languages do you support?", a: "Ukrainian and English — both spoken natively. The agent can switch languages mid-conversation if the caller prefers a different language." },
+  { q: "How fast does the AI respond?", a: "Under 0.5 second end-to-end latency. The conversation feels completely natural — no awkward pauses or robotic delays." },
+  { q: "Can I use my own phone number?", a: "Yes. Port your existing number or get new ones from us. We support Ukrainian, European and US phone numbers via SIP trunking." },
+  { q: "Is it legal to use AI for calls?", a: "Yes, when used in compliance with local regulations. We help you stay compliant with disclosure requirements and do-not-call lists. Enterprise plans include a compliance consultation." },
 ];
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { ref, isInView } = useInView();
+  const v = isInView ? 'reveal-visible' : '';
 
   return (
-    <section id="faq" className="relative py-32 overflow-hidden">
+    <section id="faq" className="relative py-32 overflow-hidden" ref={ref}>
+      <style>{`
+        .faq-answer { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease; padding-bottom: 0; }
+        .faq-answer.open { max-height: 200px; opacity: 1; padding-bottom: 24px; }
+        .faq-chevron { transition: transform 0.3s ease; }
+        .faq-chevron.open { transform: rotate(180deg); }
+      `}</style>
       <div className="max-w-3xl mx-auto px-6 relative z-10">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <div className={`reveal-hidden ${v} text-center mb-16`}>
           <span className="text-[#0090f0] text-sm font-semibold uppercase tracking-widest">FAQ</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mt-4 font-display tracking-tight">
-            Questions & Answers
-          </h2>
-        </motion.div>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mt-4 font-display tracking-tight">Questions & Answers</h2>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <div className={`reveal-hidden ${v}`} style={{ transitionDelay: '200ms' }}>
           {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="border-b border-white/8 cursor-pointer"
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            >
+            <div key={i} className="border-b border-white/8 cursor-pointer" onClick={() => setOpenIndex(openIndex === i ? null : i)}>
               <div className="flex items-center justify-between py-6">
                 <h3 className="text-base font-medium text-white pr-8">{faq.q}</h3>
-                <motion.div
-                  animate={{ rotate: openIndex === i ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ChevronDown className="w-5 h-5 text-white/30 flex-shrink-0" />
-                </motion.div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className={`w-5 h-5 text-white/30 flex-shrink-0 faq-chevron ${openIndex === i ? 'open' : ''}`}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </div>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="text-sm text-white/55 pb-6">{faq.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className={`faq-answer ${openIndex === i ? 'open' : ''}`}>
+                <p className="text-sm text-white/55">{faq.a}</p>
+              </div>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

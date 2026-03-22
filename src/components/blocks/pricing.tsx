@@ -1,17 +1,109 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useState, useRef, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Check, Star } from "lucide-react";
-import Link from "next/link";
-import { useState, useRef } from "react";
+import { RippleButton } from "@/components/ui/ripple-button";
+import { useInView } from "@/hooks/use-in-view";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
 
+/* ── Shader Canvas (WebGL ring animation) ── */
+function ShaderCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const glRef = useRef<WebGLRenderingContext | null>(null);
+  const bgLocRef = useRef<WebGLUniformLocation | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const gl = canvas.getContext("webgl");
+    if (!gl) return;
+    glRef.current = gl;
+
+    const vs = `attribute vec2 aPosition; void main(){ gl_Position=vec4(aPosition,0.,1.); }`;
+    const fs = `
+      precision highp float;
+      uniform float iTime;
+      uniform vec2 iResolution;
+      uniform vec3 uBg;
+      mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+      float var2(vec2 v1,vec2 v2,float str,float spd){return sin(dot(normalize(v1),normalize(v2))*str+iTime*spd)/100.;}
+      vec3 circle(vec2 uv,vec2 ctr,float r,float w){
+        vec2 d=ctr-uv;float l=length(d);
+        l+=var2(d,vec2(0.,1.),5.,2.);l-=var2(d,vec2(1.,0.),5.,2.);
+        return vec3(smoothstep(r-w,r,l)-smoothstep(r,r+w,l));
+      }
+      void main(){
+        vec2 uv=gl_FragCoord.xy/iResolution.xy;uv.x*=1.5;uv.x-=.25;
+        float m=0.;vec2 c=vec2(.5);float r=.35;
+        m+=circle(uv,c,r,.035).r;
+        m+=circle(uv,c,r-.018,.01).r;
+        m+=circle(uv,c,r+.018,.005).r;
+        vec2 v=rot(iTime)*uv;
+        vec3 fg=vec3(v.x,v.y,.7-v.y*v.x);
+        vec3 col=mix(uBg,fg,m);
+        col=mix(col,vec3(1.),circle(uv,c,r,.003).r);
+        gl_FragColor=vec4(col,1.);
+      }`;
+
+    const compile = (type: number, src: string) => {
+      const s = gl.createShader(type)!;
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
+    };
+
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vs));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, "aPosition");
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const iTimeLoc = gl.getUniformLocation(prog, "iTime");
+    const iResLoc = gl.getUniformLocation(prog, "iResolution");
+    bgLocRef.current = gl.getUniformLocation(prog, "uBg");
+    gl.uniform3fv(bgLocRef.current, [0.04, 0.04, 0.06]);
+
+    let af: number;
+    const render = (t: number) => {
+      gl.uniform1f(iTimeLoc, t * 0.001);
+      gl.uniform2f(iResLoc, canvas.width, canvas.height);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      af = requestAnimationFrame(render);
+    };
+
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      canvas.width = parent.clientWidth;
+      canvas.height = parent.clientHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+    af = requestAnimationFrame(render);
+
+    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(af); };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+}
+
+/* ── Check Icon ── */
+const CheckIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
+
+/* ── Types ── */
 interface PricingPlan {
   name: string;
   price: string;
@@ -30,180 +122,139 @@ interface PricingProps {
   description?: string;
 }
 
+/* ── Main Component ── */
 export function Pricing({
   plans,
   title = "Simple, Transparent Pricing",
   description = "Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support.",
 }: PricingProps) {
   const [isMonthly, setIsMonthly] = useState(true);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
   const switchRef = useRef<HTMLButtonElement>(null);
+  const { ref: sectionRef, isInView } = useInView();
+  const v = isInView ? 'reveal-visible' : '';
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
     if (checked && switchRef.current) {
       const rect = switchRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
       confetti({
         particleCount: 50,
         spread: 60,
-        origin: {
-          x: x / window.innerWidth,
-          y: y / window.innerHeight,
-        },
-        colors: [
-          "#0090f0",
-          "#a78bfa",
-          "#34d399",
-          "#36adff",
-        ],
-        ticks: 200,
-        gravity: 1.2,
-        decay: 0.94,
-        startVelocity: 30,
-        shapes: ["circle"],
+        origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: (rect.top + rect.height / 2) / window.innerHeight },
+        colors: ["#0090f0", "#a78bfa", "#34d399", "#36adff"],
+        ticks: 200, gravity: 1.2, decay: 0.94, startVelocity: 30, shapes: ["circle"],
       });
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-20">
-      <div className="text-center space-y-4 mb-12">
-        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl text-white font-display">
-          {title}
-        </h2>
-        <p className="text-white/50 text-lg whitespace-pre-line">
-          {description}
-        </p>
+    <div className="relative overflow-hidden py-28" ref={sectionRef}>
+      {/* Shader background */}
+      <div className="absolute inset-0 opacity-40">
+        <ShaderCanvas />
       </div>
 
-      <div className="flex justify-center mb-10 items-center">
-        <label className="relative inline-flex items-center cursor-pointer">
-          <Label>
-            <Switch
-              ref={switchRef as React.Ref<HTMLButtonElement>}
-              checked={!isMonthly}
-              onCheckedChange={handleToggle}
-              className="relative data-[state=checked]:bg-[#0090f0] data-[state=unchecked]:bg-white/20"
-            />
-          </Label>
-        </label>
-        <span className="ml-3 font-semibold text-white text-sm">
-          Annual billing <span className="text-[#0090f0]">(Save 20%)</span>
-        </span>
-      </div>
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        {/* Header */}
+        <div className="text-center mb-14">
+          <h2 className="text-[48px] md:text-[64px] font-extralight leading-tight tracking-[-0.03em] bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-blue-400 font-display">
+            {title}
+          </h2>
+          <p className="mt-3 text-base md:text-lg text-white/50 max-w-2xl mx-auto whitespace-pre-line">
+            {description}
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {plans.map((plan, index) => (
-          <motion.div
-            key={index}
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={
-              isDesktop
-                ? {
-                    y: plan.isPopular ? -20 : 0,
-                    opacity: 1,
-                    x: index === 2 ? -30 : index === 0 ? 30 : 0,
-                    scale: index === 0 || index === 2 ? 0.94 : 1.0,
-                  }
-                : { y: 0, opacity: 1 }
-            }
-            viewport={{ once: true }}
-            transition={{
-              duration: 1.6,
-              type: "spring",
-              stiffness: 100,
-              damping: 30,
-              delay: 0.4,
-              opacity: { duration: 0.5 },
-            }}
-            className={cn(
-              "rounded-2xl border p-6 text-center lg:flex lg:flex-col lg:justify-center relative",
-              "flex flex-col",
-              plan.isPopular
-                ? "border-[#0090f0] border-2 bg-[rgba(0,144,240,0.06)]"
-                : "border-white/10 bg-[rgba(18,18,26,0.95)]",
-              !plan.isPopular && "mt-5",
-              index === 0 && "z-0 origin-right",
-              index === 2 && "z-0 origin-left",
-              index === 1 && "z-10",
-            )}
-          >
-            {plan.isPopular && (
-              <div className="absolute top-0 right-0 bg-[#0090f0] py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
-                <Star className="text-white h-4 w-4 fill-current" />
-                <span className="text-white ml-1 font-sans font-semibold text-sm">
-                  Popular
-                </span>
+        {/* Toggle */}
+        <div className="flex justify-center mb-12 items-center">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <Label>
+              <Switch
+                ref={switchRef as React.Ref<HTMLButtonElement>}
+                checked={!isMonthly}
+                onCheckedChange={handleToggle}
+                className="relative data-[state=checked]:bg-cyan-400 data-[state=unchecked]:bg-white/20"
+              />
+            </Label>
+          </label>
+          <span className="ml-3 font-semibold text-white text-sm">
+            Annual billing <span className="text-cyan-400">(Save 20%)</span>
+          </span>
+        </div>
+
+        {/* Cards */}
+        <div className="flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-center">
+          {plans.map((plan, index) => (
+            <div
+              key={plan.name}
+              className={cn(
+                `reveal-hidden ${v}`,
+                "backdrop-blur-[14px] bg-gradient-to-br rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300",
+                "from-white/10 to-white/5 border",
+                plan.isPopular
+                  ? "scale-105 relative ring-2 ring-cyan-400/20 from-white/20 to-white/10 border-cyan-400/30 shadow-2xl backdrop-brightness-[0.91]"
+                  : "border-white/10 backdrop-brightness-[0.91]"
+              )}
+            >
+              {plan.isPopular && (
+                <div className="absolute -top-4 right-4 px-3 py-1 text-[12px] font-semibold rounded-full bg-cyan-400 text-black">
+                  Most Popular
+                </div>
+              )}
+
+              {/* Plan name */}
+              <div className="mb-3">
+                <h3 className="text-[48px] font-extralight tracking-[-0.03em] text-white font-display">
+                  {plan.name}
+                </h3>
+                <p className="text-sm text-white/50 mt-1">{plan.description}</p>
               </div>
-            )}
-            <div className="flex-1 flex flex-col">
-              <p className="text-base font-semibold text-white/50 uppercase tracking-wider">
-                {plan.name}
-              </p>
-              <div className="mt-6 flex items-center justify-center gap-x-2">
-                <span className="text-5xl font-bold tracking-tight text-white font-display">
+
+              {/* Price */}
+              <div className="my-6 flex items-baseline gap-2">
+                <span className="text-[48px] font-extralight text-white font-display">
                   <NumberFlow
-                    value={
-                      isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
-                    }
-                    format={{
-                      style: "currency",
-                      currency: "USD",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    }}
-                    transformTiming={{
-                      duration: 500,
-                      easing: "ease-out",
-                    }}
+                    value={isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)}
+                    format={{ style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+                    transformTiming={{ duration: 500, easing: "ease-out" }}
                     willChange
                     className="tabular-nums"
                   />
                 </span>
-                {plan.period !== "Next 3 months" && (
-                  <span className="text-sm font-semibold leading-6 tracking-wide text-white/40">
-                    / {plan.period}
-                  </span>
-                )}
+                <span className="text-sm text-white/40">/mo</span>
               </div>
-              <p className="text-xs leading-5 text-white/30 mt-1">
+              <p className="text-xs text-white/25 -mt-4 mb-4">
                 {isMonthly ? "billed monthly" : "billed annually"}
               </p>
 
-              <ul className="mt-5 gap-2 flex flex-col text-left">
+              {/* Divider */}
+              <div className="w-full mb-5 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+              {/* Features */}
+              <ul className="flex flex-col gap-2 text-sm text-white/70 mb-6">
                 {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm text-white/60">
-                    <Check className="h-4 w-4 text-[#0090f0] mt-0.5 flex-shrink-0" />
-                    <span>{feature}</span>
+                  <li key={idx} className="flex items-center gap-2">
+                    <CheckIcon className="text-cyan-400 w-4 h-4 flex-shrink-0" />
+                    {feature}
                   </li>
                 ))}
               </ul>
 
-              <hr className="w-full my-4 border-white/10" />
-
-              <Link
-                href={plan.href}
+              {/* Button */}
+              <RippleButton
                 className={cn(
-                  "group relative w-full gap-2 overflow-hidden text-sm font-semibold tracking-tight",
-                  "inline-flex items-center justify-center rounded-lg h-11 px-4",
-                  "transform-gpu ring-offset-current transition-all duration-300 ease-out",
-                  "hover:ring-2 hover:ring-[#0090f0] hover:ring-offset-1",
+                  "mt-auto w-full py-2.5 rounded-xl font-semibold text-sm transition",
                   plan.isPopular
-                    ? "bg-[#0090f0] text-white hover:bg-[#0090f0]/90"
-                    : "bg-white/5 border border-white/10 text-white hover:bg-[#0090f0] hover:text-white hover:border-[#0090f0]"
+                    ? "bg-cyan-400 hover:bg-cyan-300 text-black"
+                    : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
                 )}
+                rippleColor={plan.isPopular ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.3)"}
               >
                 {plan.buttonText}
-              </Link>
-
-              <p className="mt-6 text-xs leading-5 text-white/30">
-                {plan.description}
-              </p>
+              </RippleButton>
             </div>
-          </motion.div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
