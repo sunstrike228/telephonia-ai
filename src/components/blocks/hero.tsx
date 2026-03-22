@@ -9,7 +9,8 @@ const t = {
     h1_1: "AI agents that",
     h1_2: "sound human.",
     h1_3: "Sell like pros.",
-    sub: "Replace your cold-calling team with AI voice agents indistinguishable from real humans. Never sleep. Sell like pros. Affordable pricing.",
+    sub1: "Replace your cold-calling team with AI voice agents indistinguishable from real humans.",
+    sub2: "Never sleep. Sell like pros. Affordable pricing.",
     cta1: "Contact us",
     cta2: "Request a test call",
     callBtn: "Call me",
@@ -20,7 +21,8 @@ const t = {
     h1_1: "ШІ-агенти, яких",
     h1_2: "не відрізнити.",
     h1_3: "Продають як профі.",
-    sub: "Замініть команду холодних дзвінків на ШІ-агентів, яких не відрізнити від живих людей. Не сплять. Продають як профі. Доступний прайс.",
+    sub1: "Замініть команду холодних дзвінків на ШІ-агентів, яких не відрізнити від живих людей.",
+    sub2: "Не сплять. Продають як профі. Доступний прайс.",
     cta1: "Зв'язатися з нами",
     cta2: "Замовити тестовий дзвінок",
     callBtn: "Зателефонувати",
@@ -163,7 +165,12 @@ export function Hero() {
           {s.h1_3}
         </h1>
 
-        <p className="hero-p text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10">{s.sub}</p>
+        <p className="hero-p text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10">
+          {s.sub1}{" "}
+          <span className="bg-gradient-to-r from-[#36adff] via-[#78c8ff] to-[#a78bfa] bg-clip-text text-transparent font-medium">
+            {s.sub2}
+          </span>
+        </p>
 
         <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center items-center">
           <GlassButton href="#cta" className="glass-button-primary" contentClassName="flex items-center gap-2">
