@@ -19,7 +19,7 @@ export function CTA() {
   };
 
   return (
-    <section id="cta" className="relative py-32 overflow-hidden" ref={ref}>
+    <section id="cta" className="relative min-h-[60vh] flex items-center overflow-hidden" ref={ref}>
       <div className={`reveal-hidden ${v} max-w-2xl mx-auto px-6 relative z-10 text-center`}>
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-10 font-display tracking-tight">
           {ua ? <>Готові замінити<br />телефонну команду?</> : <>Ready to replace<br />your phone team?</>}
