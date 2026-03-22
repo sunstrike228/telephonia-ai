@@ -156,10 +156,11 @@ export function Pricing({
 
   return (
     <div className="relative overflow-hidden py-28" ref={sectionRef}>
-      {/* Ambient glow background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/8 blur-[120px]" />
-        <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-blue-500/6 blur-[100px]" />
+      {/* Shader ring background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <div className="w-[500px] h-[500px] opacity-30">
+          <ShaderCanvas />
+        </div>
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6">
@@ -212,7 +213,7 @@ export function Pricing({
 
               {/* Plan name */}
               <div className="mb-3">
-                <h3 className="text-[48px] font-extralight tracking-[-0.03em] text-white font-display">
+                <h3 className="text-[36px] md:text-[42px] font-extralight tracking-[-0.03em] text-white font-display leading-tight">
                   {ua ? (plan.nameUa || plan.name) : plan.name}
                 </h3>
                 <p className="text-sm text-white/50 mt-1">{ua ? (plan.descriptionUa || plan.description) : plan.description}</p>
