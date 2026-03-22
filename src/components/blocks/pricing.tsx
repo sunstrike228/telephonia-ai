@@ -156,9 +156,11 @@ export function Pricing({
 
   return (
     <div className="relative overflow-hidden py-28" ref={sectionRef}>
-      {/* Shader background */}
-      <div className="absolute inset-0 opacity-40">
-        <ShaderCanvas />
+      {/* Shader background — contained & clipped */}
+      <div className="absolute inset-0 opacity-30 overflow-hidden pointer-events-none">
+        <div className="absolute inset-[10%] rounded-full blur-sm">
+          <ShaderCanvas />
+        </div>
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6">
