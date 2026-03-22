@@ -166,7 +166,7 @@ export function Pricing({
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-14">
-          <h2 className="text-[48px] md:text-[64px] font-extralight leading-tight tracking-[-0.03em] bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-blue-400 font-display">
+          <h2 className="text-[48px] md:text-[64px] font-extralight leading-tight tracking-[-0.03em] text-white font-display">
             {ua ? "Прості, прозорі ціни" : title}
           </h2>
           <p className="mt-3 text-base md:text-lg text-white/50 max-w-2xl mx-auto whitespace-pre-line">
