@@ -37,8 +37,11 @@ function ShaderCanvas() {
         return vec3(smoothstep(r-w,r,l)-smoothstep(r,r+w,l));
       }
       void main(){
-        vec2 uv=gl_FragCoord.xy/iResolution.xy;uv.x*=1.5;uv.x-=.25;
-        float m=0.;vec2 c=vec2(.5);float r=.35;
+        vec2 uv=gl_FragCoord.xy/iResolution.xy;
+        float aspect=iResolution.x/iResolution.y;
+        uv.x*=aspect;
+        vec2 c=vec2(aspect*0.5,0.5);float r=.4;
+        float m=0.;
         m+=circle(uv,c,r,.035).r;
         m+=circle(uv,c,r-.018,.01).r;
         m+=circle(uv,c,r+.018,.005).r;
@@ -96,7 +99,7 @@ function ShaderCanvas() {
     return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(af); };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+  return <canvas ref={canvasRef} className="w-full h-full" style={{ display: "block" }} />;
 }
 
 /* ── Check Icon ── */
