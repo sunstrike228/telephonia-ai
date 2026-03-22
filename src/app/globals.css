@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
+
+@source "../components/**/*.tsx";
+@source "../hooks/**/*.ts";
 
 :root {
   --background: #0a0a0f;
@@ -40,8 +42,6 @@
   --font-mono: var(--font-geist-mono);
   --font-display: 'Space Grotesk', sans-serif;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   background: var(--background);
