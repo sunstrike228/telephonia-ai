@@ -198,10 +198,10 @@ export function Pricing({
               key={plan.name}
               className={cn(
                 `reveal-hidden ${v}`,
-                "rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300 overflow-hidden",
+                "rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300",
                 "border",
                 plan.isPopular
-                  ? "scale-105 relative ring-2 ring-cyan-400/20 border-cyan-400/30 shadow-2xl bg-[rgba(12,18,30,0.97)]"
+                  ? "scale-105 relative ring-2 ring-cyan-400/20 border-cyan-400/30 shadow-2xl bg-[rgba(12,18,30,0.97)] mt-6"
                   : "border-white/10 bg-[rgba(14,14,22,0.97)]"
               )}
             >
@@ -213,7 +213,7 @@ export function Pricing({
 
               {/* Plan name */}
               <div className="mb-3">
-                <h3 className="text-[36px] md:text-[42px] font-extralight tracking-[-0.03em] text-white font-display leading-tight">
+                <h3 className="text-[28px] md:text-[34px] font-extralight tracking-[-0.03em] text-white font-display leading-tight">
                   {ua ? (plan.nameUa || plan.name) : plan.name}
                 </h3>
                 <p className="text-sm text-white/50 mt-1">{ua ? (plan.descriptionUa || plan.description) : plan.description}</p>
