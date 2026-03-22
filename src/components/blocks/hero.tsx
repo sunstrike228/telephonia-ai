@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useLang } from "@/hooks/use-lang";
 
 const t = {
@@ -13,6 +13,7 @@ const t = {
     cta2: "Request a test call",
     callBtn: "Call me",
     callSuccess: "You'll receive a call within a minute!",
+    searchPlaceholder: "Search country...",
   },
   ua: {
     h1_1: "ШІ-агенти, яких",
@@ -23,8 +24,68 @@ const t = {
     cta2: "Замовити тестовий дзвінок",
     callBtn: "Зателефонувати",
     callSuccess: "Дзвінок надійде протягом хвилини!",
+    searchPlaceholder: "Пошук країни...",
   },
 };
+
+const allCountryCodes = [
+  { code: "+380", flag: "🇺🇦", name: "Ukraine" },
+  { code: "+1", flag: "🇺🇸", name: "USA" },
+  { code: "+44", flag: "🇬🇧", name: "United Kingdom" },
+  { code: "+49", flag: "🇩🇪", name: "Germany" },
+  { code: "+48", flag: "🇵🇱", name: "Poland" },
+  { code: "+33", flag: "🇫🇷", name: "France" },
+  { code: "+34", flag: "🇪🇸", name: "Spain" },
+  { code: "+39", flag: "🇮🇹", name: "Italy" },
+  { code: "+31", flag: "🇳🇱", name: "Netherlands" },
+  { code: "+46", flag: "🇸🇪", name: "Sweden" },
+  { code: "+47", flag: "🇳🇴", name: "Norway" },
+  { code: "+45", flag: "🇩🇰", name: "Denmark" },
+  { code: "+358", flag: "🇫🇮", name: "Finland" },
+  { code: "+43", flag: "🇦🇹", name: "Austria" },
+  { code: "+41", flag: "🇨🇭", name: "Switzerland" },
+  { code: "+32", flag: "🇧🇪", name: "Belgium" },
+  { code: "+351", flag: "🇵🇹", name: "Portugal" },
+  { code: "+353", flag: "🇮🇪", name: "Ireland" },
+  { code: "+420", flag: "🇨🇿", name: "Czech Republic" },
+  { code: "+421", flag: "🇸🇰", name: "Slovakia" },
+  { code: "+40", flag: "🇷🇴", name: "Romania" },
+  { code: "+359", flag: "🇧🇬", name: "Bulgaria" },
+  { code: "+385", flag: "🇭🇷", name: "Croatia" },
+  { code: "+36", flag: "🇭🇺", name: "Hungary" },
+  { code: "+370", flag: "🇱🇹", name: "Lithuania" },
+  { code: "+371", flag: "🇱🇻", name: "Latvia" },
+  { code: "+372", flag: "🇪🇪", name: "Estonia" },
+  { code: "+995", flag: "🇬🇪", name: "Georgia" },
+  { code: "+994", flag: "🇦🇿", name: "Azerbaijan" },
+  { code: "+374", flag: "🇦🇲", name: "Armenia" },
+  { code: "+90", flag: "🇹🇷", name: "Turkey" },
+  { code: "+972", flag: "🇮🇱", name: "Israel" },
+  { code: "+971", flag: "🇦🇪", name: "UAE" },
+  { code: "+966", flag: "🇸🇦", name: "Saudi Arabia" },
+  { code: "+91", flag: "🇮🇳", name: "India" },
+  { code: "+86", flag: "🇨🇳", name: "China" },
+  { code: "+81", flag: "🇯🇵", name: "Japan" },
+  { code: "+82", flag: "🇰🇷", name: "South Korea" },
+  { code: "+61", flag: "🇦🇺", name: "Australia" },
+  { code: "+64", flag: "🇳🇿", name: "New Zealand" },
+  { code: "+55", flag: "🇧🇷", name: "Brazil" },
+  { code: "+52", flag: "🇲🇽", name: "Mexico" },
+  { code: "+57", flag: "🇨🇴", name: "Colombia" },
+  { code: "+56", flag: "🇨🇱", name: "Chile" },
+  { code: "+54", flag: "🇦🇷", name: "Argentina" },
+  { code: "+234", flag: "🇳🇬", name: "Nigeria" },
+  { code: "+27", flag: "🇿🇦", name: "South Africa" },
+  { code: "+254", flag: "🇰🇪", name: "Kenya" },
+  { code: "+20", flag: "🇪🇬", name: "Egypt" },
+  { code: "+212", flag: "🇲🇦", name: "Morocco" },
+  { code: "+65", flag: "🇸🇬", name: "Singapore" },
+  { code: "+60", flag: "🇲🇾", name: "Malaysia" },
+  { code: "+66", flag: "🇹🇭", name: "Thailand" },
+  { code: "+84", flag: "🇻🇳", name: "Vietnam" },
+  { code: "+63", flag: "🇵🇭", name: "Philippines" },
+  { code: "+62", flag: "🇮🇩", name: "Indonesia" },
+];
 
 export function Hero() {
   const [lang] = useLang();
@@ -32,32 +93,53 @@ export function Hero() {
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("+380");
   const [showCodes, setShowCodes] = useState(false);
+  const [codeSearch, setCodeSearch] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const s = t[lang];
-
-  const countryCodes = [
-    { code: "+380", flag: "🇺🇦", name: "Ukraine" },
-    { code: "+1", flag: "🇺🇸", name: "USA" },
-    { code: "+44", flag: "🇬🇧", name: "UK" },
-    { code: "+49", flag: "🇩🇪", name: "Germany" },
-    { code: "+48", flag: "🇵🇱", name: "Poland" },
-    { code: "+972", flag: "🇮🇱", name: "Israel" },
-    { code: "+971", flag: "🇦🇪", name: "UAE" },
-    { code: "+90", flag: "🇹🇷", name: "Turkey" },
-  ];
 
   useEffect(() => {
     if (showPhone && inputRef.current) inputRef.current.focus();
   }, [showPhone]);
 
+  // Focus search when dropdown opens
+  useEffect(() => {
+    if (showCodes && searchRef.current) {
+      setTimeout(() => searchRef.current?.focus(), 50);
+    }
+    if (!showCodes) setCodeSearch("");
+  }, [showCodes]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!showCodes) return;
+    const handleClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowCodes(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showCodes]);
+
+  const filteredCodes = codeSearch
+    ? allCountryCodes.filter(c =>
+        c.name.toLowerCase().includes(codeSearch.toLowerCase()) ||
+        c.code.includes(codeSearch)
+      )
+    : allCountryCodes;
+
   const handleSubmitPhone = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length >= 10) {
+    if (phone.length >= 6) {
       setSubmitted(true);
       setTimeout(() => { setSubmitted(false); setShowPhone(false); setPhone(""); }, 4000);
     }
   };
+
+  const selectedCountry = allCountryCodes.find(c => c.code === countryCode);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -95,7 +177,7 @@ export function Hero() {
               {s.cta2}
             </button>
           ) : (
-            <form onSubmit={handleSubmitPhone} className="phone-input-wrap flex items-center gap-2 px-2 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-sm">
+            <form onSubmit={handleSubmitPhone} className="phone-input-wrap flex items-center gap-1 px-2 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-sm">
               {submitted ? (
                 <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#34d399] font-medium">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -103,36 +185,89 @@ export function Hero() {
                 </div>
               ) : (
                 <>
-                  <div className="relative">
+                  {/* Country code selector */}
+                  <div className="relative" ref={dropdownRef}>
                     <button
                       type="button"
                       onClick={() => setShowCodes(!showCodes)}
-                      className="flex items-center gap-1 px-3 py-2 text-sm text-white/80 hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm text-white/80 hover:text-white rounded-full hover:bg-white/5 transition-colors"
                     >
-                      <span>{countryCodes.find(c => c.code === countryCode)?.flag}</span>
-                      <span>{countryCode}</span>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/30"><polyline points="6 9 12 15 18 9"/></svg>
+                      <span className="text-base">{selectedCountry?.flag}</span>
+                      <span className="font-medium">{countryCode}</span>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/30"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
+
                     {showCodes && (
-                      <div className="absolute top-full left-0 mt-1 bg-[rgba(15,15,22,0.95)] border border-white/10 rounded-xl backdrop-blur-xl py-1 z-50 min-w-[180px] shadow-xl">
-                        {countryCodes.map(c => (
-                          <button
-                            key={c.code}
-                            type="button"
-                            onClick={() => { setCountryCode(c.code); setShowCodes(false); }}
-                            className={`w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-white/10 transition-colors ${countryCode === c.code ? 'text-[#0090f0]' : 'text-white/70'}`}
-                          >
-                            <span>{c.flag}</span>
-                            <span>{c.name}</span>
-                            <span className="ml-auto text-white/30">{c.code}</span>
-                          </button>
-                        ))}
+                      <div className="absolute bottom-full left-0 mb-2 bg-[rgba(12,12,18,0.98)] border border-white/10 rounded-2xl backdrop-blur-xl z-50 w-[260px] shadow-2xl shadow-black/50 overflow-hidden">
+                        {/* Search */}
+                        <div className="p-2 border-b border-white/5">
+                          <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 flex-shrink-0">
+                              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                            <input
+                              ref={searchRef}
+                              type="text"
+                              value={codeSearch}
+                              onChange={(e) => setCodeSearch(e.target.value)}
+                              placeholder={s.searchPlaceholder}
+                              className="bg-transparent text-white placeholder-white/30 text-sm outline-none w-full"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Country list */}
+                        <div className="max-h-[240px] overflow-y-auto overscroll-contain py-1">
+                          {filteredCodes.length === 0 ? (
+                            <div className="px-4 py-3 text-sm text-white/30 text-center">No results</div>
+                          ) : (
+                            filteredCodes.map(c => (
+                              <button
+                                key={c.code + c.name}
+                                type="button"
+                                onClick={() => { setCountryCode(c.code); setShowCodes(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                                  countryCode === c.code
+                                    ? 'bg-[#0090f0]/10 text-[#36adff]'
+                                    : 'text-white/70 hover:bg-white/5'
+                                }`}
+                              >
+                                <span className="text-base">{c.flag}</span>
+                                <span className="flex-1 text-left">{c.name}</span>
+                                <span className="text-white/30 text-xs font-mono">{c.code}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
-                  <input ref={inputRef} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="__ ___ ____" className="bg-transparent text-white placeholder-white/30 text-sm py-2 outline-none w-32 md:w-40" />
-                  <button type="submit" disabled={phone.length < 10} className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#0090f0] hover:bg-[#0090f0]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 whitespace-nowrap">{s.callBtn}</button>
-                  <button type="button" onClick={() => { setShowPhone(false); setPhone(""); }} className="p-2 text-white/30 hover:text-white/60 transition-colors">
+
+                  {/* Phone input */}
+                  <input
+                    ref={inputRef}
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="__ ___ ____"
+                    className="bg-transparent text-white placeholder-white/30 text-sm py-2 outline-none w-28 md:w-36"
+                  />
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={phone.length < 6}
+                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#0090f0] hover:bg-[#0090f0]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 whitespace-nowrap"
+                  >
+                    {s.callBtn}
+                  </button>
+
+                  {/* Close */}
+                  <button
+                    type="button"
+                    onClick={() => { setShowPhone(false); setPhone(""); setShowCodes(false); }}
+                    className="p-2 text-white/30 hover:text-white/60 transition-colors"
+                  >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
                 </>
