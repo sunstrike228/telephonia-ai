@@ -38,8 +38,8 @@ export function CTA() {
         </form>
         <p className="text-white/50 text-sm mt-6">
           {ua
-            ? "Наш ШІ-агент зв\u0027яжеться з вами, проконсультує та за потреби призначить дзвінок."
-            : "Our AI agent will contact you, provide a consultation, and schedule a call if needed."}
+            ? "Наш менеджер зв\u0027яжеться з вами, проконсультує та за потреби призначить дзвінок."
+            : "Our manager will contact you, provide a consultation, and schedule a call if needed."}
         </p>
       </div>
     </section>
