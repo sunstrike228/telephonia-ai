@@ -197,11 +197,11 @@ export function Pricing({
               key={plan.name}
               className={cn(
                 `reveal-hidden ${v}`,
-                "backdrop-blur-[14px] bg-gradient-to-br rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300",
-                "from-white/10 to-white/5 border",
+                "rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300 overflow-hidden",
+                "border",
                 plan.isPopular
-                  ? "scale-105 relative ring-2 ring-cyan-400/20 from-white/20 to-white/10 border-cyan-400/30 shadow-2xl backdrop-brightness-[0.91]"
-                  : "border-white/10 backdrop-brightness-[0.91]"
+                  ? "scale-105 relative ring-2 ring-cyan-400/20 border-cyan-400/30 shadow-2xl bg-[rgba(12,18,30,0.97)]"
+                  : "border-white/10 bg-[rgba(14,14,22,0.97)]"
               )}
             >
               {plan.isPopular && (
