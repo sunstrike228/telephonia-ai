@@ -82,8 +82,11 @@ function ShaderCanvas() {
     const resize = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
-      canvas.width = parent.clientWidth;
-      canvas.height = parent.clientHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = parent.clientWidth * dpr;
+      canvas.height = parent.clientHeight * dpr;
+      canvas.style.width = parent.clientWidth + "px";
+      canvas.style.height = parent.clientHeight + "px";
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
     resize();
@@ -158,7 +161,7 @@ export function Pricing({
     <div className="relative overflow-hidden py-28" ref={sectionRef}>
       {/* Shader ring background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
-        <div className="w-[500px] h-[500px] opacity-30">
+        <div className="w-[900px] h-[900px] opacity-25">
           <ShaderCanvas />
         </div>
       </div>
