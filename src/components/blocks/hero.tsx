@@ -134,11 +134,35 @@ export function Hero() {
       )
     : allCountryCodes;
 
-  const handleSubmitPhone = (e: React.FormEvent) => {
+  const [calling, setCalling] = useState(false);
+  const [callError, setCallError] = useState("");
+
+  const handleSubmitPhone = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length >= 6) {
-      setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setShowPhone(false); setPhone(""); }, 4000);
+    if (phone.length < 6) return;
+
+    setCalling(true);
+    setCallError("");
+
+    try {
+      const fullNumber = countryCode + phone.replace(/\s/g, "");
+      const res = await fetch("https://telephonia-voice-agent-production.up.railway.app/api/call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: fullNumber }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setTimeout(() => { setSubmitted(false); setShowPhone(false); setPhone(""); }, 5000);
+      } else {
+        setCallError(data.error || "Something went wrong");
+      }
+    } catch {
+      setCallError("Connection error. Please try again.");
+    } finally {
+      setCalling(false);
     }
   };
 
@@ -264,20 +288,21 @@ export function Hero() {
                   {/* Submit */}
                   <button
                     type="submit"
-                    disabled={phone.length < 6}
+                    disabled={phone.length < 6 || calling}
                     className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#0090f0] hover:bg-[#0090f0]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 whitespace-nowrap"
                   >
-                    {s.callBtn}
+                    {calling ? "..." : s.callBtn}
                   </button>
 
                   {/* Close */}
                   <button
                     type="button"
-                    onClick={() => { setShowPhone(false); setPhone(""); setShowCodes(false); }}
+                    onClick={() => { setShowPhone(false); setPhone(""); setShowCodes(false); setCallError(""); }}
                     className="p-2 text-white/30 hover:text-white/60 transition-colors"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
+                  {callError && <p className="absolute -bottom-8 left-0 right-0 text-xs text-red-400">{callError}</p>}
                 </>
               )}
             </form>
