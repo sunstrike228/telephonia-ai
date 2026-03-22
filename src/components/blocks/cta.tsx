@@ -36,8 +36,10 @@ export function CTA() {
             {submitted ? "Дякуємо!" : (ua ? "Отримати доступ" : "Get access")}
           </GlassButton>
         </form>
-        <p className="text-white/20 text-xs mt-4">
-          {ua ? "Ми зв\u0027яжемося протягом 24 годин." : "We\u0027ll reach out within 24 hours."}
+        <p className="text-white/50 text-sm mt-6">
+          {ua
+            ? "Наш ШІ-агент зв\u0027яжеться з вами, проконсультує та за потреби призначить дзвінок."
+            : "Our AI agent will contact you, provide a consultation, and schedule a call if needed."}
         </p>
       </div>
     </section>
