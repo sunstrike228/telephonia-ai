@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Menu, X, Sparkles, DollarSign, HelpCircle, LayoutGrid } from "lucide-react";
+import { DollarSign, HelpCircle, LayoutGrid } from "lucide-react";
+import { useLang } from "@/hooks/use-lang";
 
 interface NavItem {
   name: string;
@@ -20,19 +21,7 @@ const navItems: NavItem[] = [
 
 export function Navbar() {
   const [activeTab, setActiveTab] = useState("");
-  const [lang, setLang] = useState<"en" | "ua">("en");
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("lang") : null;
-    if (stored === "ua") setLang("ua");
-  }, []);
-
-  const switchLang = (l: "en" | "ua") => {
-    setLang(l);
-    localStorage.setItem("lang", l);
-    document.documentElement.setAttribute("data-lang", l);
-  };
+  const [lang, switchLang] = useLang();
 
   return (
     <>

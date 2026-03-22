@@ -1,4 +1,11 @@
+"use client";
+
+import { useLang } from "@/hooks/use-lang";
+
 export function Footer() {
+  const [lang] = useLang();
+  const ua = lang === "ua";
+
   return (
     <footer className="border-t border-white/5 py-12 relative z-10">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -9,8 +16,8 @@ export function Footer() {
           <span className="text-[#0090f0]">.ai</span>
         </div>
         <div className="flex gap-8 text-sm text-white/30">
-          <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
-          <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
+          <a href="#" className="hover:text-white/60 transition-colors">{ua ? "Конфіденційність" : "Privacy"}</a>
+          <a href="#" className="hover:text-white/60 transition-colors">{ua ? "Умови" : "Terms"}</a>
           <a href="mailto:hello@telephonia.ai" className="hover:text-white/60 transition-colors">
             hello@telephonia.ai
           </a>
