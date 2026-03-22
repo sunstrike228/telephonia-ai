@@ -30,9 +30,22 @@ export function Hero() {
   const [lang] = useLang();
   const [showPhone, setShowPhone] = useState(false);
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("+380");
+  const [showCodes, setShowCodes] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const s = t[lang];
+
+  const countryCodes = [
+    { code: "+380", flag: "🇺🇦", name: "Ukraine" },
+    { code: "+1", flag: "🇺🇸", name: "USA" },
+    { code: "+44", flag: "🇬🇧", name: "UK" },
+    { code: "+49", flag: "🇩🇪", name: "Germany" },
+    { code: "+48", flag: "🇵🇱", name: "Poland" },
+    { code: "+972", flag: "🇮🇱", name: "Israel" },
+    { code: "+971", flag: "🇦🇪", name: "UAE" },
+    { code: "+90", flag: "🇹🇷", name: "Turkey" },
+  ];
 
   useEffect(() => {
     if (showPhone && inputRef.current) inputRef.current.focus();
@@ -90,7 +103,34 @@ export function Hero() {
                 </div>
               ) : (
                 <>
-                  <input ref={inputRef} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+380 __ ___ ____" className="bg-transparent text-white placeholder-white/30 text-sm px-4 py-2 outline-none w-44 md:w-52" />
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setShowCodes(!showCodes)}
+                      className="flex items-center gap-1 px-3 py-2 text-sm text-white/80 hover:text-white transition-colors"
+                    >
+                      <span>{countryCodes.find(c => c.code === countryCode)?.flag}</span>
+                      <span>{countryCode}</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/30"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    {showCodes && (
+                      <div className="absolute top-full left-0 mt-1 bg-[rgba(15,15,22,0.95)] border border-white/10 rounded-xl backdrop-blur-xl py-1 z-50 min-w-[180px] shadow-xl">
+                        {countryCodes.map(c => (
+                          <button
+                            key={c.code}
+                            type="button"
+                            onClick={() => { setCountryCode(c.code); setShowCodes(false); }}
+                            className={`w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-white/10 transition-colors ${countryCode === c.code ? 'text-[#0090f0]' : 'text-white/70'}`}
+                          >
+                            <span>{c.flag}</span>
+                            <span>{c.name}</span>
+                            <span className="ml-auto text-white/30">{c.code}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <input ref={inputRef} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="__ ___ ____" className="bg-transparent text-white placeholder-white/30 text-sm py-2 outline-none w-32 md:w-40" />
                   <button type="submit" disabled={phone.length < 10} className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#0090f0] hover:bg-[#0090f0]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 whitespace-nowrap">{s.callBtn}</button>
                   <button type="button" onClick={() => { setShowPhone(false); setPhone(""); }} className="p-2 text-white/30 hover:text-white/60 transition-colors">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

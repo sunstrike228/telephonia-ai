@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { RippleButton } from "@/components/ui/ripple-button";
 import { useInView } from "@/hooks/use-in-view";
+import { useLang } from "@/hooks/use-lang";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
 
@@ -106,12 +107,16 @@ const CheckIcon = ({ className }: { className?: string }) => (
 /* ── Types ── */
 interface PricingPlan {
   name: string;
+  nameUa?: string;
   price: string;
   yearlyPrice: string;
   period: string;
   features: string[];
+  featuresUa?: string[];
   description: string;
+  descriptionUa?: string;
   buttonText: string;
+  buttonTextUa?: string;
   href: string;
   isPopular: boolean;
 }
@@ -132,6 +137,8 @@ export function Pricing({
   const switchRef = useRef<HTMLButtonElement>(null);
   const { ref: sectionRef, isInView } = useInView();
   const v = isInView ? 'reveal-visible' : '';
+  const [lang] = useLang();
+  const ua = lang === "ua";
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
@@ -158,10 +165,10 @@ export function Pricing({
         {/* Header */}
         <div className="text-center mb-14">
           <h2 className="text-[48px] md:text-[64px] font-extralight leading-tight tracking-[-0.03em] bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-blue-400 font-display">
-            {title}
+            {ua ? "Прості, прозорі ціни" : title}
           </h2>
           <p className="mt-3 text-base md:text-lg text-white/50 max-w-2xl mx-auto whitespace-pre-line">
-            {description}
+            {ua ? "Оберіть план, який підходить вам\nУсі плани включають доступ до платформи, інструменти генерації лідів та підтримку." : description}
           </p>
         </div>
 
@@ -178,7 +185,7 @@ export function Pricing({
             </Label>
           </label>
           <span className="ml-3 font-semibold text-white text-sm">
-            Annual billing <span className="text-cyan-400">(Save 20%)</span>
+            {ua ? "Річна оплата" : "Annual billing"} <span className="text-cyan-400">{ua ? "(Економія 20%)" : "(Save 20%)"}</span>
           </span>
         </div>
 
@@ -198,16 +205,16 @@ export function Pricing({
             >
               {plan.isPopular && (
                 <div className="absolute -top-4 right-4 px-3 py-1 text-[12px] font-semibold rounded-full bg-cyan-400 text-black">
-                  Most Popular
+                  {ua ? "Найпопулярніший" : "Most Popular"}
                 </div>
               )}
 
               {/* Plan name */}
               <div className="mb-3">
                 <h3 className="text-[48px] font-extralight tracking-[-0.03em] text-white font-display">
-                  {plan.name}
+                  {ua ? (plan.nameUa || plan.name) : plan.name}
                 </h3>
-                <p className="text-sm text-white/50 mt-1">{plan.description}</p>
+                <p className="text-sm text-white/50 mt-1">{ua ? (plan.descriptionUa || plan.description) : plan.description}</p>
               </div>
 
               {/* Price */}
@@ -221,10 +228,10 @@ export function Pricing({
                     className="tabular-nums"
                   />
                 </span>
-                <span className="text-sm text-white/40">/mo</span>
+                <span className="text-sm text-white/40">{ua ? "/міс" : "/mo"}</span>
               </div>
               <p className="text-xs text-white/25 -mt-4 mb-4">
-                {isMonthly ? "billed monthly" : "billed annually"}
+                {isMonthly ? (ua ? "щомісячна оплата" : "billed monthly") : (ua ? "річна оплата" : "billed annually")}
               </p>
 
               {/* Divider */}
@@ -235,7 +242,7 @@ export function Pricing({
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-2">
                     <CheckIcon className="text-cyan-400 w-4 h-4 flex-shrink-0" />
-                    {feature}
+                    {ua ? (plan.featuresUa?.[idx] || feature) : feature}
                   </li>
                 ))}
               </ul>
@@ -250,7 +257,7 @@ export function Pricing({
                 )}
                 rippleColor={plan.isPopular ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.3)"}
               >
-                {plan.buttonText}
+                {ua ? (plan.buttonTextUa || plan.buttonText) : plan.buttonText}
               </RippleButton>
             </div>
           ))}
