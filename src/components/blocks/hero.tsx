@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLang } from "@/hooks/use-lang";
+import { GlassButton } from "@/components/ui/glass-button";
 
 const t = {
   en: {
@@ -165,17 +166,17 @@ export function Hero() {
         <p className="hero-p text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10">{s.sub}</p>
 
         <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a href="#cta" className="group relative overflow-hidden px-8 py-4 rounded-full text-base font-semibold text-white bg-[rgba(0,144,240,0.15)] border border-[rgba(0,144,240,0.25)] backdrop-blur-sm hover:bg-[rgba(0,144,240,0.25)] hover:scale-105 active:scale-95 transition-all duration-300">
+          <GlassButton href="#cta" className="glass-button-primary" contentClassName="flex items-center gap-2">
             {s.cta1}
-          </a>
+          </GlassButton>
 
           {!showPhone ? (
-            <button onClick={() => setShowPhone(true)} className="group relative overflow-hidden px-8 py-4 rounded-full text-base font-medium text-white/80 bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:bg-white/[0.08] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+            <GlassButton onClick={() => setShowPhone(true)} contentClassName="flex items-center gap-3">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#0090f0]">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
               {s.cta2}
-            </button>
+            </GlassButton>
           ) : (
             <form onSubmit={handleSubmitPhone} className="phone-input-wrap flex items-center gap-1 px-2 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-sm">
               {submitted ? (

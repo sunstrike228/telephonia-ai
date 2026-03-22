@@ -71,3 +71,126 @@ html { scroll-behavior: smooth; }
   opacity: 1 !important;
   transform: translateY(0) !important;
 }
+
+/* ── Glass Button ── */
+.glass-button-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.glass-button {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 9999px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.glass-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-button:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  transform: translateY(-1px);
+}
+
+.glass-button:hover::before {
+  opacity: 1;
+}
+
+.glass-button:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.glass-button-text {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.glass-button-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-button-wrap:hover .glass-button-shadow {
+  opacity: 1;
+}
+
+/* Primary variant — cyan glow */
+.glass-button-primary .glass-button {
+  border-color: rgba(0, 200, 255, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 144, 240, 0.2) 0%,
+    rgba(0, 144, 240, 0.08) 100%
+  );
+}
+
+.glass-button-primary .glass-button:hover {
+  border-color: rgba(0, 200, 255, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 144, 240, 0.28) 0%,
+    rgba(0, 144, 240, 0.12) 100%
+  );
+}
+
+.glass-button-primary .glass-button-shadow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 144, 240, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+/* Solid cyan variant for pricing popular */
+.glass-button-cyan .glass-button {
+  border-color: rgba(34, 211, 238, 0.5);
+  background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+}
+
+.glass-button-cyan .glass-button-text {
+  color: #000;
+  text-shadow: none;
+  font-weight: 600;
+}
+
+.glass-button-cyan .glass-button:hover {
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+}
+
+.glass-button-cyan .glass-button-shadow {
+  background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.25) 0%, transparent 70%);
+}

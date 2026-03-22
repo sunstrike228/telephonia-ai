@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { RippleButton } from "@/components/ui/ripple-button";
+import { GlassButton } from "@/components/ui/glass-button";
 import { useInView } from "@/hooks/use-in-view";
 import { useLang } from "@/hooks/use-lang";
 import confetti from "canvas-confetti";
@@ -249,17 +249,15 @@ export function Pricing({
               </ul>
 
               {/* Button */}
-              <RippleButton
+              <GlassButton
                 className={cn(
-                  "mt-auto w-full py-2.5 rounded-xl font-semibold text-sm transition",
-                  plan.isPopular
-                    ? "bg-cyan-400 hover:bg-cyan-300 text-black"
-                    : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                  "mt-auto w-full",
+                  plan.isPopular ? "glass-button-cyan" : ""
                 )}
-                rippleColor={plan.isPopular ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.3)"}
+                size="sm"
               >
                 {ua ? (plan.buttonTextUa || plan.buttonText) : plan.buttonText}
-              </RippleButton>
+              </GlassButton>
             </div>
           ))}
         </div>

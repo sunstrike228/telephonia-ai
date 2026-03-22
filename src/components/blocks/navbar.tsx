@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { DollarSign, HelpCircle, LayoutGrid } from "lucide-react";
 import { useLang } from "@/hooks/use-lang";
+import { GlassButton } from "@/components/ui/glass-button";
 
 interface NavItem {
   name: string;
@@ -112,12 +113,9 @@ export function Navbar() {
             </button>
           </div>
 
-          <a
-            href="#cta"
-            className="px-4 py-1.5 rounded-full text-xs font-semibold text-white ml-1 bg-[rgba(0,144,240,0.15)] border border-[rgba(0,144,240,0.25)] backdrop-blur-sm hover:bg-[rgba(0,144,240,0.25)] transition-colors"
-          >
+          <GlassButton href="#cta" className="glass-button-primary ml-1" size="sm">
             {lang === "en" ? "Get Access" : "Доступ"}
-          </a>
+          </GlassButton>
         </nav>
       </div>
 

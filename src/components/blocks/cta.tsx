@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useInView } from "@/hooks/use-in-view";
 import { useLang } from "@/hooks/use-lang";
+import { GlassButton } from "@/components/ui/glass-button";
 
 export function CTA() {
   const [submitted, setSubmitted] = useState(false);
@@ -34,12 +35,9 @@ export function CTA() {
             placeholder="your@email.com"
             className="flex-1 px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#0090f0] focus:ring-1 focus:ring-[#0090f0]/30 transition-colors"
           />
-          <button
-            type="submit"
-            className="px-8 py-4 rounded-xl text-sm font-semibold text-white whitespace-nowrap bg-[rgba(0,144,240,0.15)] border border-[rgba(0,144,240,0.25)] hover:bg-[rgba(0,144,240,0.25)] transition-all hover:scale-[1.04] active:scale-[0.97]"
-          >
+          <GlassButton type="submit" className="glass-button-primary" size="sm">
             {submitted ? "Дякуємо!" : (ua ? "Отримати доступ" : "Get access")}
-          </button>
+          </GlassButton>
         </form>
         <p className="text-white/20 text-xs mt-4">
           {ua ? "Без кредитної картки. Ми зв\u0027яжемося протягом 24 годин." : "No credit card required. We\u0027ll reach out within 24 hours."}
