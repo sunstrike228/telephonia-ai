@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
-import { Mic, Globe, Brain, Check, X, ChevronDown, Volume2 } from "lucide-react";
+import { GlassButton } from "@/components/ui/glass-button";
+import { Mic, Globe, Brain, Check, X, ChevronDown, Volume2, Loader2, RefreshCw } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 
 const availableVoices = [
@@ -40,6 +41,72 @@ export default function VoicePage() {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [personality, setPersonality] = useState("professional");
 
+  const [loading, setLoading] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<"idle" | "success" | "error">("idle");
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialLoadDone = useRef(false);
+
+  // Fetch config on load
+  useEffect(() => {
+    async function fetchConfig() {
+      try {
+        const res = await fetch("/api/dashboard/voice");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setSelectedVoices(Array.isArray(data.selectedVoices) ? data.selectedVoices : ["olena"]);
+        setLanguage(data.language || "uk");
+        setPersonality(data.personality || "professional");
+      } catch (err) {
+        console.error("Failed to load voice config:", err);
+      } finally {
+        setLoading(false);
+        // Mark initial load done after a tick so the effect doesn't trigger save
+        setTimeout(() => {
+          initialLoadDone.current = true;
+        }, 100);
+      }
+    }
+    fetchConfig();
+  }, []);
+
+  // Auto-save with debounce
+  const saveConfig = useCallback(async (voices: string[], lang: string, pers: string) => {
+    setSaveStatus("saving");
+    try {
+      const res = await fetch("/api/dashboard/voice", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          selectedVoices: voices,
+          language: lang,
+          personality: pers,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to save");
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch {
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus("idle"), 3000);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!initialLoadDone.current) return;
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      saveConfig(selectedVoices, language, personality);
+    }, 600);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [selectedVoices, language, personality, saveConfig]);
+
   const toggleVoice = (id: string) => {
     setSelectedVoices((prev) =>
       prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
@@ -50,13 +117,96 @@ export default function VoicePage() {
     setSelectedVoices((prev) => prev.filter((v) => v !== id));
   };
 
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncResult("idle");
+    try {
+      const res = await fetch("/api/dashboard/voice/sync", { method: "POST" });
+      if (!res.ok) throw new Error("Sync failed");
+      setSyncResult("success");
+      setTimeout(() => setSyncResult("idle"), 3000);
+    } catch {
+      setSyncResult("error");
+      setTimeout(() => setSyncResult("idle"), 3000);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const selectedLang = availableLanguages.find((l) => l.code === language);
+
+  if (loading) {
+    return (
+      <div>
+        <PageHeader
+          title={t ? "Налаштування голосу" : "Voice Settings"}
+          description={t ? "Налаштуйте голос, мову та характер для вашого AI-агента." : "Configure voice, language, and personality for your AI agent."}
+        />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 size={24} className="animate-spin text-white/30" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <PageHeader
         title={t ? "Налаштування голосу" : "Voice Settings"}
         description={t ? "Налаштуйте голос, мову та характер для вашого AI-агента." : "Configure voice, language, and personality for your AI agent."}
+        action={
+          <div className="flex items-center gap-3">
+            {/* Save status indicator */}
+            {saveStatus === "saving" && (
+              <span className="flex items-center gap-1.5 text-xs text-white/30">
+                <Loader2 size={12} className="animate-spin" />
+                {t ? "Збереження..." : "Saving..."}
+              </span>
+            )}
+            {saveStatus === "saved" && (
+              <span className="flex items-center gap-1.5 text-xs text-[#34d399]">
+                <Check size={12} />
+                {t ? "Збережено" : "Saved"}
+              </span>
+            )}
+            {saveStatus === "error" && (
+              <span className="flex items-center gap-1.5 text-xs text-red-400">
+                <X size={12} />
+                {t ? "Помилка збереження" : "Save failed"}
+              </span>
+            )}
+
+            {/* Sync result indicator */}
+            {syncResult === "success" && (
+              <span className="flex items-center gap-1.5 text-xs text-[#34d399]">
+                <Check size={12} />
+                {t ? "Синхронізовано" : "Synced"}
+              </span>
+            )}
+            {syncResult === "error" && (
+              <span className="flex items-center gap-1.5 text-xs text-red-400">
+                <X size={12} />
+                {t ? "Помилка синхронізації" : "Sync failed"}
+              </span>
+            )}
+
+            <GlassButton
+              onClick={handleSync}
+              className="glass-button-primary"
+              size="sm"
+              disabled={syncing}
+            >
+              <span className="flex items-center gap-2">
+                {syncing ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <RefreshCw size={14} />
+                )}
+                {t ? "Синхронізувати з агентом" : "Sync to Agent"}
+              </span>
+            </GlassButton>
+          </div>
+        }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">

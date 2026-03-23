@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, boolean, real, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, boolean, real, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { organizations } from "./organizations";
 
 export const voiceConfigs = pgTable("voice_configs", {
@@ -6,6 +6,7 @@ export const voiceConfigs = pgTable("voice_configs", {
   orgId: uuid("org_id").references(() => organizations.id).notNull(),
   voiceId: text("voice_id").notNull().default("B31Kx7rXmNnYqp1QWHR2"),
   voiceName: text("voice_name").default("Default Ukrainian"),
+  selectedVoices: jsonb("selected_voices").default(["olena"]),
   language: text("language").default("uk").notNull(),
   personality: text("personality").default("professional").notNull(),
   speed: real("speed").default(1.0).notNull(),

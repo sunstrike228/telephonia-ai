@@ -118,6 +118,14 @@ export default function ScriptsPage() {
       setForm(emptyForm);
       setEditingId(null);
       await fetchScripts();
+
+      // Auto-sync to voice agent after saving a script
+      try {
+        await fetch("/api/dashboard/voice/sync", { method: "POST" });
+      } catch {
+        // Sync failure is non-blocking — the script was saved successfully
+        console.warn("Auto-sync to voice agent failed");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
     } finally {
