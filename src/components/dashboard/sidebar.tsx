@@ -50,17 +50,14 @@ export function Sidebar() {
       )}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-white/5">
-        <Link href="/dashboard" className="font-display font-bold text-base tracking-[-0.04em] flex items-center gap-2">
+      <div className="h-16 flex items-center justify-center border-b border-white/5">
+        <Link href="/dashboard" className="font-display font-bold tracking-[-0.04em]">
           {collapsed ? (
-            <span className="text-[#0090f0] text-xl font-bold">T</span>
+            <span className="text-[#0090f0] text-2xl font-bold">T</span>
           ) : (
-            <>
-              <span className="bg-gradient-to-r from-white via-white to-[#0090f0] bg-clip-text text-transparent">
-                telephonia
-              </span>
-              <span className="text-[#0090f0]">.ai</span>
-            </>
+            <span className="text-xl">
+              <span className="bg-gradient-to-r from-white via-white to-[#0090f0] bg-clip-text text-transparent">telephonia</span><span className="text-[#0090f0]">.ai</span>
+            </span>
           )}
         </Link>
       </div>
