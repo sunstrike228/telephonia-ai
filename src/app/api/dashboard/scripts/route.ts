@@ -1,9 +1,20 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { scripts, organizations } from "@/db/schema";
+import { scripts, organizations, users } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 async function getOrgId(userId: string) {
+  // Ensure user exists in our DB
+  const existingUser = await db.select({ id: users.id }).from(users).where(eq(users.id, userId)).limit(1);
+  if (existingUser.length === 0) {
+    const clerkUser = await currentUser();
+    await db.insert(users).values({
+      id: userId,
+      email: clerkUser?.emailAddresses?.[0]?.emailAddress || "unknown@email.com",
+      name: clerkUser?.firstName || null,
+    }).onConflictDoNothing();
+  }
+
   const org = await db
     .select({ id: organizations.id })
     .from(organizations)
@@ -11,7 +22,6 @@ async function getOrgId(userId: string) {
     .limit(1);
 
   if (org.length === 0) {
-    // Auto-create a personal org for the user
     const [newOrg] = await db
       .insert(organizations)
       .values({ name: "Personal", ownerId: userId })
