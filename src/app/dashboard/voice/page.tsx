@@ -68,7 +68,7 @@ export default function VoicePage() {
           <h3 className="text-base font-semibold text-white mb-1 font-display">
             {t ? "Вибір голосу" : "Voice Selection"}
           </h3>
-          <p className="text-sm text-white/40 h-10">
+          <p className="text-sm text-white/40 mb-4">
             {t ? "Оберіть один або кілька голосів. Кілька чергуються випадково." : "Pick one or more voices. Multiple rotate randomly."}
           </p>
 
@@ -131,7 +131,7 @@ export default function VoicePage() {
           <h3 className="text-base font-semibold text-white mb-1 font-display">
             {t ? "Мова" : "Language"}
           </h3>
-          <p className="text-sm text-white/40 h-10">
+          <p className="text-sm text-white/40 mb-4">
             {t ? "Мова агента" : "Agent language"}
           </p>
 
@@ -169,7 +169,7 @@ export default function VoicePage() {
           <h3 className="text-base font-semibold text-white mb-1 font-display">
             {t ? "Характер" : "Personality"}
           </h3>
-          <p className="text-sm text-white/40 h-10">
+          <p className="text-sm text-white/40 mb-4">
             {t ? "Тон агента" : "Agent tone"}
           </p>
           <select
