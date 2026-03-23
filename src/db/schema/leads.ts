@@ -10,10 +10,12 @@ export const leads = pgTable("leads", {
   campaignId: uuid("campaign_id").references(() => campaigns.id),
   firstName: text("first_name"),
   lastName: text("last_name"),
-  phone: text("phone").notNull(),
+  phone: text("phone"),
   email: text("email"),
+  telegramUsername: text("telegram_username"),
   company: text("company"),
   metadata: jsonb("metadata").default({}),
   status: leadStatusEnum("status").default("new").notNull(),
+  timezone: text("timezone"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -7,3 +7,6 @@ export * from "./campaigns";
 export * from "./leads";
 export * from "./call-logs";
 export * from "./api-keys";
+export * from "./messages";
+export * from "./telegram-accounts";
+export * from "./channel-configs";
