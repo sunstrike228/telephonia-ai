@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { PhoneCall, Users, TrendingUp, Clock, FileText, Mic } from "lucide-react";
@@ -9,6 +10,17 @@ import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 export default function DashboardOverview() {
   const lang = useDashboardLang();
   const t = lang === "ua";
+
+  const [scriptCount, setScriptCount] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/dashboard/scripts")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (Array.isArray(data)) setScriptCount(data.length);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div>
@@ -32,9 +44,9 @@ export default function DashboardOverview() {
           iconColor="#34d399"
         />
         <StatCard
-          title={t ? "Конверсія" : "Conversion Rate"}
-          value="0%"
-          icon={TrendingUp}
+          title={t ? "Скрипти" : "Scripts"}
+          value={String(scriptCount)}
+          icon={FileText}
           iconColor="#a78bfa"
         />
         <StatCard
