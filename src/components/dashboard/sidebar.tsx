@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 import {
   LayoutDashboard, FileText, Mic, Phone, PhoneCall,
-  Users, BarChart3, Plug, CreditCard, Settings,
+  Megaphone, Users, BarChart3, Plug, CreditCard, Settings,
   ChevronLeft, ChevronRight
 } from "lucide-react";
 
@@ -25,6 +25,7 @@ const navGroups = (lang: "en" | "ua") => [
     label: lang === "ua" ? "Активність" : "Activity",
     items: [
       { name: lang === "ua" ? "Дзвінки" : "Calls", href: "/dashboard/calls", icon: PhoneCall },
+      { name: lang === "ua" ? "Кампанії" : "Campaigns", href: "/dashboard/campaigns", icon: Megaphone },
       { name: lang === "ua" ? "Ліди" : "Leads", href: "/dashboard/leads", icon: Users },
       { name: lang === "ua" ? "Аналітика" : "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
     ],
