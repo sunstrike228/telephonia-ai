@@ -7,7 +7,7 @@ import { GlassButton } from "@/components/ui/glass-button";
 import {
   Megaphone, Plus, Loader2, X, Phone, MessageCircle, Mail,
   Play, Pause, Pencil, Trash2, Users, ChevronDown, ChevronUp,
-  GripVertical, Calendar,
+  GripVertical, Calendar, Sparkles, Send, RefreshCw,
 } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 
@@ -101,6 +101,9 @@ export default function CampaignsPage() {
   const [expandedDetail, setExpandedDetail] = useState<CampaignDetail | null>(null);
   const [expandLoading, setExpandLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [emailPreview, setEmailPreview] = useState<{ subject: string; body: string } | null>(null);
+  const [emailGenLoading, setEmailGenLoading] = useState(false);
+  const [emailType, setEmailType] = useState<"initial" | "followup" | "final">("initial");
 
   const fetchCampaigns = useCallback(async () => {
     try {
@@ -283,6 +286,30 @@ export default function CampaignsPage() {
       [arr[idx], arr[swapIdx]] = [arr[swapIdx], arr[idx]];
       return { ...f, channelPriority: arr };
     });
+  }
+
+  async function generateEmailPreview(campaign: Campaign) {
+    setEmailGenLoading(true);
+    setEmailPreview(null);
+    try {
+      const res = await fetch("/api/dashboard/email/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadName: "",
+          companyName: "",
+          scriptId: campaign.scriptId,
+          type: emailType,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to generate");
+      const data = await res.json();
+      setEmailPreview({ subject: data.subject, body: data.body });
+    } catch {
+      setError(t ? "Не вдалося згенерувати email" : "Failed to generate email");
+    } finally {
+      setEmailGenLoading(false);
+    }
   }
 
   function formatDate(dateStr: string) {
@@ -524,11 +551,115 @@ export default function CampaignsPage() {
 
                         {/* Scheduled at */}
                         {expandedDetail.scheduledAt && (
-                          <div className="flex items-center gap-2 text-xs text-white/30">
+                          <div className="flex items-center gap-2 text-xs text-white/30 mb-4">
                             <Calendar size={12} />
                             {t ? "Заплановано:" : "Scheduled:"}{" "}
                             {new Date(expandedDetail.scheduledAt).toLocaleString(
                               t ? "uk-UA" : "en-US"
+                            )}
+                          </div>
+                        )}
+
+                        {/* Email Preview — only show when email channel is enabled */}
+                        {channels.includes("email") && (
+                          <div className="mt-4 pt-4 border-t border-white/5">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-2">
+                                <Mail size={14} className="text-[#0090f0]" />
+                                <p className="text-sm font-medium text-white/60">
+                                  {t ? "Email шаблон" : "Email Template"}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <select
+                                  value={emailType}
+                                  onChange={(e) =>
+                                    setEmailType(
+                                      e.target.value as "initial" | "followup" | "final"
+                                    )
+                                  }
+                                  className="px-3 py-1.5 rounded-lg border border-white/8 bg-white/[0.03] text-white/60 text-xs focus:outline-none focus:border-[#0090f0]/40 transition-colors appearance-none"
+                                >
+                                  <option value="initial" className="bg-[#0e0e15]">
+                                    {t ? "Перший лист" : "Initial"}
+                                  </option>
+                                  <option value="followup" className="bg-[#0e0e15]">
+                                    {t ? "Follow-up" : "Follow-up"}
+                                  </option>
+                                  <option value="final" className="bg-[#0e0e15]">
+                                    {t ? "Фiнальний" : "Final"}
+                                  </option>
+                                </select>
+                                <GlassButton
+                                  size="sm"
+                                  onClick={() => generateEmailPreview(campaign)}
+                                  disabled={emailGenLoading}
+                                >
+                                  {emailGenLoading ? (
+                                    <span className="flex items-center gap-1.5">
+                                      <Loader2 size={12} className="animate-spin" />
+                                      {t ? "Генерую..." : "Generating..."}
+                                    </span>
+                                  ) : emailPreview ? (
+                                    <span className="flex items-center gap-1.5">
+                                      <RefreshCw size={12} />
+                                      {t ? "Перегенерувати" : "Regenerate"}
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-1.5">
+                                      <Sparkles size={12} />
+                                      {t ? "Згенерувати" : "Generate"}
+                                    </span>
+                                  )}
+                                </GlassButton>
+                              </div>
+                            </div>
+
+                            {emailPreview && (
+                              <div className="rounded-xl border border-white/8 bg-white/[0.02] overflow-hidden">
+                                {/* Email subject */}
+                                <div className="px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-white/30 shrink-0">
+                                      {t ? "Тема:" : "Subject:"}
+                                    </span>
+                                    <span className="text-sm text-white/80 font-medium truncate">
+                                      {emailPreview.subject}
+                                    </span>
+                                  </div>
+                                </div>
+                                {/* Email body */}
+                                <div className="px-4 py-4">
+                                  <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed">
+                                    {emailPreview.body}
+                                  </p>
+                                </div>
+                                {/* Actions */}
+                                <div className="px-4 py-3 border-t border-white/5 flex items-center justify-end">
+                                  <button
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0090f0]/10 border border-[#0090f0]/20 text-[#0090f0] hover:bg-[#0090f0]/20 transition-colors"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(
+                                        `Subject: ${emailPreview.subject}\n\n${emailPreview.body}`
+                                      );
+                                    }}
+                                  >
+                                    <Send size={11} />
+                                    {t ? "Копiювати" : "Copy"}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+
+                            {!emailPreview && !emailGenLoading && (
+                              <div className="rounded-xl border border-dashed border-white/8 bg-white/[0.01] p-6 text-center">
+                                <Sparkles size={20} className="text-white/15 mx-auto mb-2" />
+                                <p className="text-xs text-white/25">
+                                  {t
+                                    ? "Натиснiть \"Згенерувати\" для створення AI-персоналiзованого email"
+                                    : "Click \"Generate\" to create an AI-personalized email template"}
+                                </p>
+                              </div>
                             )}
                           </div>
                         )}
