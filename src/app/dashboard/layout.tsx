@@ -3,11 +3,11 @@ import { Topbar } from "@/components/dashboard/topbar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-[#08080d]">
       <Sidebar />
-      <div className="ml-64">
+      <div className="ml-64 min-h-screen flex flex-col">
         <Topbar />
-        <main className="p-6">{children}</main>
+        <main className="flex-1 px-8 py-6 max-w-7xl">{children}</main>
       </div>
     </div>
   );
