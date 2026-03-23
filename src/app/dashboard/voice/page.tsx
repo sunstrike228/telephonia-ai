@@ -62,7 +62,7 @@ export default function VoicePage() {
             <Mic size={18} className="text-[#a78bfa]" />
           </div>
           <h3 className="text-base font-semibold text-white mb-1 font-display">Voice Selection</h3>
-          <p className="text-sm text-white/40 mb-4">Pick one or more voices. Multiple rotate randomly.</p>
+          <p className="text-sm text-white/40 h-10">Pick one or more voices. Multiple rotate randomly.</p>
 
           {/* Dropdown */}
           <div className="relative">
@@ -70,12 +70,23 @@ export default function VoicePage() {
               onClick={() => setVoiceDropdownOpen(!voiceDropdownOpen)}
               className="w-full flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70 hover:border-[#a78bfa]/30 transition-all"
             >
-              <span>
-                {selectedVoices.length === 0
-                  ? "Select voices..."
-                  : `${selectedVoices.length} voice${selectedVoices.length > 1 ? "s" : ""} selected`}
+              <span className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
+                {selectedVoices.length === 0 ? (
+                  <span>Select voices...</span>
+                ) : (
+                  selectedVoices.map((vid) => {
+                    const voice = availableVoices.find((v) => v.id === vid);
+                    if (!voice) return null;
+                    return (
+                      <span key={vid} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#a78bfa]/10 border border-[#a78bfa]/20 text-xs text-[#a78bfa]">
+                        {voice.name}
+                        <button onClick={(e) => { e.stopPropagation(); removeVoice(vid); }} className="hover:text-white transition-colors"><X size={10} /></button>
+                      </span>
+                    );
+                  })
+                )}
               </span>
-              <ChevronDown size={16} className={`text-white/30 transition-transform ${voiceDropdownOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={16} className={`text-white/30 transition-transform flex-shrink-0 ml-2 ${voiceDropdownOpen ? "rotate-180" : ""}`} />
             </button>
             {voiceDropdownOpen && (
               <div className="absolute top-full left-0 right-0 mt-2 z-50 rounded-xl border border-white/10 bg-[rgba(12,12,18,0.98)] backdrop-blur-xl shadow-2xl shadow-black/50 max-h-[280px] overflow-y-auto overscroll-contain">
@@ -97,22 +108,6 @@ export default function VoicePage() {
               </div>
             )}
           </div>
-
-          {/* Selected chips */}
-          {selectedVoices.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {selectedVoices.map((vid) => {
-                const voice = availableVoices.find((v) => v.id === vid);
-                if (!voice) return null;
-                return (
-                  <span key={vid} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#a78bfa]/10 border border-[#a78bfa]/20 text-xs text-[#a78bfa]">
-                    {voice.name}
-                    <button onClick={() => removeVoice(vid)} className="hover:text-white transition-colors"><X size={12} /></button>
-                  </span>
-                );
-              })}
-            </div>
-          )}
           {selectedVoices.length > 1 && (
             <p className="text-[11px] text-white/25 mt-2">Voices assigned randomly to each call.</p>
           )}
@@ -124,7 +119,7 @@ export default function VoicePage() {
             <Globe size={18} className="text-[#0090f0]" />
           </div>
           <h3 className="text-base font-semibold text-white mb-1 font-display">Language</h3>
-          <p className="text-sm text-white/40 mb-4">Agent language</p>
+          <p className="text-sm text-white/40 h-10">Agent language</p>
 
           <div className="relative">
             <button
@@ -158,7 +153,7 @@ export default function VoicePage() {
             <Brain size={18} className="text-[#34d399]" />
           </div>
           <h3 className="text-base font-semibold text-white mb-1 font-display">Personality</h3>
-          <p className="text-sm text-white/40 mb-4">Agent tone</p>
+          <p className="text-sm text-white/40 h-10">Agent tone</p>
           <select
             value={personality}
             onChange={(e) => setPersonality(e.target.value)}
