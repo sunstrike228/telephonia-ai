@@ -4,36 +4,37 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 import {
   LayoutDashboard, FileText, Mic, Phone, PhoneCall,
   Users, BarChart3, Plug, CreditCard, Settings,
   ChevronLeft, ChevronRight
 } from "lucide-react";
 
-const navGroups = [
+const navGroups = (lang: "en" | "ua") => [
   {
-    label: "Main",
+    label: lang === "ua" ? "Головне" : "Main",
     items: [
-      { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-      { name: "Scripts", href: "/dashboard/scripts", icon: FileText },
-      { name: "Voice", href: "/dashboard/voice", icon: Mic },
-      { name: "Numbers", href: "/dashboard/numbers", icon: Phone },
+      { name: lang === "ua" ? "Огляд" : "Overview", href: "/dashboard", icon: LayoutDashboard },
+      { name: lang === "ua" ? "Скрипти" : "Scripts", href: "/dashboard/scripts", icon: FileText },
+      { name: lang === "ua" ? "Голос" : "Voice", href: "/dashboard/voice", icon: Mic },
+      { name: lang === "ua" ? "Номери" : "Numbers", href: "/dashboard/numbers", icon: Phone },
     ],
   },
   {
-    label: "Activity",
+    label: lang === "ua" ? "Активність" : "Activity",
     items: [
-      { name: "Calls", href: "/dashboard/calls", icon: PhoneCall },
-      { name: "Leads", href: "/dashboard/leads", icon: Users },
-      { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+      { name: lang === "ua" ? "Дзвінки" : "Calls", href: "/dashboard/calls", icon: PhoneCall },
+      { name: lang === "ua" ? "Ліди" : "Leads", href: "/dashboard/leads", icon: Users },
+      { name: lang === "ua" ? "Аналітика" : "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
     ],
   },
   {
-    label: "Account",
+    label: lang === "ua" ? "Акаунт" : "Account",
     items: [
-      { name: "Integrations", href: "/dashboard/integrations", icon: Plug },
-      { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
-      { name: "Settings", href: "/dashboard/settings", icon: Settings },
+      { name: lang === "ua" ? "Інтеграції" : "Integrations", href: "/dashboard/integrations", icon: Plug },
+      { name: lang === "ua" ? "Оплата" : "Billing", href: "/dashboard/billing", icon: CreditCard },
+      { name: lang === "ua" ? "Налаштування" : "Settings", href: "/dashboard/settings", icon: Settings },
     ],
   },
 ];
@@ -41,6 +42,8 @@ const navGroups = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const lang = useDashboardLang();
+  const groups = navGroups(lang);
 
   return (
     <aside
@@ -64,7 +67,7 @@ export function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-4 px-2">
-        {navGroups.map((group) => (
+        {groups.map((group) => (
           <div key={group.label} className="mb-6">
             {!collapsed && (
               <div className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-white/25">

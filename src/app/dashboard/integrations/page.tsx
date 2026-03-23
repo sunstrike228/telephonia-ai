@@ -2,39 +2,44 @@
 
 import { PageHeader } from "@/components/dashboard/page-header";
 import { GlassButton } from "@/components/ui/glass-button";
+import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 
-const integrations = [
+const integrations = (ua: boolean) => [
   {
     name: "HubSpot",
-    description: "Sync contacts and deals with HubSpot CRM.",
+    description: ua ? "Синхронізуйте контакти та угоди з HubSpot CRM." : "Sync contacts and deals with HubSpot CRM.",
     color: "#ff7a59",
   },
   {
     name: "Salesforce",
-    description: "Connect your Salesforce org for lead management.",
+    description: ua ? "Підключіть Salesforce для управління лідами." : "Connect your Salesforce org for lead management.",
     color: "#00a1e0",
   },
   {
     name: "Pipedrive",
-    description: "Sync your Pipedrive pipeline and contacts.",
+    description: ua ? "Синхронізуйте воронку та контакти Pipedrive." : "Sync your Pipedrive pipeline and contacts.",
     color: "#34d399",
   },
   {
     name: "Close",
-    description: "Integrate with Close CRM for calling workflows.",
+    description: ua ? "Інтеграція з Close CRM для робочих процесів дзвінків." : "Integrate with Close CRM for calling workflows.",
     color: "#a78bfa",
   },
 ];
 
 export default function IntegrationsPage() {
+  const lang = useDashboardLang();
+  const t = lang === "ua";
+  const items = integrations(t);
+
   return (
     <div>
       <PageHeader
-        title="Integrations"
-        description="Connect your CRM and other tools."
+        title={t ? "Інтеграції" : "Integrations"}
+        description={t ? "Підключіть CRM та інші інструменти." : "Connect your CRM and other tools."}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {integrations.map((integration) => (
+        {items.map((integration) => (
           <div
             key={integration.name}
             className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 flex items-center justify-between"
@@ -62,7 +67,7 @@ export default function IntegrationsPage() {
               </div>
             </div>
             <GlassButton size="sm" onClick={() => {}}>
-              Connect
+              {t ? "Підключити" : "Connect"}
             </GlassButton>
           </div>
         ))}
