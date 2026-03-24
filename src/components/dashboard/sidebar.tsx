@@ -57,10 +57,10 @@ export function Sidebar() {
       <div className="h-16 flex items-center justify-center border-b border-white/5">
         <Link href="/dashboard" className="font-display font-bold tracking-[-0.04em]">
           {collapsed ? (
-            <span className="text-[#0090f0] text-2xl font-bold">N</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-[#0090f0] via-[#6366f1] to-[#a855f7] bg-clip-text text-transparent">N</span>
           ) : (
             <span className="text-2xl inline-flex items-baseline gap-1.5">
-              <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">Project</span><span className="text-[#0090f0]">Noir</span>
+              <span className="bg-gradient-to-b from-white via-white/90 to-white/50 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">Project</span><span className="bg-gradient-to-r from-[#0090f0] via-[#6366f1] to-[#a855f7] bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(99,102,241,0.3)]"> Noir</span>
             </span>
           )}
         </Link>

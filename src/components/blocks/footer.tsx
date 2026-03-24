@@ -11,10 +11,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col">
           <div className="font-display font-bold text-lg tracking-[-0.04em]">
-            <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-              Project
-            </span>
-            <span className="text-[#0090f0]">&nbsp;Noir</span>
+            <span className="bg-gradient-to-b from-white via-white/90 to-white/50 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">Project</span>
+            <span className="bg-gradient-to-r from-[#0090f0] via-[#6366f1] to-[#a855f7] bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(99,102,241,0.3)]">&nbsp;Noir</span>
           </div>
           <span className="text-[10px] text-white/20 mt-0.5">A product by Void Research</span>
         </div>
