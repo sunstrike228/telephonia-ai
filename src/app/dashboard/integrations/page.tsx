@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { GlassButton } from "@/components/ui/glass-button";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
-import { Mail, Loader2, Check, X } from "lucide-react";
+import { Mail, Loader2, Check, X, Info, ExternalLink, Send } from "lucide-react";
 import { toast } from "sonner";
 
 const integrations = (ua: boolean) => [
@@ -51,6 +51,7 @@ export default function IntegrationsPage() {
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailSaved, setEmailSaved] = useState(false);
   const [emailConnected, setEmailConnected] = useState(false);
+  const [testSending, setTestSending] = useState(false);
 
   const loadEmailConfig = useCallback(async () => {
     setEmailLoading(true);
@@ -112,6 +113,32 @@ export default function IntegrationsPage() {
       toast.error(t ? "Не вдалося зберегти email налаштування" : "Failed to save email settings");
     } finally {
       setEmailSaving(false);
+    }
+  }
+
+  async function handleSendTestEmail() {
+    setTestSending(true);
+    try {
+      const res = await fetch("/api/dashboard/email/test", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(
+          t
+            ? `Тестовий лист надiслано на ${data.to}`
+            : `Test email sent to ${data.to}`
+        );
+      } else {
+        throw new Error(data.error || "Failed");
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      toast.error(
+        t
+          ? `Не вдалося надiслати тестовий лист: ${message}`
+          : `Failed to send test email: ${message}`
+      );
+    } finally {
+      setTestSending(false);
     }
   }
 
@@ -240,6 +267,51 @@ export default function IntegrationsPage() {
               </button>
             </div>
 
+            {/* Resend setup info callout */}
+            <div className="mb-5 rounded-xl border border-[#0090f0]/20 bg-[#0090f0]/5 p-4">
+              <div className="flex items-start gap-3">
+                <Info size={16} className="text-[#0090f0] mt-0.5 shrink-0" />
+                <div className="text-sm text-white/60 space-y-2">
+                  <p className="font-medium text-white/80">
+                    {t ? "Як налаштувати email:" : "How to set up email:"}
+                  </p>
+                  <ol className="list-decimal list-inside space-y-1 text-xs text-white/50">
+                    <li>
+                      {t ? "Зареєструйтеся на " : "Sign up at "}
+                      <a
+                        href="https://resend.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0090f0] hover:underline inline-flex items-center gap-1"
+                      >
+                        resend.com
+                        <ExternalLink size={10} />
+                      </a>
+                    </li>
+                    <li>
+                      {t
+                        ? "Додайте свiй домен i верифiкуйте DNS-записи"
+                        : "Add your domain and verify DNS records"}
+                    </li>
+                    <li>
+                      {t
+                        ? "Email вiдправника має бути на верифiкованому доменi"
+                        : "Your From Email must be on a verified domain"}
+                    </li>
+                  </ol>
+                  <a
+                    href="https://resend.com/docs/dashboard/domains/introduction"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-[#0090f0] hover:underline mt-1"
+                  >
+                    {t ? "Документацiя Resend" : "Resend documentation"}
+                    <ExternalLink size={10} />
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-white/50 mb-2">
@@ -297,14 +369,36 @@ export default function IntegrationsPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-white/8">
-              <button
-                onClick={() => setEmailModalOpen(false)}
-                className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors"
-              >
-                {t ? "Скасувати" : "Cancel"}
-              </button>
-              <GlassButton
+            <div className="flex items-center justify-between gap-3 mt-6 pt-4 border-t border-white/8">
+              {emailConnected ? (
+                <GlassButton
+                  size="sm"
+                  onClick={handleSendTestEmail}
+                  disabled={testSending}
+                >
+                  {testSending ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 size={14} className="animate-spin" />
+                      {t ? "Надсилання..." : "Sending..."}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <Send size={14} />
+                      {t ? "Тестовий лист" : "Send Test Email"}
+                    </span>
+                  )}
+                </GlassButton>
+              ) : (
+                <div />
+              )}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setEmailModalOpen(false)}
+                  className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors"
+                >
+                  {t ? "Скасувати" : "Cancel"}
+                </button>
+                <GlassButton
                 onClick={handleSaveEmail}
                 className="glass-button-primary"
                 size="sm"
@@ -324,6 +418,7 @@ export default function IntegrationsPage() {
                   t ? "Зберегти" : "Save"
                 )}
               </GlassButton>
+              </div>
             </div>
           </div>
         </div>
