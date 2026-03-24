@@ -11,8 +11,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col">
           <div className="font-display font-bold text-lg tracking-[-0.04em] inline-flex items-center gap-1.5">
-            <span className="text-white">Project</span>
-            <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[14px] leading-none font-bold">Noir</span>
+            <span className="text-white">project</span>
+            <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[14px] leading-none font-bold">noir</span>
           </div>
           <span className="text-[10px] text-white/20 mt-0.5">A product by Void Research</span>
         </div>

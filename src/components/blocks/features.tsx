@@ -7,8 +7,8 @@ import { useInView } from "@/hooks/use-in-view";
 import { useLang } from "@/hooks/use-lang";
 
 const features = [
-  { icon: Phone, color: "#0090f0", title: "AI Voice Calls", titleUa: "AI-голосові дзвінки", desc: "AI agents call your leads, qualify them, handle objections and book meetings at scale. Hundreds of simultaneous calls, zero burnout.", descUa: "AI-агенти дзвонять вашим лідам, кваліфікують їх, обробляють заперечення та бронюють зустрічі масштабно. Сотні одночасних дзвінків, нуль вигорання." },
-  { icon: MessageCircle, color: "#a78bfa", title: "Telegram Outreach", titleUa: "Аутріч в Telegram", desc: "AI agents message your leads on Telegram from real accounts. Natural conversations, not bots.", descUa: "AI-агенти пишуть вашим лідам в Telegram з реальних акаунтів. Природні розмови, а не боти." },
+  { icon: Phone, color: "#ff4d4d", title: "AI Voice Calls", titleUa: "AI-голосові дзвінки", desc: "AI agents call your leads, qualify them, handle objections and book meetings at scale. Hundreds of simultaneous calls, zero burnout.", descUa: "AI-агенти дзвонять вашим лідам, кваліфікують їх, обробляють заперечення та бронюють зустрічі масштабно. Сотні одночасних дзвінків, нуль вигорання." },
+  { icon: MessageCircle, color: "#ff4d4d", title: "Telegram Outreach", titleUa: "Аутріч в Telegram", desc: "AI agents message your leads on Telegram from real accounts. Natural conversations, not bots.", descUa: "AI-агенти пишуть вашим лідам в Telegram з реальних акаунтів. Природні розмови, а не боти." },
   { icon: Mail, color: "#34d399", title: "Email Campaigns", titleUa: "Email-кампанії", desc: "AI-generated personalized emails. Follow-up sequences. Track opens and replies.", descUa: "AI-генеровані персоналізовані листи. Ланцюжки follow-up. Відстежуйте відкриття та відповіді." },
   { icon: Layers, color: "#f97316", title: "Multi-Channel Orchestration", titleUa: "Мульти-канальна оркестрація", desc: "Set channel priority. If no reply on Telegram, auto-fallback to call, then email.", descUa: "Встановіть пріоритет каналів. Якщо немає відповіді в Telegram, автоматичний перехід на дзвінок, потім email." },
   { icon: BarChart3, color: "#fbbf24", title: "Real-Time Analytics", titleUa: "Аналітика в реальному часі", desc: "Every interaction transcribed, scored, and analyzed. See conversion rates, objection patterns, and sentiment live in your dashboard.", descUa: "Кожна взаємодія транскрибована, оцінена та проаналізована. Конверсії, патерни заперечень та настрої - наживо у вашій панелі." },
@@ -25,7 +25,7 @@ export function Features() {
     <section id="features" className="relative py-32 overflow-hidden" ref={ref}>
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className={`reveal-hidden ${v} text-center mb-20`}>
-          <span className="text-[#0090f0] text-sm font-semibold uppercase tracking-widest">{ua ? "Що ми робимо" : "What we do"}</span>
+          <span className="text-[#ff4d4d] text-sm font-semibold uppercase tracking-widest">{ua ? "Що ми робимо" : "What we do"}</span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mt-4 font-display tracking-tight">
             {ua ? <>Одна платформа.<br />Кожен канал опрацьований.</> : <>One platform.<br />Every channel covered.</>}
           </h2>

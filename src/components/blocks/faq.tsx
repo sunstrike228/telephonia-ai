@@ -31,7 +31,7 @@ export function FAQ() {
       `}</style>
       <div className="max-w-3xl mx-auto px-6 relative z-10">
         <div className={`reveal-hidden ${v} text-center mb-16`}>
-          <span className="text-[#0090f0] text-sm font-semibold uppercase tracking-widest">FAQ</span>
+          <span className="text-[#ff4d4d] text-sm font-semibold uppercase tracking-widest">FAQ</span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mt-4 font-display tracking-tight">{ua ? "Питання та відповіді" : "Questions & Answers"}</h2>
         </div>
 

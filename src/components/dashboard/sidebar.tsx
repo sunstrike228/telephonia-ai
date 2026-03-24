@@ -60,8 +60,8 @@ export function Sidebar() {
             <span className="bg-white text-black w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold">N</span>
           ) : (
             <span className="text-2xl inline-flex items-center gap-2">
-              <span className="text-white font-bold">Project</span>
-              <span className="bg-white text-black px-2 py-0.5 rounded-md text-lg leading-none font-bold">Noir</span>
+              <span className="text-white font-bold">project</span>
+              <span className="bg-white text-black px-2 py-0.5 rounded-md text-lg leading-none font-bold">noir</span>
             </span>
           )}
         </Link>

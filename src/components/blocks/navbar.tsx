@@ -54,8 +54,8 @@ export function Navbar() {
       <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-4 sm:pt-6 hidden md:block">
         <nav className="flex items-center gap-1 bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl py-1.5 px-2 rounded-full shadow-lg shadow-black/20">
           <a href="#" onClick={() => setActiveTab("")} className="font-display font-bold text-base tracking-[-0.04em] px-3 py-1.5 mr-1 inline-flex items-center gap-1.5">
-            <span className="text-white">Project</span>
-            <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[13px] leading-none font-bold">Noir</span>
+            <span className="text-white">project</span>
+            <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[13px] leading-none font-bold">noir</span>
           </a>
 
           {navItems.map((item) => {
@@ -115,6 +115,10 @@ export function Navbar() {
             {lang === "en" ? "Get Access" : "Доступ"}
           </GlassButton>
         </nav>
+
+        <a href="/dashboard" className="ml-3 flex items-center gap-1.5 bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl py-1.5 px-4 rounded-full shadow-lg shadow-black/20 text-[13px] font-semibold text-white/60 hover:text-white transition-colors">
+          Dashboard
+        </a>
       </div>
 
       {/* Mobile nav */}

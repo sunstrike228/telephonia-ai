@@ -139,14 +139,14 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         angle: 60,
         spread: 55,
         origin: { x: 0, y: 0.7 },
-        colors: ["#00d4ff", "#0090f0", "#a78bfa", "#34d399"],
+        colors: ["#00d4ff", "#0090f0", "#ff4d4d", "#34d399"],
       });
       confetti({
         particleCount: 3,
         angle: 120,
         spread: 55,
         origin: { x: 1, y: 0.7 },
-        colors: ["#00d4ff", "#0090f0", "#a78bfa", "#34d399"],
+        colors: ["#00d4ff", "#0090f0", "#ff4d4d", "#34d399"],
       });
       if (Date.now() < end) {
         requestAnimationFrame(frame);

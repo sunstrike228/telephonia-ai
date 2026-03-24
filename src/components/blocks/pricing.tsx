@@ -19,9 +19,12 @@ function ShaderCanvas() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const gl = canvas.getContext("webgl");
+    const gl = canvas.getContext("webgl", { premultipliedAlpha: false, alpha: true });
     if (!gl) return;
     glRef.current = gl;
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
 
     const vs = `attribute vec2 aPosition; void main(){ gl_Position=vec4(aPosition,0.,1.); }`;
     const fs = `
@@ -45,11 +48,13 @@ function ShaderCanvas() {
         m+=circle(uv,c,r,.035).r;
         m+=circle(uv,c,r-.018,.01).r;
         m+=circle(uv,c,r+.018,.005).r;
-        vec2 v=rot(iTime)*uv;
-        vec3 fg=vec3(v.x,v.y,.7-v.y*v.x);
-        vec3 col=mix(uBg,fg,m);
+        vec2 v=rot(iTime*0.5)*uv;
+        float silver=0.5+0.5*sin(v.x*3.0+v.y*2.0+iTime);
+        vec3 fg=vec3(0.75+0.25*silver, 0.78+0.22*silver, 0.82+0.18*silver);
+        float alpha=m;
+        vec3 col=fg;
         col=mix(col,vec3(1.),circle(uv,c,r,.003).r);
-        gl_FragColor=vec4(col,1.);
+        gl_FragColor=vec4(col,alpha);
       }`;
 
     const compile = (type: number, src: string) => {
@@ -76,6 +81,7 @@ function ShaderCanvas() {
 
     let af: number;
     const render = (t: number) => {
+      gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform1f(iTimeLoc, t * 0.001);
       gl.uniform2f(iResLoc, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -154,7 +160,7 @@ export function Pricing({
         particleCount: 50,
         spread: 60,
         origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: (rect.top + rect.height / 2) / window.innerHeight },
-        colors: ["#0090f0", "#a78bfa", "#34d399", "#36adff"],
+        colors: ["#0090f0", "#ff4d4d", "#34d399", "#ff6b6b"],
         ticks: 200, gravity: 1.2, decay: 0.94, startVelocity: 30, shapes: ["circle"],
       });
     }

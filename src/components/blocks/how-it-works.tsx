@@ -8,7 +8,7 @@ import { Upload, Users, Rocket } from "lucide-react";
 const steps = [
   {
     num: "1",
-    color: "#0090f0",
+    color: "#ff4d4d",
     icon: Upload,
     title: "Upload Script & Choose Channels",
     titleUa: "Завантажте скрипт та оберіть канали",
@@ -20,7 +20,7 @@ const steps = [
   },
   {
     num: "2",
-    color: "#a78bfa",
+    color: "#ff4d4d",
     icon: Users,
     title: "Import Leads",
     titleUa: "Імпортуйте ліди",
@@ -54,7 +54,7 @@ export function HowItWorks() {
     <section className="relative py-32 overflow-hidden" ref={ref}>
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className={`reveal-hidden ${v} text-center mb-20`}>
-          <span className="text-[#0090f0] text-sm font-semibold uppercase tracking-widest">
+          <span className="text-[#ff4d4d] text-sm font-semibold uppercase tracking-widest">
             {ua ? "Як це працює" : "How it works"}
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mt-4 font-display tracking-tight">
@@ -82,7 +82,7 @@ export function HowItWorks() {
                       <img
                         src={s.image}
                         alt={ua ? s.titleUa : s.title}
-                        className="w-full h-40 object-cover rounded-xl"
+                        className="w-full h-40 object-cover rounded-xl grayscale"
                       />
                       <div className="mt-4 flex items-center gap-3">
                         <div

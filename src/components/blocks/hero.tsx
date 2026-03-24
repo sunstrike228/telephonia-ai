@@ -277,7 +277,7 @@ export function Hero() {
         <h1 className="hero-h1 text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-[0.95] font-display">
           {s.h1_1}
           <br />
-          <span className="bg-gradient-to-r from-[#36adff] via-[#78c8ff] to-[#a78bfa] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#ff4d4d] via-[#ff6b6b] to-[#ff8a8a] bg-clip-text text-transparent">
             {s.h1_2}
           </span>
           <br />
@@ -286,7 +286,7 @@ export function Hero() {
 
         <p className="hero-p text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10">
           {s.sub1}{" "}
-          <span className="bg-gradient-to-r from-[#36adff] via-[#78c8ff] to-[#a78bfa] bg-clip-text text-transparent font-medium">
+          <span className="bg-gradient-to-r from-[#ff4d4d] via-[#ff6b6b] to-[#ff8a8a] bg-clip-text text-transparent font-medium">
             {s.sub2}
           </span>
         </p>
@@ -296,12 +296,12 @@ export function Hero() {
           {activeInput === null && (
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <GlassButton onClick={() => setActiveInput("phone")} contentClassName="flex items-center gap-2">
-                <Phone size={18} className="text-[#0090f0]" />
+                <Phone size={18} className="text-[#ff4d4d]" />
                 {s.ctaCall}
               </GlassButton>
 
               <GlassButton onClick={() => setActiveInput("telegram")} contentClassName="flex items-center gap-2">
-                <MessageCircle size={18} className="text-[#a78bfa]" />
+                <MessageCircle size={18} className="text-[#ff4d4d]" />
                 {s.ctaTelegram}
               </GlassButton>
 
@@ -361,7 +361,7 @@ export function Hero() {
                                 onClick={() => { setCountryCode(c.code); setShowCodes(false); }}
                                 className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
                                   countryCode === c.code
-                                    ? 'bg-[#0090f0]/10 text-[#36adff]'
+                                    ? 'bg-[#ff4d4d]/10 text-[#ff4d4d]'
                                     : 'text-white/70 hover:bg-white/5'
                                 }`}
                               >
@@ -388,7 +388,7 @@ export function Hero() {
                   <button
                     type="submit"
                     disabled={phone.length < 6 || loading}
-                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#0090f0] hover:bg-[#0090f0]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap"
+                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#ff4d4d] hover:bg-[#ff4d4d]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap"
                   >
                     {loading ? "..." : s.callBtn}
                   </button>
@@ -410,14 +410,14 @@ export function Hero() {
           {activeInput === "telegram" && (
             <form onSubmit={handleSubmitTelegram} className="phone-input-wrap flex items-center gap-1 px-2 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-sm relative">
               {submitted === "telegram" ? (
-                <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#a78bfa] font-medium">
+                <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#ff4d4d] font-medium">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                   {s.telegramSuccess}
                 </div>
               ) : (
                 <>
                   <div className="flex items-center gap-1 px-3 py-2 text-white/50 text-sm">
-                    <MessageCircle size={16} className="text-[#a78bfa]" />
+                    <MessageCircle size={16} className="text-[#ff4d4d]" />
                     <span className="font-medium">@</span>
                   </div>
 
@@ -433,7 +433,7 @@ export function Hero() {
                   <button
                     type="submit"
                     disabled={telegram.length < 2 || loading}
-                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#a78bfa] hover:bg-[#a78bfa]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap"
+                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#ff4d4d] hover:bg-[#ff4d4d]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap"
                   >
                     {loading ? "..." : s.telegramBtn}
                   </button>
