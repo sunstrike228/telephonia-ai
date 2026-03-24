@@ -4,8 +4,8 @@ import { dark } from "@clerk/themes";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Telephonia.ai — AI Voice Agents That Close Deals",
-  description: "Replace your cold-calling team with AI voice agents indistinguishable from real humans.",
+  title: "Project Noir — AI Outreach Agents That Close Deals",
+  description: "Replace your outreach team with AI agents that call, message, and email your leads. Indistinguishable from real humans.",
 };
 
 export default function RootLayout({

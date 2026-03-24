@@ -54,10 +54,10 @@ export function Navbar() {
       <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-4 sm:pt-6 hidden md:block">
         <nav className="flex items-center gap-1 bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl py-1.5 px-2 rounded-full shadow-lg shadow-black/20">
           <a href="#" onClick={() => setActiveTab("")} className="font-display font-bold text-base tracking-[-0.04em] px-3 py-1.5 mr-1">
-            <span className="bg-gradient-to-r from-white via-white to-[#0090f0] bg-clip-text text-transparent">
-              telephonia
+            <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
+              Project
             </span>
-            <span className="text-[#0090f0]">.ai</span>
+            <span className="text-[#0090f0]">&nbsp;Noir</span>
           </a>
 
           {navItems.map((item) => {

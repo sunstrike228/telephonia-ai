@@ -48,14 +48,14 @@ export async function POST(request: Request) {
     }
 
     const amount = PLAN_PRICES_UAH[planId];
-    const origin = request.headers.get("origin") || "https://telephonia.ai";
+    const origin = request.headers.get("origin") || "https://projectnoir.ai";
     const orderId = `liqpay_${userId}_${planId}_${Date.now()}`;
 
     const { data, signature } = createPaymentData({
       planId,
       amount,
       orderId,
-      description: `Telephonia.ai ${planId} plan subscription`,
+      description: `Project Noir ${planId} plan subscription`,
       resultUrl: `${origin}/dashboard/billing?success=true`,
       serverUrl: `${origin}/api/webhook/liqpay`,
     });

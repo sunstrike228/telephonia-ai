@@ -43,8 +43,8 @@ export async function POST(request: Request) {
       replyTo?: string;
     } | null;
 
-    const fromEmail = emailConfig?.fromEmail || "noreply@telephonia.ai";
-    const fromName = emailConfig?.fromName || "Telephonia";
+    const fromEmail = emailConfig?.fromEmail || "noreply@projectnoir.ai";
+    const fromName = emailConfig?.fromName || "Project Noir";
     const replyTo = emailConfig?.replyTo || fromEmail;
 
     // Send email via Resend

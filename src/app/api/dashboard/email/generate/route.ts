@@ -142,8 +142,8 @@ function generateFallbackBody(
 
   if (type === "initial") {
     return isUa
-      ? `${name ? `${name}, ` : ""}добрий день!\n\nМене звати [Ваше ім'я] з Telephonia. Ми допомагаємо компаніям автоматизувати комунікацію з клієнтами.\n\nЧи зручно вам буде поспілкуватися на 15-хвилинному дзвінку цього тижня?\n\nЗ повагою,\n[Ваше ім'я]`
-      : `Hi ${name},\n\nI'm reaching out from Telephonia. We help companies automate customer outreach across multiple channels.\n\nWould you be open to a quick 15-minute call this week to discuss how we could help ${companyName || "your team"}?\n\nBest regards,\n[Your Name]`;
+      ? `${name ? `${name}, ` : ""}добрий день!\n\nМене звати [Ваше ім'я] з Project Noir. Ми допомагаємо компаніям автоматизувати комунікацію з клієнтами.\n\nЧи зручно вам буде поспілкуватися на 15-хвилинному дзвінку цього тижня?\n\nЗ повагою,\n[Ваше ім'я]`
+      : `Hi ${name},\n\nI'm reaching out from Project Noir. We help companies automate customer outreach across multiple channels.\n\nWould you be open to a quick 15-minute call this week to discuss how we could help ${companyName || "your team"}?\n\nBest regards,\n[Your Name]`;
   }
   if (type === "followup") {
     return isUa

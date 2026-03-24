@@ -37,14 +37,14 @@ export async function POST(request: Request) {
     }
 
     const { error } = await resend.emails.send({
-      from: "Telephonia.ai <hello@telephonia.ai>",
+      from: "Project Noir <hello@projectnoir.ai>",
       to: [normalizedEmail],
       subject: "This is what AI outreach looks like",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 24px; color: #1a1a1a;">
           <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; background: linear-gradient(135deg, #0090f0, #a78bfa); border-radius: 12px; padding: 12px 16px;">
-              <span style="color: white; font-size: 20px; font-weight: 700; letter-spacing: -0.5px;">Telephonia.ai</span>
+              <span style="color: white; font-size: 20px; font-weight: 700; letter-spacing: -0.5px;">Project Noir</span>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
           </p>
 
           <p style="font-size: 16px; line-height: 1.7; color: #444; margin-bottom: 24px;">
-            With Telephonia.ai, you can:
+            With Project Noir, you can:
           </p>
 
           <ul style="font-size: 15px; line-height: 1.8; color: #444; padding-left: 20px; margin-bottom: 24px;">
@@ -68,13 +68,13 @@ export async function POST(request: Request) {
           </ul>
 
           <div style="text-align: center; margin: 32px 0;">
-            <a href="https://telephonia.ai" style="display: inline-block; background: linear-gradient(135deg, #0090f0, #0070d0); color: white; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-weight: 600; font-size: 15px;">
-              Learn more at telephonia.ai
+            <a href="https://projectnoir.ai" style="display: inline-block; background: linear-gradient(135deg, #0090f0, #0070d0); color: white; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-weight: 600; font-size: 15px;">
+              Learn more at projectnoir.ai
             </a>
           </div>
 
           <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid #eee; text-align: center; font-size: 13px; color: #999;">
-            <p style="margin: 0;">This is a one-time demo email from Telephonia.ai</p>
+            <p style="margin: 0;">This is a one-time demo email from Project Noir</p>
             <p style="margin: 4px 0 0 0;">You won't receive any more emails unless you sign up.</p>
           </div>
         </div>

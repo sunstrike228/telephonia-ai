@@ -65,7 +65,7 @@ export async function POST(request: Request) {
 
     const plan = PLAN_PRICES[planId];
     const origin =
-      request.headers.get("origin") || "https://telephonia.ai";
+      request.headers.get("origin") || "https://projectnoir.ai";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,

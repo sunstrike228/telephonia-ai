@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const origin =
-      request.headers.get("origin") || "https://telephonia.ai";
+      request.headers.get("origin") || "https://projectnoir.ai";
 
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,

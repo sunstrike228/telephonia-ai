@@ -51,19 +51,19 @@ export async function POST() {
     }
 
     const fromEmail = emailConfig.fromEmail;
-    const fromName = emailConfig.fromName || "Telephonia";
+    const fromName = emailConfig.fromName || "Project Noir";
     const replyTo = emailConfig.replyTo || fromEmail;
 
     const { error } = await resend.emails.send({
       from: `${fromName} <${fromEmail}>`,
       to: [userEmail],
       replyTo,
-      subject: "Telephonia Test Email",
+      subject: "Project Noir Test Email",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
           <h2 style="color: #111; margin-bottom: 16px;">Email Configuration Test</h2>
           <p style="color: #555; line-height: 1.6;">
-            This is a test email from <strong>Telephonia.ai</strong>. If you received this, your email integration is working correctly.
+            This is a test email from <strong>Project Noir</strong>. If you received this, your email integration is working correctly.
           </p>
           <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px; font-size: 14px; color: #666;">
             <p style="margin: 0 0 8px 0;"><strong>From:</strong> ${fromName} &lt;${fromEmail}&gt;</p>
