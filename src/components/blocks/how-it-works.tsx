@@ -16,7 +16,7 @@ const steps = [
     descUa: "Вставте свій скрипт продажів, оберіть канали — голосові дзвінки, Telegram, email — або всі три. Наш AI адаптується до вашої галузі та тону.",
     backDesc: "Our AI analyzes your script structure, identifies key selling points, and automatically generates natural conversation flows for each channel — voice, Telegram, and email — with objection handling built in.",
     backDescUa: "Наш AI аналізує структуру скрипту, визначає ключові переваги та автоматично генерує природні потоки комунікації для кожного каналу — голос, Telegram та email — із вбудованою обробкою заперечень.",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=220&fit=crop",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=220&fit=crop",
   },
   {
     num: "2",
@@ -28,7 +28,7 @@ const steps = [
     descUa: "Завантажте CSV з номерами телефонів, email-адресами та username Telegram. Поля мапляться автоматично.",
     backDesc: "Supports CSV, Excel, or direct CRM import. Auto-detects phone, email, and Telegram fields. Deduplicates contacts, validates data, and segments leads by channel availability.",
     backDescUa: "Підтримує CSV, Excel або прямий імпорт з CRM. Автоматично визначає поля телефону, email та Telegram. Дедуплікація контактів, валідація даних та сегментація лідів за доступністю каналів.",
-    image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=220&fit=crop",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=220&fit=crop",
   },
   {
     num: "3",
@@ -40,7 +40,7 @@ const steps = [
     descUa: "Запустіть всі канали одночасно. Відстежуйте дзвінки, повідомлення та листи в одній панелі реального часу.",
     backDesc: "Cross-channel dashboard shows live calls, Telegram conversations, and email opens side by side. A/B test different scripts per channel. Auto-fallback between channels if no response.",
     backDescUa: "Кросс-канальна панель показує живі дзвінки, розмови в Telegram та відкриття email поруч. A/B тестування різних скриптів по каналах. Автоматичний перехід між каналами при відсутності відповіді.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=220&fit=crop",
+    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=220&fit=crop",
   },
 ];
 
@@ -84,16 +84,16 @@ export function HowItWorks() {
                         alt={ua ? s.titleUa : s.title}
                         className="w-full h-40 object-cover rounded-xl grayscale"
                       />
-                      <div className="mt-4 flex items-center gap-3">
+                      <div className="mt-4 flex items-start gap-3">
                         <div
-                          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
                           style={{ background: `${s.color}18`, border: `1px solid ${s.color}35` }}
                         >
                           <span className="text-base font-bold font-display" style={{ color: s.color }}>
                             {s.num}
                           </span>
                         </div>
-                        <h3 className="font-display text-lg font-semibold text-white">
+                        <h3 className="font-display text-base font-semibold text-white leading-snug">
                           {ua ? s.titleUa : s.title}
                         </h3>
                       </div>
