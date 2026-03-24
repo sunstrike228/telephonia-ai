@@ -40,7 +40,7 @@ const steps = [
       pt: "Nossa IA analisa a estrutura do script, identifica pontos-chave de venda e gera automaticamente fluxos de conversa naturais para cada canal — voz, Telegram e email — com tratamento de objeções integrado.",
       ja: "AIがスクリプト構造を分析し、主要なセールスポイントを特定し、各チャネル（音声、Telegram、メール）の自然な会話フローを反論処理を組み込んで自動生成します。",
     },
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=220&fit=crop",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=220&fit=crop",
   },
   {
     num: "2",
@@ -76,7 +76,7 @@ const steps = [
       pt: "Suporta CSV, Excel ou importação direta do CRM. Detecta automaticamente campos de telefone, email e Telegram. Deduplica contatos, valida dados e segmenta leads por disponibilidade de canal.",
       ja: "CSV、Excel、またはCRMからの直接インポートに対応。電話、メール、Telegramフィールドを自動検出。連絡先の重複排除、データ検証、チャネル別リードセグメンテーション。",
     },
-    image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=220&fit=crop",
+    image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&h=220&fit=crop",
   },
   {
     num: "3",
@@ -112,7 +112,7 @@ const steps = [
       pt: "O painel multicanal mostra chamadas ao vivo, conversas no Telegram e aberturas de email lado a lado. Testes A/B de diferentes scripts por canal. Fallback automático entre canais sem resposta.",
       ja: "クロスチャネルダッシュボードでライブ通話、Telegram会話、メール開封を並べて表示。チャネルごとに異なるスクリプトのA/Bテスト。無応答時のチャネル間自動フォールバック。",
     },
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=220&fit=crop",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=220&fit=crop",
   },
 ];
 
@@ -167,16 +167,16 @@ export function HowItWorks() {
                         alt={s.title[lang] || s.title.en}
                         className="w-full h-40 object-cover rounded-xl grayscale"
                       />
-                      <div className="mt-4 flex items-center gap-3">
+                      <div className="mt-4 flex items-start gap-3">
                         <div
-                          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                          className="w-10 h-10 min-h-[40px] rounded-lg flex items-center justify-center flex-shrink-0"
                           style={{ background: `${s.color}18`, border: `1px solid ${s.color}35` }}
                         >
                           <span className="text-base font-bold font-display" style={{ color: s.color }}>
                             {s.num}
                           </span>
                         </div>
-                        <h3 className="font-display text-lg font-semibold text-white">
+                        <h3 className="font-display text-[15px] font-semibold text-white leading-tight pt-2.5">
                           {s.title[lang] || s.title.en}
                         </h3>
                       </div>

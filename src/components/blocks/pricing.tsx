@@ -43,17 +43,28 @@ function ShaderCanvas() {
         vec2 uv=gl_FragCoord.xy/iResolution.xy;
         float aspect=iResolution.x/iResolution.y;
         uv.x*=aspect;
-        vec2 c=vec2(aspect*0.5,0.5);float r=.4;
+        vec2 c=vec2(aspect*0.5,0.58);float r=.38;
         float m=0.;
-        m+=circle(uv,c,r,.035).r;
-        m+=circle(uv,c,r-.018,.01).r;
-        m+=circle(uv,c,r+.018,.005).r;
-        vec2 v=rot(iTime*0.5)*uv;
-        float silver=0.5+0.5*sin(v.x*3.0+v.y*2.0+iTime);
-        vec3 fg=vec3(0.75+0.25*silver, 0.78+0.22*silver, 0.82+0.18*silver);
+        m+=circle(uv,c,r,.04).r;
+        m+=circle(uv,c,r-.02,.012).r;
+        m+=circle(uv,c,r+.02,.006).r;
+        m+=circle(uv,c,r-.005,.025).r;
+        vec2 v=rot(iTime*0.4)*uv;
+        float angle=atan(uv.y-c.y,uv.x-c.x);
+        float glossy=pow(0.5+0.5*sin(angle*3.0+iTime*0.8),2.0);
+        float shimmer=0.5+0.5*sin(v.x*4.0+v.y*3.0+iTime*1.2);
+        float highlight=pow(0.5+0.5*sin(angle*2.0-iTime*0.5),4.0);
+        float base=0.55+0.15*shimmer;
+        vec3 fg=vec3(
+          base+0.3*glossy+0.25*highlight,
+          base+0.32*glossy+0.25*highlight,
+          base+0.35*glossy+0.3*highlight
+        );
+        fg=mix(fg,vec3(1.0),highlight*0.4);
+        fg=mix(fg,vec3(0.4,0.42,0.45),pow(1.0-glossy,3.0)*0.3);
         float alpha=m;
         vec3 col=fg;
-        col=mix(col,vec3(1.),circle(uv,c,r,.003).r);
+        col=mix(col,vec3(1.0),circle(uv,c,r,.002).r*0.9);
         gl_FragColor=vec4(col,alpha);
       }`;
 
@@ -170,8 +181,8 @@ export function Pricing({ plans }: PricingProps) {
   return (
     <div className="relative overflow-hidden py-28" ref={sectionRef}>
       {/* Shader ring background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
-        <div className="w-[900px] h-[900px] opacity-25">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-end justify-center pb-0">
+        <div className="w-[1000px] h-[1000px] opacity-35 translate-y-[15%]">
           <ShaderCanvas />
         </div>
       </div>
