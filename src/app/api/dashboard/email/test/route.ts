@@ -5,7 +5,7 @@ import { getOrgId } from "@/lib/auth";
 import { Resend } from "resend";
 import { eq, and } from "drizzle-orm";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || "re_placeholder");
 
 export async function POST() {
   const { userId } = await auth();

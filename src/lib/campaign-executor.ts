@@ -5,7 +5,11 @@ import { buildSystemPrompt, buildEmailPrompt, type Channel } from "@/lib/prompts
 import { checkUsageLimits } from "@/lib/usage";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return new Resend(key);
+}
 
 const TELEGRAM_WORKER_URL =
   "https://telephonia-telegram-worker-production.up.railway.app/api/send";
@@ -132,7 +136,9 @@ async function sendEmail(
     const fromName = emailConfig?.fromName || "Project Noir";
     const replyTo = emailConfig?.replyTo || fromEmail;
 
-    const { data, error } = await resend.emails.send({
+    const resendClient = getResend();
+    if (!resendClient) throw new Error("Resend API key not configured");
+    const { data, error } = await resendClient.emails.send({
       from: `${fromName} <${fromEmail}>`,
       to: [toEmail],
       replyTo,
