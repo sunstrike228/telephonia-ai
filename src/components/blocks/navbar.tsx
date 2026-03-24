@@ -69,7 +69,7 @@ function LanguageDropdown({ lang, switchLang, size = "default" }: { lang: Lang; 
           isSmall ? "px-2 py-1 text-[10px]" : "px-3 py-1.5 text-xs"
         )}
       >
-        <span className={isSmall ? "text-sm" : "text-base"}>{current.flag}</span>
+        <Globe size={isSmall ? 12 : 14} className="text-white/50" />
         <span className="font-medium">{current.short}</span>
         <ChevronDown size={isSmall ? 10 : 12} className={cn("text-white/30 transition-transform duration-200", open && "rotate-180")} />
       </button>
@@ -90,7 +90,7 @@ function LanguageDropdown({ lang, switchLang, size = "default" }: { lang: Lang; 
                   : "text-white/60 hover:bg-white/5 hover:text-white"
               )}
             >
-              <span className="text-base">{option.flag}</span>
+              <span className="text-xs text-white/40 w-5">{option.short}</span>
               <span className="flex-1 text-left">{option.label}</span>
               {lang === option.code && (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#ff4d4d]"><path d="M20 6 9 17l-5-5"/></svg>

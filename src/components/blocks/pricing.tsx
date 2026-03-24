@@ -32,40 +32,123 @@ function ShaderCanvas() {
       uniform float iTime;
       uniform vec2 iResolution;
       uniform vec3 uBg;
+
       mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
-      float var2(vec2 v1,vec2 v2,float str,float spd){return sin(dot(normalize(v1),normalize(v2))*str+iTime*spd)/100.;}
-      vec3 circle(vec2 uv,vec2 ctr,float r,float w){
-        vec2 d=ctr-uv;float l=length(d);
-        l+=var2(d,vec2(0.,1.),5.,2.);l-=var2(d,vec2(1.,0.),5.,2.);
-        return vec3(smoothstep(r-w,r,l)-smoothstep(r,r+w,l));
+
+      // Smooth noise for surface distortion
+      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float noise(vec2 p){
+        vec2 i=floor(p),f=fract(p);
+        f=f*f*(3.0-2.0*f);
+        return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
       }
+      float fbm(vec2 p){
+        float v=0.0,a=0.5;
+        for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;}
+        return v;
+      }
+
+      // Distorted distance for liquid feel
+      float liquidDist(vec2 uv,vec2 ctr,float time){
+        vec2 d=uv-ctr;
+        float angle=atan(d.y,d.x);
+        float dist=length(d);
+        // Surface waves flowing along the ring
+        float wave1=sin(angle*6.0+time*1.5)*0.008;
+        float wave2=sin(angle*10.0-time*2.3)*0.005;
+        float wave3=sin(angle*3.0+time*0.7)*0.012;
+        // Noise-based distortion for organic feel
+        float n=fbm(vec2(angle*2.0,time*0.4))*0.015;
+        return dist+wave1+wave2+wave3+n;
+      }
+
+      // Ring shape with soft edges
+      float ring(float dist,float r,float w){
+        return smoothstep(r-w,r-w*0.3,dist)*smoothstep(r+w,r+w*0.3,dist);
+      }
+
       void main(){
         vec2 uv=gl_FragCoord.xy/iResolution.xy;
         float aspect=iResolution.x/iResolution.y;
         uv.x*=aspect;
-        vec2 c=vec2(aspect*0.5,0.58);float r=.38;
-        float m=0.;
-        m+=circle(uv,c,r,.04).r;
-        m+=circle(uv,c,r-.02,.012).r;
-        m+=circle(uv,c,r+.02,.006).r;
-        m+=circle(uv,c,r-.005,.025).r;
-        vec2 v=rot(iTime*0.4)*uv;
-        float angle=atan(uv.y-c.y,uv.x-c.x);
-        float glossy=pow(0.5+0.5*sin(angle*3.0+iTime*0.8),2.0);
-        float shimmer=0.5+0.5*sin(v.x*4.0+v.y*3.0+iTime*1.2);
-        float highlight=pow(0.5+0.5*sin(angle*2.0-iTime*0.5),4.0);
-        float base=0.55+0.15*shimmer;
-        vec3 fg=vec3(
-          base+0.3*glossy+0.25*highlight,
-          base+0.32*glossy+0.25*highlight,
-          base+0.35*glossy+0.3*highlight
-        );
-        fg=mix(fg,vec3(1.0),highlight*0.4);
-        fg=mix(fg,vec3(0.4,0.42,0.45),pow(1.0-glossy,3.0)*0.3);
-        float alpha=m;
-        vec3 col=fg;
-        col=mix(col,vec3(1.0),circle(uv,c,r,.002).r*0.9);
-        gl_FragColor=vec4(col,alpha);
+        vec2 c=vec2(aspect*0.5,0.58);
+        float r=0.38;
+
+        // Liquid-distorted distance
+        float dist=liquidDist(uv,c,iTime);
+        vec2 d=uv-c;
+        float angle=atan(d.y,d.x);
+        float rawDist=length(d);
+
+        // Multiple ring layers for thickness
+        float m=0.0;
+        m+=ring(dist,r,0.035);
+        m+=ring(dist,r-0.015,0.01)*0.6;
+        m+=ring(dist,r+0.015,0.008)*0.5;
+        m+=ring(dist,r,0.055)*0.3; // soft glow layer
+        m=clamp(m,0.0,1.0);
+
+        // === LIQUID METAL SHADING ===
+
+        // Surface normal approximation from distortion
+        float eps=0.002;
+        float d1=liquidDist(uv+vec2(eps,0),c,iTime);
+        float d2=liquidDist(uv-vec2(eps,0),c,iTime);
+        float d3=liquidDist(uv+vec2(0,eps),c,iTime);
+        float d4=liquidDist(uv-vec2(0,eps),c,iTime);
+        vec2 normal=vec2(d1-d2,d3-d4)/(2.0*eps);
+
+        // Fake environment reflection (moving gradient bands)
+        vec2 refl=reflect(vec2(0,1),normalize(normal+vec2(0.001)));
+        float envAngle=angle+refl.x*3.0;
+        float env1=pow(0.5+0.5*sin(envAngle*4.0+iTime*0.6),2.0);
+        float env2=pow(0.5+0.5*sin(envAngle*7.0-iTime*0.9),3.0);
+        float env3=pow(0.5+0.5*sin(envAngle*2.0+iTime*0.3),1.5);
+
+        // Fresnel effect - edges brighter than center
+        float ringPos=abs(dist-r)/0.035;
+        float fresnel=pow(clamp(ringPos,0.0,1.0),0.6);
+
+        // Specular highlights (sharp bright spots)
+        float spec1=pow(max(0.0,sin(angle*5.0+iTime*1.2)),16.0);
+        float spec2=pow(max(0.0,sin(angle*8.0-iTime*1.8)),24.0);
+        float spec3=pow(max(0.0,sin(angle*3.0+iTime*0.5)),32.0);
+
+        // Base chrome color - cool metallic gray
+        float base=0.35+0.1*env3;
+        vec3 col=vec3(base,base+0.01,base+0.03); // slight blue tint
+
+        // Environment reflections
+        col+=vec3(0.25,0.27,0.3)*env1;
+        col+=vec3(0.15,0.16,0.18)*env2;
+
+        // Fresnel brightening on edges
+        col=mix(col,vec3(0.85,0.87,0.92),fresnel*0.5);
+
+        // Sharp specular highlights (chrome-like)
+        col+=vec3(1.0,0.98,0.95)*spec1*0.7;
+        col+=vec3(1.0,1.0,1.0)*spec2*0.5;
+        col+=vec3(0.9,0.92,1.0)*spec3*0.4;
+
+        // Subtle color dispersion on edges (rainbow)
+        float dispersion=fresnel*0.15;
+        col.r+=sin(angle*6.0+iTime)*dispersion;
+        col.g+=sin(angle*6.0+iTime+2.094)*dispersion*0.7;
+        col.b+=sin(angle*6.0+iTime+4.188)*dispersion;
+
+        // Dark caustic bands (like mercury)
+        float caustic=pow(0.5+0.5*sin(angle*12.0+iTime*2.0+fbm(vec2(angle*3.0,iTime))*6.0),4.0);
+        col=mix(col,col*0.4,caustic*0.3);
+
+        // Moving bright streak (like light reflecting off liquid)
+        float streak=pow(max(0.0,cos(angle-iTime*0.4)),20.0);
+        col+=vec3(1.0,0.98,0.95)*streak*0.6;
+
+        // Edge glow
+        float edgeGlow=ring(dist,r,0.002);
+        col=mix(col,vec3(1.0),edgeGlow*0.8);
+
+        gl_FragColor=vec4(col,m);
       }`;
 
     const compile = (type: number, src: string) => {
