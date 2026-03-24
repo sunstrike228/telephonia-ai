@@ -1,18 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { callLogs, organizations } from "@/db/schema";
+import { callLogs } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-
-async function getOrgId(userId: string) {
-  const org = await db
-    .select({ id: organizations.id })
-    .from(organizations)
-    .where(eq(organizations.ownerId, userId))
-    .limit(1);
-
-  if (org.length === 0) return null;
-  return org[0].id;
-}
+import { getOrgId } from "@/lib/auth";
 
 export async function GET(
   _request: Request,
@@ -26,9 +16,6 @@ export async function GET(
   try {
     const { id } = await params;
     const orgId = await getOrgId(userId);
-    if (!orgId) {
-      return Response.json({ error: "Not found" }, { status: 404 });
-    }
 
     const [row] = await db
       .select()

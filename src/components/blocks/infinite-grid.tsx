@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef, useEffect, useCallback } from "react";
-import { motion, useMotionValue, useMotionTemplate, useAnimationFrame } from "framer-motion";
+import { motion, useMotionValue, useMotionTemplate, useAnimationFrame, type MotionValue } from "framer-motion";
 
-function GridPattern({ offsetX, offsetY }: { offsetX: any; offsetY: any }) {
+function GridPattern({ offsetX, offsetY }: { offsetX: MotionValue<number>; offsetY: MotionValue<number> }) {
   return (
     <svg className="w-full h-full">
       <defs>

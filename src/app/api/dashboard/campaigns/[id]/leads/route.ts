@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { leads, campaigns } from "@/db/schema";
-import { eq, and, inArray, isNull, sql, desc } from "drizzle-orm";
+import { eq, and, inArray, sql, desc } from "drizzle-orm";
 import { getOrgId } from "@/lib/auth";
 
 export async function GET(

@@ -1,35 +1,8 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { voiceConfigs, scripts, organizations, users } from "@/db/schema";
+import { voiceConfigs, scripts } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
-
-async function getOrgId(userId: string) {
-  const existingUser = await db.select({ id: users.id }).from(users).where(eq(users.id, userId)).limit(1);
-  if (existingUser.length === 0) {
-    const clerkUser = await currentUser();
-    await db.insert(users).values({
-      id: userId,
-      email: clerkUser?.emailAddresses?.[0]?.emailAddress || "unknown@email.com",
-      name: clerkUser?.firstName || null,
-    }).onConflictDoNothing();
-  }
-
-  const org = await db
-    .select({ id: organizations.id })
-    .from(organizations)
-    .where(eq(organizations.ownerId, userId))
-    .limit(1);
-
-  if (org.length === 0) {
-    const [newOrg] = await db
-      .insert(organizations)
-      .values({ name: "Personal", ownerId: userId })
-      .returning({ id: organizations.id });
-    return newOrg.id;
-  }
-
-  return org[0].id;
-}
+import { getOrgId } from "@/lib/auth";
 
 const RAILWAY_URL = process.env.RAILWAY_VOICE_AGENT_URL || "https://telephonia-voice-agent-production.up.railway.app";
 

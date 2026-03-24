@@ -49,6 +49,13 @@ export async function PATCH(
     const body = await request.json();
     const { firstName, lastName, phone, email, telegramUsername, company, status, timezone } = body;
 
+    if (status !== undefined) {
+      const validStatuses = ["new", "contacted", "qualified", "converted", "rejected"];
+      if (!validStatuses.includes(status)) {
+        return Response.json({ error: "Invalid status" }, { status: 400 });
+      }
+    }
+
     const updateData: Record<string, unknown> = {};
     if (firstName !== undefined) updateData.firstName = firstName || null;
     if (lastName !== undefined) updateData.lastName = lastName || null;

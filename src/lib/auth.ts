@@ -15,19 +15,35 @@ export async function getOrgId(userId: string): Promise<string> {
     }).onConflictDoNothing();
   }
 
+  // Check for existing org
   const org = await db
     .select({ id: organizations.id })
     .from(organizations)
     .where(eq(organizations.ownerId, userId))
     .limit(1);
 
-  if (org.length === 0) {
+  if (org.length > 0) {
+    return org[0].id;
+  }
+
+  // Create new org - re-check after insert to handle race conditions
+  // (concurrent requests could both see org.length === 0)
+  try {
     const [newOrg] = await db
       .insert(organizations)
       .values({ name: "Personal", ownerId: userId })
       .returning({ id: organizations.id });
     return newOrg.id;
+  } catch {
+    // Race condition: another request created the org first. Re-fetch.
+    const retryOrg = await db
+      .select({ id: organizations.id })
+      .from(organizations)
+      .where(eq(organizations.ownerId, userId))
+      .limit(1);
+    if (retryOrg.length > 0) {
+      return retryOrg[0].id;
+    }
+    throw new Error("Failed to create or find organization");
   }
-
-  return org[0].id;
 }

@@ -43,6 +43,14 @@ export async function PUT(request: Request) {
       );
     }
 
+    const validChannels = ["voice", "telegram", "email"];
+    if (!validChannels.includes(channel)) {
+      return Response.json(
+        { error: "Invalid channel. Must be one of: voice, telegram, email" },
+        { status: 400 }
+      );
+    }
+
     // Check if config exists for this org + channel
     const existing = await db
       .select({ id: channelConfigs.id })

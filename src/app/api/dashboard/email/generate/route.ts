@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { scripts } from "@/db/schema";
+import { scripts, voiceConfigs } from "@/db/schema";
 import { getOrgId } from "@/lib/auth";
 import { buildEmailPrompt } from "@/lib/prompts";
 import { eq } from "drizzle-orm";
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await getOrgId(userId); // ensure org exists
+    const orgId = await getOrgId(userId);
 
     const body = await request.json();
     const { leadName, companyName, scriptId, type } = body;
@@ -26,8 +26,6 @@ export async function POST(request: Request) {
 
     // Get script content if scriptId provided
     let scriptContent = "";
-    let scriptLanguage = "en";
-    let scriptPersonality = "professional";
 
     if (scriptId) {
       const scriptRows = await db
@@ -37,12 +35,19 @@ export async function POST(request: Request) {
         .limit(1);
 
       if (scriptRows.length > 0) {
-        const s = scriptRows[0] as Record<string, unknown>;
-        scriptContent = (s.content as string) || "";
-        scriptLanguage = (s.language as string) || "en";
-        scriptPersonality = (s.personality as string) || "professional";
+        scriptContent = scriptRows[0].content || "";
       }
     }
+
+    // Get language/personality from voice config (scripts table has no language/personality columns)
+    const voiceRows = await db
+      .select({ language: voiceConfigs.language, personality: voiceConfigs.personality })
+      .from(voiceConfigs)
+      .where(eq(voiceConfigs.orgId, orgId))
+      .limit(1);
+
+    const scriptLanguage = voiceRows[0]?.language || "en";
+    const scriptPersonality = voiceRows[0]?.personality || "professional";
 
     // Build prompt using the shared prompt engine
     const emailPromptData = buildEmailPrompt({

@@ -22,14 +22,16 @@ export async function GET(request: Request) {
     const conditions = [eq(leads.orgId, orgId)];
 
     if (search) {
+      // Escape LIKE special characters to prevent pattern injection
+      const escapedSearch = search.replace(/[%_\\]/g, "\\$&");
       conditions.push(
         or(
-          ilike(leads.firstName, `%${search}%`),
-          ilike(leads.lastName, `%${search}%`),
-          ilike(leads.email, `%${search}%`),
-          ilike(leads.phone, `%${search}%`),
-          ilike(leads.company, `%${search}%`),
-          ilike(leads.telegramUsername, `%${search}%`),
+          ilike(leads.firstName, `%${escapedSearch}%`),
+          ilike(leads.lastName, `%${escapedSearch}%`),
+          ilike(leads.email, `%${escapedSearch}%`),
+          ilike(leads.phone, `%${escapedSearch}%`),
+          ilike(leads.company, `%${escapedSearch}%`),
+          ilike(leads.telegramUsername, `%${escapedSearch}%`),
         )!
       );
     }
