@@ -1,7 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/blocks/navbar";
-import { InfiniteGrid } from "@/components/blocks/infinite-grid";
+import { EtheralShadow } from "@/components/ui/etheral-shadow";
 import { Hero } from "@/components/blocks/hero";
 import { Features } from "@/components/blocks/features";
 import { HowItWorks } from "@/components/blocks/how-it-works";
@@ -46,7 +46,14 @@ const pricingPlans = [
 export default function Home() {
   return (
     <>
-      <InfiniteGrid />
+      <div className="fixed inset-0 z-0">
+        <EtheralShadow
+          color="rgba(0, 100, 180, 0.7)"
+          animation={{ scale: 80, speed: 60 }}
+          noise={{ opacity: 0.6, scale: 1.2 }}
+          sizing="fill"
+        />
+      </div>
       <Navbar />
       <main className="relative z-10">
         <Hero />
