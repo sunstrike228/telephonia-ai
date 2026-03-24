@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { PhoneCall, Users, FileText, Mic, Megaphone, Send, Mail } from "lucide-react";
 import Link from "next/link";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
+import { OnboardingWizard } from "@/components/dashboard/onboarding-wizard";
 
 interface QuickStats {
   voice: number;
@@ -22,6 +23,18 @@ export default function DashboardOverview() {
   const [campaignTotal, setCampaignTotal] = useState(0);
   const [campaignActive, setCampaignActive] = useState(0);
   const [quickStats, setQuickStats] = useState<QuickStats>({ voice: 0, telegram: 0, email: 0, totalLeads: 0 });
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/dashboard/onboarding")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.onboardingDone === false) {
+          setShowOnboarding(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch("/api/dashboard/scripts")
@@ -57,6 +70,9 @@ export default function DashboardOverview() {
 
   return (
     <div>
+      {showOnboarding && (
+        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+      )}
       <PageHeader
         title={t ? "З поверненням" : "Welcome back"}
         description={t ? "Ось що відбувається з вашими AI-агентами сьогодні." : "Here's what's happening with your AI agents today."}

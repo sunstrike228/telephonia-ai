@@ -59,8 +59,8 @@ export function Sidebar() {
           {collapsed ? (
             <span className="text-[#0090f0] text-2xl font-bold">T</span>
           ) : (
-            <span className="text-xl">
-              <span className="bg-gradient-to-r from-white via-white to-[#0090f0] bg-clip-text text-transparent">telephonia</span><span className="text-[#0090f0]">.ai</span>
+            <span className="text-2xl inline-flex items-baseline">
+              <span className="bg-gradient-to-r from-white via-white to-[#0090f0] bg-clip-text text-transparent">telephonia</span><span className="text-[#0090f0] -ml-[0.5px]">.ai</span>
             </span>
           )}
         </Link>

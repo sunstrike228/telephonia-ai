@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Users, Key, Globe, ChevronDown, Check } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 const interfaceLanguages = [
   { code: "en", name: "English", flag: "🇬🇧" },
@@ -11,6 +14,7 @@ const interfaceLanguages = [
 ];
 
 export default function SettingsPage() {
+  const { user } = useUser();
   const [interfaceLang, setInterfaceLang] = useState("en");
   const [langOpen, setLangOpen] = useState(false);
 
@@ -44,6 +48,8 @@ export default function SettingsPage() {
     setInterfaceLang(code);
     localStorage.setItem("dashboard-lang", code);
     setLangOpen(false);
+    const langName = interfaceLanguages.find((l) => l.code === code)?.name || code;
+    toast.success(code === "ua" ? `Мову змінено на ${langName}` : `Language changed to ${langName}`);
   };
 
   const selectedLang = interfaceLanguages.find((l) => l.code === interfaceLang);
@@ -62,11 +68,28 @@ export default function SettingsPage() {
           {ua ? "Профіль" : "Profile"}
         </h3>
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-[#0090f0]/10 border border-[#0090f0]/20 flex items-center justify-center">
-            <span className="text-sm font-bold text-[#0090f0]">U</span>
-          </div>
+          {user?.imageUrl ? (
+            <Image
+              src={user.imageUrl}
+              alt={user.fullName || "Avatar"}
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-full border border-white/10 object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-[#0090f0]/10 border border-[#0090f0]/20 flex items-center justify-center">
+              <span className="text-sm font-bold text-[#0090f0]">
+                {user?.fullName?.[0]?.toUpperCase() || user?.primaryEmailAddress?.emailAddress?.[0]?.toUpperCase() || "U"}
+              </span>
+            </div>
+          )}
           <div>
-            <p className="text-sm text-white/70">user@example.com</p>
+            {user?.fullName && (
+              <p className="text-sm font-medium text-white">{user.fullName}</p>
+            )}
+            <p className="text-sm text-white/70">
+              {user?.primaryEmailAddress?.emailAddress || ""}
+            </p>
             <p className="text-xs text-white/30">{ua ? "Власник акаунту" : "Account owner"}</p>
           </div>
         </div>

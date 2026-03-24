@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { GlassButton } from "@/components/ui/glass-button";
 import { Mic, Globe, Brain, Check, X, ChevronDown, Volume2, Loader2, RefreshCw } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
+import { toast } from "sonner";
 
 const availableVoices = [
   { id: "alloy", name: "Alloy", lang: "EN", gender: "Neutral" },
@@ -87,9 +88,11 @@ export default function VoicePage() {
       });
       if (!res.ok) throw new Error("Failed to save");
       setSaveStatus("saved");
+      toast.success(dashLang === "ua" ? "Налаштування збережено" : "Settings saved");
       setTimeout(() => setSaveStatus("idle"), 2000);
     } catch {
       setSaveStatus("error");
+      toast.error(dashLang === "ua" ? "Не вдалося зберегти" : "Failed to save settings");
       setTimeout(() => setSaveStatus("idle"), 3000);
     }
   }, []);
@@ -124,9 +127,11 @@ export default function VoicePage() {
       const res = await fetch("/api/dashboard/voice/sync", { method: "POST" });
       if (!res.ok) throw new Error("Sync failed");
       setSyncResult("success");
+      toast.success(dashLang === "ua" ? "Синхронізовано з агентом" : "Synced to agent");
       setTimeout(() => setSyncResult("idle"), 3000);
     } catch {
       setSyncResult("error");
+      toast.error(dashLang === "ua" ? "Не вдалося синхронізувати" : "Sync failed");
       setTimeout(() => setSyncResult("idle"), 3000);
     } finally {
       setSyncing(false);

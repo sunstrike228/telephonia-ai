@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { GlassButton } from "@/components/ui/glass-button";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 import { Mail, Loader2, Check, X } from "lucide-react";
+import { toast } from "sonner";
 
 const integrations = (ua: boolean) => [
   {
@@ -99,13 +100,16 @@ export default function IntegrationsPage() {
       if (res.ok) {
         setEmailSaved(true);
         setEmailConnected(true);
+        toast.success(t ? "Email налаштування збережено" : "Email settings saved");
         setTimeout(() => {
           setEmailSaved(false);
           setEmailModalOpen(false);
         }, 1500);
+      } else {
+        throw new Error("Failed to save");
       }
     } catch {
-      // error handling
+      toast.error(t ? "Не вдалося зберегти email налаштування" : "Failed to save email settings");
     } finally {
       setEmailSaving(false);
     }

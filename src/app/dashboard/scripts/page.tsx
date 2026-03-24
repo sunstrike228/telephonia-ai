@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/dashboard/empty-state";
 import { GlassButton } from "@/components/ui/glass-button";
 import { FileText, Pencil, Trash2, X, Plus, Loader2 } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
+import { toast } from "sonner";
 
 interface Script {
   id: string;
@@ -116,6 +117,7 @@ export default function ScriptsPage() {
 
       setModalOpen(false);
       setForm(emptyForm);
+      toast.success(editingId ? (t ? "Скрипт оновлено" : "Script updated") : (t ? "Скрипт створено" : "Script created"));
       setEditingId(null);
       await fetchScripts();
 
@@ -127,7 +129,9 @@ export default function ScriptsPage() {
         console.warn("Auto-sync to voice agent failed");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save");
+      const msg = err instanceof Error ? err.message : "Failed to save";
+      setError(msg);
+      toast.error(t ? "Не вдалося зберегти скрипт" : msg);
     } finally {
       setSaving(false);
     }
@@ -140,9 +144,11 @@ export default function ScriptsPage() {
       });
       if (!res.ok) throw new Error("Failed to delete");
       setDeleteConfirm(null);
+      toast.success(t ? "Скрипт видалено" : "Script deleted");
       await fetchScripts();
     } catch {
       setError(t ? "Не вдалося видалити скрипт" : "Failed to delete script");
+      toast.error(t ? "Не вдалося видалити скрипт" : "Failed to delete script");
     }
   }
 

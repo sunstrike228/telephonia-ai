@@ -11,6 +11,7 @@ import {
   Search, CheckCircle2, XCircle, AlertTriangle, Zap, UserPlus,
 } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
+import { toast } from "sonner";
 
 interface Campaign {
   id: string;
@@ -244,10 +245,13 @@ export default function CampaignsPage() {
 
       setModalOpen(false);
       setForm(emptyForm);
+      toast.success(editingId ? (t ? "Кампанію оновлено" : "Campaign updated") : (t ? "Кампанію створено" : "Campaign created"));
       setEditingId(null);
       await fetchCampaigns();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save");
+      const msg = err instanceof Error ? err.message : "Failed to save";
+      setError(msg);
+      toast.error(t ? "Не вдалося зберегти кампанію" : msg);
     } finally {
       setSaving(false);
     }
@@ -262,9 +266,11 @@ export default function CampaignsPage() {
         setExpandedId(null);
         setExpandedDetail(null);
       }
+      toast.success(t ? "Кампанію видалено" : "Campaign deleted");
       await fetchCampaigns();
     } catch {
       setError(t ? "Не вдалося видалити кампанію" : "Failed to delete campaign");
+      toast.error(t ? "Не вдалося видалити кампанію" : "Failed to delete campaign");
     }
   }
 
@@ -308,13 +314,16 @@ export default function CampaignsPage() {
         const data = await res.json();
         throw new Error(data.error || `Failed to ${action}`);
       }
+      toast.success(action === "start" ? (t ? "Кампанію запущено" : "Campaign started") : (t ? "Кампанію призупинено" : "Campaign paused"));
       await fetchCampaigns();
       if (expandedId === campaign.id) {
         const detailRes = await fetch(`/api/dashboard/campaigns/${campaign.id}`);
         if (detailRes.ok) setExpandedDetail(await detailRes.json());
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : `Failed to ${action}`);
+      const msg = err instanceof Error ? err.message : `Failed to ${action}`;
+      setError(msg);
+      toast.error(t ? `Не вдалося ${action === "start" ? "запустити" : "призупинити"} кампанію` : msg);
     } finally {
       setActionLoading(null);
     }
@@ -511,6 +520,7 @@ export default function CampaignsPage() {
       }
 
       setExecutionProgress(data.progress);
+      toast.success(t ? "Кампанію виконано" : "Campaign executed");
       await fetchCampaigns();
 
       // Refresh expanded view
@@ -526,7 +536,9 @@ export default function CampaignsPage() {
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Execution failed");
+      const msg = err instanceof Error ? err.message : "Execution failed";
+      setError(msg);
+      toast.error(t ? "Не вдалося виконати кампанію" : msg);
     } finally {
       setExecuting(null);
     }

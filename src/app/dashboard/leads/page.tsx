@@ -16,6 +16,7 @@ import {
   Filter,
 } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
+import { toast } from "sonner";
 
 interface Lead {
   id: string;
@@ -194,10 +195,13 @@ export default function LeadsPage() {
 
       setModalOpen(false);
       setForm(emptyForm);
+      toast.success(editingId ? (t ? "Лід оновлено" : "Lead updated") : (t ? "Лід створено" : "Lead created"));
       setEditingId(null);
       await fetchLeads();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save");
+      const msg = err instanceof Error ? err.message : "Failed to save";
+      setError(msg);
+      toast.error(t ? "Не вдалося зберегти лід" : msg);
     } finally {
       setSaving(false);
     }
@@ -208,9 +212,11 @@ export default function LeadsPage() {
       const res = await fetch(`/api/dashboard/leads/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
       setDeleteConfirm(null);
+      toast.success(t ? "Лід видалено" : "Lead deleted");
       await fetchLeads();
     } catch {
       setError(t ? "Не вдалося видалити лід" : "Failed to delete lead");
+      toast.error(t ? "Не вдалося видалити лід" : "Failed to delete lead");
     }
   }
 
@@ -232,9 +238,12 @@ export default function LeadsPage() {
       if (!res.ok) throw new Error(data.error || "Import failed");
 
       setImportResult({ imported: data.imported, skipped: data.skipped });
+      toast.success(t ? `Імпортовано ${data.imported} лідів` : `Imported ${data.imported} leads`);
       await fetchLeads();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Import failed");
+      const msg = err instanceof Error ? err.message : "Import failed";
+      setError(msg);
+      toast.error(t ? "Не вдалося імпортувати CSV" : msg);
     } finally {
       setImporting(false);
     }
