@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { campaigns, leads, messages, scripts, voiceConfigs, channelConfigs } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { buildSystemPrompt, buildEmailPrompt, type Channel } from "@/lib/prompts";
+import { checkUsageLimits } from "@/lib/usage";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -318,6 +319,31 @@ export async function executeCampaign(
 
   // 6. Process each lead sequentially
   for (const lead of campaignLeads) {
+    // Check usage limits before processing each lead
+    const usageCheck = await checkUsageLimits(orgId);
+    if (!usageCheck.allowed) {
+      // Stop the campaign — usage limit reached
+      await db
+        .update(campaigns)
+        .set({ status: "paused", updatedAt: new Date() })
+        .where(eq(campaigns.id, campaignId));
+
+      // Mark remaining leads as skipped
+      const remaining = campaignLeads.length - progress.processed;
+      for (let i = 0; i < remaining; i++) {
+        progress.results.push({
+          leadId: (campaignLeads[progress.processed + i] as unknown as LeadRow).id,
+          leadName: "Skipped",
+          channel: "none",
+          status: "skipped",
+          error: usageCheck.reason || "Usage limit reached",
+        });
+        progress.failed++;
+        progress.processed++;
+      }
+      return progress;
+    }
+
     const leadData = lead as unknown as LeadRow;
     const leadName = [leadData.firstName, leadData.lastName]
       .filter(Boolean)

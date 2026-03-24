@@ -231,9 +231,14 @@ export default function IntegrationsPage() {
                   <p className="text-sm text-white/40">{integration.description}</p>
                 </div>
               </div>
-              <GlassButton size="sm" onClick={() => {}}>
-                {t ? "Пiдключити" : "Connect"}
-              </GlassButton>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/40">
+                  Coming Soon
+                </span>
+                <GlassButton size="sm" disabled className="opacity-50 cursor-not-allowed pointer-events-none">
+                  {t ? "Пiдключити" : "Connect"}
+                </GlassButton>
+              </div>
             </div>
           ))}
         </div>

@@ -11,6 +11,7 @@ const breadcrumbNames: Record<string, { en: string; ua: string }> = {
   scripts: { en: "Scripts", ua: "Скрипти" },
   voice: { en: "Voice", ua: "Голос" },
   numbers: { en: "Numbers", ua: "Номери" },
+  telegram: { en: "Telegram", ua: "Телеграм" },
   calls: { en: "Calls", ua: "Дзвінки" },
   campaigns: { en: "Campaigns", ua: "Кампанії" },
   leads: { en: "Leads", ua: "Ліди" },

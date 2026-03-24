@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 import {
-  LayoutDashboard, FileText, Mic, Phone, PhoneCall,
+  LayoutDashboard, FileText, Mic, Phone, Send, PhoneCall,
   Megaphone, Users, BarChart3, Plug, CreditCard, Settings,
   ChevronLeft, ChevronRight
 } from "lucide-react";
@@ -19,6 +19,7 @@ const navGroups = (lang: "en" | "ua") => [
       { name: lang === "ua" ? "Скрипти" : "Scripts", href: "/dashboard/scripts", icon: FileText },
       { name: lang === "ua" ? "Голос" : "Voice", href: "/dashboard/voice", icon: Mic },
       { name: lang === "ua" ? "Номери" : "Numbers", href: "/dashboard/numbers", icon: Phone },
+      { name: lang === "ua" ? "Телеграм" : "Telegram", href: "/dashboard/telegram", icon: Send },
     ],
   },
   {
