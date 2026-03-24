@@ -19,6 +19,7 @@ const breadcrumbNames: Record<string, { en: string; ua: string }> = {
   integrations: { en: "Integrations", ua: "Інтеграції" },
   billing: { en: "Billing", ua: "Оплата" },
   settings: { en: "Settings", ua: "Налаштування" },
+  email: { en: "Email", ua: "Email" },
   team: { en: "Team", ua: "Команда" },
   "api-keys": { en: "API Keys", ua: "API ключі" },
 };

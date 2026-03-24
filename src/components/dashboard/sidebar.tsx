@@ -6,35 +6,34 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 import {
-  LayoutDashboard, FileText, Mic, Phone, Send, PhoneCall,
-  Megaphone, Users, BarChart3, Plug, CreditCard, Settings,
+  Phone, MessageCircle, Mail, Megaphone, Users, BarChart3,
+  Mic, Link as LinkIcon, CreditCard, Settings,
   ChevronLeft, ChevronRight
 } from "lucide-react";
 
 const navGroups = (lang: "en" | "ua") => [
   {
-    label: lang === "ua" ? "Головне" : "Main",
+    label: lang === "ua" ? "Канали" : "Channels",
     items: [
-      { name: lang === "ua" ? "Огляд" : "Overview", href: "/dashboard", icon: LayoutDashboard },
-      { name: lang === "ua" ? "Скрипти" : "Scripts", href: "/dashboard/scripts", icon: FileText },
-      { name: lang === "ua" ? "Голос" : "Voice", href: "/dashboard/voice", icon: Mic },
-      { name: lang === "ua" ? "Номери" : "Numbers", href: "/dashboard/numbers", icon: Phone },
-      { name: lang === "ua" ? "Телеграм" : "Telegram", href: "/dashboard/telegram", icon: Send },
+      { name: lang === "ua" ? "Дзвінки" : "Calls", href: "/dashboard/calls", icon: Phone },
+      { name: lang === "ua" ? "Телеграм" : "Telegram", href: "/dashboard/telegram", icon: MessageCircle },
+      { name: "Email", href: "/dashboard/email", icon: Mail },
     ],
   },
   {
-    label: lang === "ua" ? "Активність" : "Activity",
+    label: lang === "ua" ? "Кампанії" : "Campaigns",
     items: [
-      { name: lang === "ua" ? "Дзвінки" : "Calls", href: "/dashboard/calls", icon: PhoneCall },
       { name: lang === "ua" ? "Кампанії" : "Campaigns", href: "/dashboard/campaigns", icon: Megaphone },
       { name: lang === "ua" ? "Ліди" : "Leads", href: "/dashboard/leads", icon: Users },
-      { name: lang === "ua" ? "Аналітика" : "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
     ],
   },
   {
-    label: lang === "ua" ? "Акаунт" : "Account",
+    label: lang === "ua" ? "Налаштування" : "Setup",
     items: [
-      { name: lang === "ua" ? "Інтеграції" : "Integrations", href: "/dashboard/integrations", icon: Plug },
+      { name: lang === "ua" ? "Аналітика" : "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+      { name: lang === "ua" ? "Голос" : "Voice Settings", href: "/dashboard/voice", icon: Mic },
+      { name: lang === "ua" ? "Номери" : "Numbers", href: "/dashboard/numbers", icon: Phone },
+      { name: lang === "ua" ? "Інтеграції" : "Integrations", href: "/dashboard/integrations", icon: LinkIcon },
       { name: lang === "ua" ? "Оплата" : "Billing", href: "/dashboard/billing", icon: CreditCard },
       { name: lang === "ua" ? "Налаштування" : "Settings", href: "/dashboard/settings", icon: Settings },
     ],

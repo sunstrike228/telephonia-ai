@@ -3,31 +3,31 @@
 import { useInView } from "@/hooks/use-in-view";
 import { useLang } from "@/hooks/use-lang";
 import { FlippingCard } from "@/components/ui/flipping-card";
-import { Upload, Mic, Rocket } from "lucide-react";
+import { Upload, Users, Rocket } from "lucide-react";
 
 const steps = [
   {
     num: "1",
     color: "#0090f0",
     icon: Upload,
-    title: "Upload Your Script",
-    titleUa: "Завантажте свій скрипт",
-    desc: "Paste your sales script or describe your use case. Our AI adapts to your industry and tone.",
-    descUa: "Вставте свій скрипт продажів або опишіть ваш кейс. Наш AI адаптується до вашої галузі та тону.",
-    backDesc: "Our AI analyzes your script structure, identifies key selling points, and automatically generates natural conversation flows with objection handling built in.",
-    backDescUa: "Наш AI аналізує структуру скрипту, визначає ключові переваги продукту та автоматично генерує природні потоки розмов із вбудованою обробкою заперечень.",
+    title: "Upload Script & Choose Channels",
+    titleUa: "Завантажте скрипт та оберіть канали",
+    desc: "Paste your sales script, select channels — voice calls, Telegram, email — or all three. Our AI adapts to your industry and tone.",
+    descUa: "Вставте свій скрипт продажів, оберіть канали — голосові дзвінки, Telegram, email — або всі три. Наш AI адаптується до вашої галузі та тону.",
+    backDesc: "Our AI analyzes your script structure, identifies key selling points, and automatically generates natural conversation flows for each channel — voice, Telegram, and email — with objection handling built in.",
+    backDescUa: "Наш AI аналізує структуру скрипту, визначає ключові переваги та автоматично генерує природні потоки комунікації для кожного каналу — голос, Telegram та email — із вбудованою обробкою заперечень.",
     image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=220&fit=crop",
   },
   {
     num: "2",
     color: "#a78bfa",
-    icon: Mic,
-    title: "Choose Voice & Language",
-    titleUa: "Оберіть голос та мову",
-    desc: "Pick from our voice library or clone your own. Set primary language and fallback behavior.",
-    descUa: "Оберіть з нашої бібліотеки голосів або клонуйте свій. Налаштуйте основну мову та резервну поведінку.",
-    backDesc: "50+ natural voices across Ukrainian and English. Clone your top sales rep's voice in minutes. Set language detection to auto-switch mid-conversation seamlessly.",
-    backDescUa: "50+ природних голосів українською та англійською. Клонуйте голос вашого найкращого продажника за хвилини. Автоматичне визначення мови для переключення під час розмови.",
+    icon: Users,
+    title: "Import Leads",
+    titleUa: "Імпортуйте ліди",
+    desc: "Upload a CSV with phone numbers, email addresses, and Telegram usernames. Map fields automatically.",
+    descUa: "Завантажте CSV з номерами телефонів, email-адресами та username Telegram. Поля мапляться автоматично.",
+    backDesc: "Supports CSV, Excel, or direct CRM import. Auto-detects phone, email, and Telegram fields. Deduplicates contacts, validates data, and segments leads by channel availability.",
+    backDescUa: "Підтримує CSV, Excel або прямий імпорт з CRM. Автоматично визначає поля телефону, email та Telegram. Дедуплікація контактів, валідація даних та сегментація лідів за доступністю каналів.",
     image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=220&fit=crop",
   },
   {
@@ -36,10 +36,10 @@ const steps = [
     icon: Rocket,
     title: "Launch & Monitor",
     titleUa: "Запускайте та контролюйте",
-    desc: "Connect your phone number, upload leads, and go live. Watch calls happen in real time.",
-    descUa: "Підключіть номер телефону, завантажте ліди та запустіть. Спостерігайте за дзвінками в реальному часі.",
-    backDesc: "Real-time dashboard shows live calls, conversion rates, and sentiment analysis. A/B test different scripts automatically. Scale from 10 to 10,000 calls per day instantly.",
-    backDescUa: "Панель у реальному часі показує живі дзвінки, конверсії та аналіз настроїв. A/B тестування різних скриптів автоматично. Масштабуйте від 10 до 10 000 дзвінків на день миттєво.",
+    desc: "Go live across all channels simultaneously. Monitor calls, messages, and emails in one real-time dashboard.",
+    descUa: "Запустіть всі канали одночасно. Відстежуйте дзвінки, повідомлення та листи в одній панелі реального часу.",
+    backDesc: "Cross-channel dashboard shows live calls, Telegram conversations, and email opens side by side. A/B test different scripts per channel. Auto-fallback between channels if no response.",
+    backDescUa: "Кросс-канальна панель показує живі дзвінки, розмови в Telegram та відкриття email поруч. A/B тестування різних скриптів по каналах. Автоматичний перехід між каналами при відсутності відповіді.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=220&fit=crop",
   },
 ];

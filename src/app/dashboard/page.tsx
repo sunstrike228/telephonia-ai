@@ -1,18 +1,40 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { StatCard } from "@/components/dashboard/stat-card";
 import { PageHeader } from "@/components/dashboard/page-header";
-import { PhoneCall, Users, FileText, Mic, Megaphone, Send, Mail } from "lucide-react";
+import { PhoneCall, Users, FileText, Mic, Megaphone, Send, Mail, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 import { OnboardingWizard } from "@/components/dashboard/onboarding-wizard";
 
-interface QuickStats {
-  voice: number;
-  telegram: number;
-  email: number;
-  totalLeads: number;
+interface AnalyticsData {
+  voice: {
+    total: number;
+    completionRate: number;
+    avgDuration: number;
+    byStatus: { status: string; count: number }[];
+  };
+  telegram: {
+    total: number;
+    replyRate: number;
+    deliveredRate: number;
+    byStatus: { status: string; count: number }[];
+  };
+  email: {
+    total: number;
+    openRate: number;
+    replyRate: number;
+    byStatus: { status: string; count: number }[];
+  };
+  recentActivity: {
+    id: string;
+    channel: string;
+    action: string;
+    leadName: string;
+    leadPhone: string | null;
+    time: string;
+  }[];
+  leadStatuses: { total: number };
 }
 
 export default function DashboardOverview() {
@@ -22,7 +44,7 @@ export default function DashboardOverview() {
   const [scriptCount, setScriptCount] = useState(0);
   const [campaignTotal, setCampaignTotal] = useState(0);
   const [campaignActive, setCampaignActive] = useState(0);
-  const [quickStats, setQuickStats] = useState<QuickStats>({ voice: 0, telegram: 0, email: 0, totalLeads: 0 });
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
@@ -56,17 +78,26 @@ export default function DashboardOverview() {
     fetch("/api/dashboard/analytics")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data) {
-          setQuickStats({
-            voice: data.voice?.total || 0,
-            telegram: data.telegram?.total || 0,
-            email: data.email?.total || 0,
-            totalLeads: data.leadStatuses?.total || 0,
-          });
-        }
+        if (data) setAnalytics(data);
       })
       .catch(() => {});
   }, []);
+
+  const voice = analytics?.voice;
+  const telegram = analytics?.telegram;
+  const email = analytics?.email;
+  const recentActivity = analytics?.recentActivity || [];
+
+  function formatRelativeTime(dateStr: string) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return t ? "Щойно" : "Just now";
+    if (mins < 60) return t ? `${mins} хв тому` : `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return t ? `${hours} год тому` : `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return t ? `${days} дн тому` : `${days}d ago`;
+  }
 
   return (
     <div>
@@ -78,88 +109,133 @@ export default function DashboardOverview() {
         description={t ? "Ось що відбувається з вашими AI-агентами сьогодні." : "Here's what's happening with your AI agents today."}
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard
-          title={t ? "Всього дзвінків" : "Total Calls"}
-          value={String(quickStats.voice)}
-          icon={PhoneCall}
-          iconColor="#0090f0"
-        />
-        <StatCard
-          title={t ? "Активні ліди" : "Active Leads"}
-          value={String(quickStats.totalLeads)}
-          icon={Users}
-          iconColor="#34d399"
-        />
-        <StatCard
-          title={t ? "Скрипти" : "Scripts"}
-          value={String(scriptCount)}
-          icon={FileText}
-          iconColor="#a78bfa"
-        />
-        <StatCard
-          title={t ? "Кампанії" : "Campaigns"}
-          value={`${campaignTotal}`}
-          icon={Megaphone}
-          iconColor="#f97316"
-          change={
-            campaignActive > 0
-              ? t
-                ? `${campaignActive} активних`
-                : `${campaignActive} active`
-              : undefined
-          }
-          changeType="positive"
-        />
-      </div>
-
-      {/* Quick Stats: Channel Breakdown */}
-      {(quickStats.voice > 0 || quickStats.telegram > 0 || quickStats.email > 0) && (
-        <div className="mb-8">
-          <h3 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">
-            {t ? "Канали" : "Channel Breakdown"}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-5 flex items-center gap-4">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "#0090f012", border: "1px solid #0090f025" }}
-              >
-                <PhoneCall size={18} stroke="#0090f0" />
-              </div>
-              <div>
-                <div className="text-xl font-bold text-white font-display">{quickStats.voice}</div>
-                <div className="text-xs text-white/35">{t ? "Голосових дзвінків" : "Voice calls"}</div>
-              </div>
+      {/* Channel Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+        {/* Voice Card */}
+        <Link
+          href="/dashboard/calls"
+          className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#0090f0]/30 transition-colors duration-300"
+        >
+          <div className="flex items-center gap-3 mb-5">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "#0090f012", border: "1px solid #0090f025" }}
+            >
+              <Phone size={20} stroke="#0090f0" />
             </div>
-            <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-5 flex items-center gap-4">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "#a78bfa12", border: "1px solid #a78bfa25" }}
-              >
-                <Send size={18} stroke="#a78bfa" />
-              </div>
-              <div>
-                <div className="text-xl font-bold text-white font-display">{quickStats.telegram}</div>
-                <div className="text-xs text-white/35">{t ? "Telegram повідомлень" : "Telegram messages"}</div>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-5 flex items-center gap-4">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "#34d39912", border: "1px solid #34d39925" }}
-              >
-                <Mail size={18} stroke="#34d399" />
-              </div>
-              <div>
-                <div className="text-xl font-bold text-white font-display">{quickStats.email}</div>
-                <div className="text-xs text-white/35">{t ? "Листів" : "Emails sent"}</div>
-              </div>
+            <div>
+              <h3 className="text-base font-semibold text-white font-display">
+                {t ? "Голос" : "Voice"}
+              </h3>
+              <span className="text-xs text-white/30">{t ? "Дзвінки" : "Calls"}</span>
             </div>
           </div>
-        </div>
-      )}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Всього дзвінків" : "Total calls"}</span>
+              <span className="text-lg font-bold text-white font-display">{voice?.total ?? 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Завершених" : "Completion rate"}</span>
+              <span className="text-sm font-medium text-[#0090f0]">{voice?.completionRate ?? 0}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Сер. тривалість" : "Avg duration"}</span>
+              <span className="text-sm font-medium text-white/60">{voice?.avgDuration ?? 0}s</span>
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-white/[0.04]">
+            <div className="w-full h-1.5 rounded-full bg-white/[0.04]">
+              <div
+                className="h-full rounded-full bg-[#0090f0]/60 transition-all duration-500"
+                style={{ width: `${Math.min(voice?.completionRate ?? 0, 100)}%` }}
+              />
+            </div>
+          </div>
+        </Link>
+
+        {/* Telegram Card */}
+        <Link
+          href="/dashboard/telegram"
+          className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#a78bfa]/30 transition-colors duration-300"
+        >
+          <div className="flex items-center gap-3 mb-5">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "#a78bfa12", border: "1px solid #a78bfa25" }}
+            >
+              <MessageCircle size={20} stroke="#a78bfa" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-white font-display">Telegram</h3>
+              <span className="text-xs text-white/30">{t ? "Повідомлення" : "Messages"}</span>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Надіслано" : "Messages sent"}</span>
+              <span className="text-lg font-bold text-white font-display">{telegram?.total ?? 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Відповідей" : "Reply rate"}</span>
+              <span className="text-sm font-medium text-[#a78bfa]">{telegram?.replyRate ?? 0}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Доставлено" : "Delivered"}</span>
+              <span className="text-sm font-medium text-white/60">{telegram?.deliveredRate ?? 0}%</span>
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-white/[0.04]">
+            <div className="w-full h-1.5 rounded-full bg-white/[0.04]">
+              <div
+                className="h-full rounded-full bg-[#a78bfa]/60 transition-all duration-500"
+                style={{ width: `${Math.min(telegram?.replyRate ?? 0, 100)}%` }}
+              />
+            </div>
+          </div>
+        </Link>
+
+        {/* Email Card */}
+        <Link
+          href="/dashboard/email"
+          className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#34d399]/30 transition-colors duration-300"
+        >
+          <div className="flex items-center gap-3 mb-5">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "#34d39912", border: "1px solid #34d39925" }}
+            >
+              <Mail size={20} stroke="#34d399" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-white font-display">Email</h3>
+              <span className="text-xs text-white/30">{t ? "Листи" : "Emails"}</span>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Надіслано" : "Emails sent"}</span>
+              <span className="text-lg font-bold text-white font-display">{email?.total ?? 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Відкрито" : "Open rate"}</span>
+              <span className="text-sm font-medium text-[#34d399]">{email?.openRate ?? 0}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-white/40">{t ? "Відповідей" : "Reply rate"}</span>
+              <span className="text-sm font-medium text-white/60">{email?.replyRate ?? 0}%</span>
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-white/[0.04]">
+            <div className="w-full h-1.5 rounded-full bg-white/[0.04]">
+              <div
+                className="h-full rounded-full bg-[#34d399]/60 transition-all duration-500"
+                style={{ width: `${Math.min(email?.openRate ?? 0, 100)}%` }}
+              />
+            </div>
+          </div>
+        </Link>
+      </div>
 
       {/* Quick Actions */}
       <div className="mb-8">
@@ -212,16 +288,49 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* Recent Calls */}
+      {/* Recent Activity */}
       <div>
         <h3 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">
-          {t ? "Останні дзвінки" : "Recent Calls"}
+          {t ? "Остання активність" : "Recent Activity"}
         </h3>
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-8 text-center">
-          <p className="text-sm text-white/30">
-            {t ? "Дзвінків ще немає. Створіть скрипт та імпортуйте ліди, щоб почати." : "No calls yet. Create a script and import leads to get started."}
-          </p>
-        </div>
+        {recentActivity.length === 0 ? (
+          <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-8 text-center">
+            <p className="text-sm text-white/30">
+              {t ? "Активності ще немає. Створіть скрипт та імпортуйте ліди, щоб почати." : "No activity yet. Create a script and import leads to get started."}
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+            {recentActivity.map((item) => {
+              const channelIcon =
+                item.channel === "voice" ? <Phone size={14} stroke="#0090f0" /> :
+                item.channel === "telegram" ? <MessageCircle size={14} stroke="#a78bfa" /> :
+                <Mail size={14} stroke="#34d399" />;
+              const channelColor =
+                item.channel === "voice" ? "#0090f0" :
+                item.channel === "telegram" ? "#a78bfa" :
+                "#34d399";
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 px-6 py-3.5 border-b border-white/[0.04] last:border-b-0"
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${channelColor}12`, border: `1px solid ${channelColor}25` }}
+                  >
+                    {channelIcon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm text-white/80 font-medium">{item.leadName}</span>
+                    <span className="text-sm text-white/30 ml-2">{item.action}</span>
+                  </div>
+                  <span className="text-xs text-white/25 whitespace-nowrap">{formatRelativeTime(item.time)}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

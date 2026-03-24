@@ -14,8 +14,8 @@ const pricingPlans = [
   {
     name: "Starter", nameUa: "Старт",
     price: "40", yearlyPrice: "32", period: "per month",
-    features: ["500 minutes / month", "1 phone number", "Basic analytics", "Ukrainian & English", "Community support"],
-    featuresUa: ["500 хвилин / місяць", "1 номер телефону", "Базова аналітика", "Українська та англійська", "Підтримка спільноти"],
+    features: ["500 voice minutes / month", "100 Telegram messages / month", "500 emails / month", "1 phone number", "Basic analytics", "Ukrainian & English"],
+    featuresUa: ["500 голосових хвилин / місяць", "100 повідомлень Telegram / місяць", "500 email / місяць", "1 номер телефону", "Базова аналітика", "Українська та англійська"],
     description: "Perfect for individuals and small projects",
     descriptionUa: "Ідеально для індивідуальних та малих проєктів",
     buttonText: "Start Free Trial", buttonTextUa: "Спробувати безкоштовно",
@@ -24,8 +24,8 @@ const pricingPlans = [
   {
     name: "Growth", nameUa: "Зростання",
     price: "99", yearlyPrice: "79", period: "per month",
-    features: ["5,000 minutes / month", "5 phone numbers", "CRM integrations", "Custom voice cloning", "Advanced analytics", "Priority support", "Team collaboration"],
-    featuresUa: ["5 000 хвилин / місяць", "5 номерів телефону", "Інтеграція з CRM", "Клонування голосу", "Розширена аналітика", "Пріоритетна підтримка", "Командна робота"],
+    features: ["2,000 voice minutes / month", "500 Telegram messages / month", "2,000 emails / month", "5 phone numbers", "CRM integrations", "Custom voice cloning", "Multi-channel sequences", "Priority support"],
+    featuresUa: ["2 000 голосових хвилин / місяць", "500 повідомлень Telegram / місяць", "2 000 email / місяць", "5 номерів телефону", "Інтеграція з CRM", "Клонування голосу", "Мульти-канальні послідовності", "Пріоритетна підтримка"],
     description: "Ideal for growing teams and businesses",
     descriptionUa: "Ідеально для команд та бізнесів, що зростають",
     buttonText: "Get Started", buttonTextUa: "Почати",
@@ -34,8 +34,8 @@ const pricingPlans = [
   {
     name: "Enterprise", nameUa: "Корпоративний",
     price: "299", yearlyPrice: "239", period: "per month",
-    features: ["Everything in Growth", "Unlimited minutes", "Dedicated account manager", "1-hour support response", "SSO & advanced security", "Custom contracts & SLA"],
-    featuresUa: ["Все з плану Зростання", "Безлімітні хвилини", "Персональний менеджер", "Підтримка за 1 годину", "SSO та розширена безпека", "Індивідуальні контракти та SLA"],
+    features: ["Everything in Growth", "Unlimited voice minutes", "Unlimited Telegram messages", "Unlimited emails", "Dedicated account manager", "1-hour support response", "SSO & advanced security", "Custom contracts & SLA"],
+    featuresUa: ["Все з плану Зростання", "Безлімітні голосові хвилини", "Безлімітні повідомлення Telegram", "Безлімітні email", "Персональний менеджер", "Підтримка за 1 годину", "SSO та розширена безпека", "Індивідуальні контракти та SLA"],
     description: "For large organizations with specific needs",
     descriptionUa: "Для великих організацій зі специфічними потребами",
     buttonText: "Contact Sales", buttonTextUa: "Зв'язатися з відділом продажів",
