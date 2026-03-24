@@ -8,6 +8,7 @@ import {
   Megaphone, Plus, Loader2, X, Phone, MessageCircle, Mail,
   Play, Pause, Pencil, Trash2, Users, ChevronDown, ChevronUp,
   GripVertical, Calendar, Sparkles, Send, RefreshCw,
+  Search, CheckCircle2, XCircle, AlertTriangle, Zap, UserPlus,
 } from "lucide-react";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
 
@@ -40,6 +41,35 @@ interface CampaignDetail extends Campaign {
 interface Script {
   id: string;
   name: string;
+}
+
+interface Lead {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+  email: string | null;
+  telegramUsername: string | null;
+  company: string | null;
+  status: string;
+  campaignId: string | null;
+}
+
+interface LeadResult {
+  leadId: string;
+  leadName: string;
+  channel: string;
+  status: "sent" | "failed" | "skipped";
+  error?: string;
+}
+
+interface ExecutionProgress {
+  campaignId: string;
+  total: number;
+  processed: number;
+  succeeded: number;
+  failed: number;
+  results: LeadResult[];
 }
 
 interface CampaignForm {
@@ -104,6 +134,23 @@ export default function CampaignsPage() {
   const [emailPreview, setEmailPreview] = useState<{ subject: string; body: string } | null>(null);
   const [emailGenLoading, setEmailGenLoading] = useState(false);
   const [emailType, setEmailType] = useState<"initial" | "followup" | "final">("initial");
+
+  // Lead assignment state
+  const [leadsModalOpen, setLeadsModalOpen] = useState(false);
+  const [leadsModalCampaignId, setLeadsModalCampaignId] = useState<string | null>(null);
+  const [allLeads, setAllLeads] = useState<Lead[]>([]);
+  const [leadsLoading, setLeadsLoading] = useState(false);
+  const [leadsSearch, setLeadsSearch] = useState("");
+  const [selectedLeadIds, setSelectedLeadIds] = useState<Set<string>>(new Set());
+  const [assigningLeads, setAssigningLeads] = useState(false);
+
+  // Campaign leads in expanded view
+  const [campaignLeads, setCampaignLeads] = useState<Lead[]>([]);
+  const [campaignLeadsLoading, setCampaignLeadsLoading] = useState(false);
+
+  // Execution state
+  const [executing, setExecuting] = useState<string | null>(null);
+  const [executionProgress, setExecutionProgress] = useState<ExecutionProgress | null>(null);
 
   const fetchCampaigns = useCallback(async () => {
     try {
@@ -225,15 +272,24 @@ export default function CampaignsPage() {
     if (expandedId === id) {
       setExpandedId(null);
       setExpandedDetail(null);
+      setCampaignLeads([]);
       return;
     }
     setExpandedId(id);
     setExpandLoading(true);
+    setExecutionProgress(null);
     try {
-      const res = await fetch(`/api/dashboard/campaigns/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      setExpandedDetail(data);
+      const [detailRes, leadsRes] = await Promise.all([
+        fetch(`/api/dashboard/campaigns/${id}`),
+        fetch(`/api/dashboard/campaigns/${id}/leads`),
+      ]);
+      if (detailRes.ok) {
+        setExpandedDetail(await detailRes.json());
+      }
+      if (leadsRes.ok) {
+        const leadsData = await leadsRes.json();
+        setCampaignLeads(leadsData.leads || []);
+      }
     } catch {
       setError(t ? "Не вдалося завантажити деталі" : "Failed to load details");
     } finally {
@@ -312,6 +368,170 @@ export default function CampaignsPage() {
     }
   }
 
+  // Lead assignment functions
+  async function openLeadsModal(campaignId: string) {
+    setLeadsModalCampaignId(campaignId);
+    setLeadsModalOpen(true);
+    setLeadsSearch("");
+    setSelectedLeadIds(new Set());
+    setLeadsLoading(true);
+
+    try {
+      const res = await fetch("/api/dashboard/leads?limit=100");
+      if (!res.ok) throw new Error("Failed to fetch leads");
+      const data = await res.json();
+      setAllLeads(data.leads || []);
+    } catch {
+      setError(t ? "Не вдалося завантажити ліди" : "Failed to load leads");
+    } finally {
+      setLeadsLoading(false);
+    }
+  }
+
+  function toggleLeadSelection(leadId: string) {
+    setSelectedLeadIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(leadId)) {
+        next.delete(leadId);
+      } else {
+        next.add(leadId);
+      }
+      return next;
+    });
+  }
+
+  function selectAllFilteredLeads() {
+    const filtered = getFilteredLeads();
+    const allSelected = filtered.every((l) => selectedLeadIds.has(l.id));
+    if (allSelected) {
+      setSelectedLeadIds((prev) => {
+        const next = new Set(prev);
+        filtered.forEach((l) => next.delete(l.id));
+        return next;
+      });
+    } else {
+      setSelectedLeadIds((prev) => {
+        const next = new Set(prev);
+        filtered.forEach((l) => next.add(l.id));
+        return next;
+      });
+    }
+  }
+
+  function getFilteredLeads() {
+    if (!leadsSearch.trim()) return allLeads;
+    const q = leadsSearch.toLowerCase();
+    return allLeads.filter((l) =>
+      [l.firstName, l.lastName, l.email, l.phone, l.company, l.telegramUsername]
+        .filter(Boolean)
+        .some((v) => v!.toLowerCase().includes(q))
+    );
+  }
+
+  async function handleAssignLeads() {
+    if (!leadsModalCampaignId || selectedLeadIds.size === 0) return;
+
+    setAssigningLeads(true);
+    try {
+      const res = await fetch(`/api/dashboard/campaigns/${leadsModalCampaignId}/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadIds: Array.from(selectedLeadIds) }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to assign leads");
+      }
+
+      setLeadsModalOpen(false);
+      setSelectedLeadIds(new Set());
+      await fetchCampaigns();
+
+      // Refresh expanded view if open
+      if (expandedId === leadsModalCampaignId) {
+        const [detailRes, leadsRes] = await Promise.all([
+          fetch(`/api/dashboard/campaigns/${leadsModalCampaignId}`),
+          fetch(`/api/dashboard/campaigns/${leadsModalCampaignId}/leads`),
+        ]);
+        if (detailRes.ok) setExpandedDetail(await detailRes.json());
+        if (leadsRes.ok) {
+          const data = await leadsRes.json();
+          setCampaignLeads(data.leads || []);
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to assign leads");
+    } finally {
+      setAssigningLeads(false);
+    }
+  }
+
+  async function handleRemoveLeadFromCampaign(campaignId: string, leadId: string) {
+    try {
+      const res = await fetch(`/api/dashboard/campaigns/${campaignId}/leads`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadIds: [leadId] }),
+      });
+      if (!res.ok) throw new Error("Failed to remove lead");
+
+      await fetchCampaigns();
+      if (expandedId === campaignId) {
+        const [detailRes, leadsRes] = await Promise.all([
+          fetch(`/api/dashboard/campaigns/${campaignId}`),
+          fetch(`/api/dashboard/campaigns/${campaignId}/leads`),
+        ]);
+        if (detailRes.ok) setExpandedDetail(await detailRes.json());
+        if (leadsRes.ok) {
+          const data = await leadsRes.json();
+          setCampaignLeads(data.leads || []);
+        }
+      }
+    } catch {
+      setError(t ? "Не вдалося видалити лід" : "Failed to remove lead");
+    }
+  }
+
+  // Execute campaign
+  async function handleExecuteCampaign(campaignId: string) {
+    setExecuting(campaignId);
+    setExecutionProgress(null);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/dashboard/campaigns/${campaignId}/execute`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to execute campaign");
+      }
+
+      setExecutionProgress(data.progress);
+      await fetchCampaigns();
+
+      // Refresh expanded view
+      if (expandedId === campaignId) {
+        const [detailRes, leadsRes] = await Promise.all([
+          fetch(`/api/dashboard/campaigns/${campaignId}`),
+          fetch(`/api/dashboard/campaigns/${campaignId}/leads`),
+        ]);
+        if (detailRes.ok) setExpandedDetail(await detailRes.json());
+        if (leadsRes.ok) {
+          const leadsData = await leadsRes.json();
+          setCampaignLeads(leadsData.leads || []);
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Execution failed");
+    } finally {
+      setExecuting(null);
+    }
+  }
+
   function formatDate(dateStr: string) {
     const date = new Date(dateStr);
     return date.toLocaleDateString(t ? "uk-UA" : "en-US", {
@@ -320,6 +540,13 @@ export default function CampaignsPage() {
       year: "numeric",
     });
   }
+
+  function getLeadDisplayName(lead: Lead) {
+    const name = [lead.firstName, lead.lastName].filter(Boolean).join(" ");
+    return name || lead.email || lead.phone || lead.telegramUsername || "Unknown";
+  }
+
+  const filteredLeads = getFilteredLeads();
 
   return (
     <div>
@@ -535,7 +762,7 @@ export default function CampaignsPage() {
                               return (
                                 <div key={ch} className="flex items-center gap-1.5">
                                   {i > 0 && (
-                                    <span className="text-white/15 text-xs">→</span>
+                                    <span className="text-white/15 text-xs">&rarr;</span>
                                   )}
                                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/8">
                                     {Icon && <Icon size={12} className="text-white/40" />}
@@ -559,6 +786,190 @@ export default function CampaignsPage() {
                             )}
                           </div>
                         )}
+
+                        {/* Assigned Leads Section */}
+                        <div className="mt-4 pt-4 border-t border-white/5">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <Users size={14} className="text-emerald-400" />
+                              <p className="text-sm font-medium text-white/60">
+                                {t ? "Призначені ліди" : "Assigned Leads"}
+                                <span className="ml-2 text-white/30">({campaignLeads.length})</span>
+                              </p>
+                            </div>
+                            <GlassButton
+                              size="sm"
+                              onClick={() => openLeadsModal(campaign.id)}
+                            >
+                              <span className="flex items-center gap-1.5">
+                                <UserPlus size={12} />
+                                {t ? "Додати лідів" : "Assign Leads"}
+                              </span>
+                            </GlassButton>
+                          </div>
+
+                          {campaignLeads.length > 0 ? (
+                            <div className="space-y-1.5 max-h-48 overflow-y-auto mb-4">
+                              {campaignLeads.map((lead) => (
+                                <div
+                                  key={lead.id}
+                                  className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5"
+                                >
+                                  <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-7 h-7 rounded-lg bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center shrink-0">
+                                      <Users size={12} className="text-emerald-400" />
+                                    </div>
+                                    <div className="min-w-0">
+                                      <p className="text-sm text-white/70 truncate">
+                                        {getLeadDisplayName(lead)}
+                                      </p>
+                                      <div className="flex items-center gap-2 mt-0.5">
+                                        {lead.phone && (
+                                          <span className="text-[10px] text-white/25 flex items-center gap-0.5">
+                                            <Phone size={8} /> {lead.phone}
+                                          </span>
+                                        )}
+                                        {lead.email && (
+                                          <span className="text-[10px] text-white/25 flex items-center gap-0.5">
+                                            <Mail size={8} /> {lead.email}
+                                          </span>
+                                        )}
+                                        {lead.telegramUsername && (
+                                          <span className="text-[10px] text-white/25 flex items-center gap-0.5">
+                                            <MessageCircle size={8} /> @{lead.telegramUsername}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <span
+                                      className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${
+                                        lead.status === "contacted"
+                                          ? "text-blue-400 bg-blue-400/10 border-blue-400/20"
+                                          : lead.status === "converted"
+                                          ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20"
+                                          : "text-white/40 bg-white/5 border-white/10"
+                                      }`}
+                                    >
+                                      {lead.status}
+                                    </span>
+                                    {campaign.status !== "active" && campaign.status !== "completed" && (
+                                      <button
+                                        onClick={() => handleRemoveLeadFromCampaign(campaign.id, lead.id)}
+                                        className="w-6 h-6 rounded flex items-center justify-center hover:bg-red-500/10 transition-colors"
+                                        title={t ? "Видалити" : "Remove"}
+                                      >
+                                        <X size={12} className="text-white/30 hover:text-red-400" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="rounded-xl border border-dashed border-white/8 bg-white/[0.01] p-6 text-center mb-4">
+                              <Users size={20} className="text-white/15 mx-auto mb-2" />
+                              <p className="text-xs text-white/25">
+                                {t
+                                  ? "Додайте лідів до кампанії для запуску"
+                                  : "Assign leads to this campaign to get started"}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Execute Campaign Button */}
+                          {campaign.status !== "completed" && campaignLeads.length > 0 && (
+                            <div className="mb-4">
+                              <GlassButton
+                                className="glass-button-primary w-full"
+                                size="sm"
+                                onClick={() => handleExecuteCampaign(campaign.id)}
+                                disabled={executing === campaign.id || campaign.status === "active"}
+                              >
+                                {executing === campaign.id ? (
+                                  <span className="flex items-center gap-2 justify-center">
+                                    <Loader2 size={14} className="animate-spin" />
+                                    {t
+                                      ? "Виконання кампанії..."
+                                      : "Executing campaign..."}
+                                  </span>
+                                ) : (
+                                  <span className="flex items-center gap-2 justify-center">
+                                    <Zap size={14} />
+                                    {t
+                                      ? `Запустити кампанію (${campaignLeads.length} лідів)`
+                                      : `Execute Campaign (${campaignLeads.length} leads)`}
+                                  </span>
+                                )}
+                              </GlassButton>
+                            </div>
+                          )}
+
+                          {/* Execution Progress */}
+                          {executionProgress && executionProgress.campaignId === campaign.id && (
+                            <div className="mb-4">
+                              {/* Progress bar */}
+                              <div className="mb-3">
+                                <div className="flex items-center justify-between text-xs text-white/40 mb-1.5">
+                                  <span>
+                                    {t ? "Прогрес" : "Progress"}: {executionProgress.processed}/{executionProgress.total}
+                                  </span>
+                                  <span>
+                                    <span className="text-emerald-400">{executionProgress.succeeded}</span>
+                                    {" / "}
+                                    <span className="text-red-400">{executionProgress.failed}</span>
+                                  </span>
+                                </div>
+                                <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full bg-gradient-to-r from-[#0090f0] to-emerald-400 transition-all duration-500"
+                                    style={{
+                                      width: `${(executionProgress.processed / executionProgress.total) * 100}%`,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Per-lead results */}
+                              <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                                {executionProgress.results.map((result, idx) => (
+                                  <div
+                                    key={idx}
+                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${
+                                      result.status === "sent"
+                                        ? "bg-emerald-400/5 border border-emerald-400/10"
+                                        : result.status === "failed"
+                                        ? "bg-red-400/5 border border-red-400/10"
+                                        : "bg-yellow-400/5 border border-yellow-400/10"
+                                    }`}
+                                  >
+                                    {result.status === "sent" ? (
+                                      <CheckCircle2 size={12} className="text-emerald-400 shrink-0" />
+                                    ) : result.status === "failed" ? (
+                                      <XCircle size={12} className="text-red-400 shrink-0" />
+                                    ) : (
+                                      <AlertTriangle size={12} className="text-yellow-400 shrink-0" />
+                                    )}
+                                    <span className="text-white/60 truncate flex-1">
+                                      {result.leadName}
+                                    </span>
+                                    {result.channel !== "none" && (
+                                      <span className="text-white/30 shrink-0">
+                                        via {channelLabels[result.channel]?.[lang] || result.channel}
+                                      </span>
+                                    )}
+                                    {result.error && (
+                                      <span className="text-red-400/60 truncate max-w-[150px]" title={result.error}>
+                                        {result.error}
+                                      </span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
 
                         {/* Email Preview — only show when email channel is enabled */}
                         {channels.includes("email") && (
@@ -922,6 +1333,201 @@ export default function CampaignsPage() {
                 )}
               </GlassButton>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lead Assignment Modal */}
+      {leadsModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setLeadsModalOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-white/5">
+              <div>
+                <h3 className="text-lg font-semibold text-white font-display">
+                  {t ? "Обрати лідів" : "Select Leads"}
+                </h3>
+                <p className="text-xs text-white/30 mt-1">
+                  {t
+                    ? `Обрано: ${selectedLeadIds.size}`
+                    : `Selected: ${selectedLeadIds.size}`}
+                </p>
+              </div>
+              <button
+                onClick={() => setLeadsModalOpen(false)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/[0.06] transition-colors"
+              >
+                <X size={16} className="text-white/50" />
+              </button>
+            </div>
+
+            {/* Search bar */}
+            <div className="px-6 py-3">
+              <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                <input
+                  type="text"
+                  value={leadsSearch}
+                  onChange={(e) => setLeadsSearch(e.target.value)}
+                  placeholder={t ? "Пошук лідів..." : "Search leads..."}
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/8 bg-white/[0.03] text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#0090f0]/40 transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Select all */}
+            <div className="px-6 py-1">
+              <button
+                onClick={selectAllFilteredLeads}
+                className="text-xs text-[#0090f0] hover:text-[#0090f0]/80 transition-colors"
+              >
+                {filteredLeads.every((l) => selectedLeadIds.has(l.id))
+                  ? t ? "Зняти вибір" : "Deselect All"
+                  : t ? "Обрати всі" : "Select All"}
+              </button>
+            </div>
+
+            {/* Leads list */}
+            <div className="flex-1 overflow-y-auto px-6 py-2 min-h-0">
+              {leadsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 size={20} className="animate-spin text-white/30" />
+                </div>
+              ) : filteredLeads.length === 0 ? (
+                <div className="text-center py-12">
+                  <Users size={24} className="text-white/15 mx-auto mb-2" />
+                  <p className="text-sm text-white/30">
+                    {t ? "Лідів не знайдено" : "No leads found"}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  {filteredLeads.map((lead) => {
+                    const isSelected = selectedLeadIds.has(lead.id);
+                    const isAssigned = lead.campaignId === leadsModalCampaignId;
+                    return (
+                      <button
+                        key={lead.id}
+                        onClick={() => !isAssigned && toggleLeadSelection(lead.id)}
+                        disabled={isAssigned}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all ${
+                          isAssigned
+                            ? "border-emerald-400/20 bg-emerald-400/5 opacity-60 cursor-default"
+                            : isSelected
+                            ? "border-[#0090f0]/30 bg-[#0090f0]/5"
+                            : "border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10"
+                        }`}
+                      >
+                        {/* Checkbox */}
+                        <div
+                          className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
+                            isAssigned
+                              ? "border-emerald-400/40 bg-emerald-400/20"
+                              : isSelected
+                              ? "border-[#0090f0]/60 bg-[#0090f0]/20"
+                              : "border-white/15 bg-white/[0.03]"
+                          }`}
+                        >
+                          {(isSelected || isAssigned) && (
+                            <CheckCircle2 size={12} className={isAssigned ? "text-emerald-400" : "text-[#0090f0]"} />
+                          )}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-white/70 truncate">
+                              {getLeadDisplayName(lead)}
+                            </p>
+                            {isAssigned && (
+                              <span className="text-[10px] text-emerald-400/70 shrink-0">
+                                {t ? "вже додано" : "already assigned"}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 mt-0.5">
+                            {lead.company && (
+                              <span className="text-[10px] text-white/25">{lead.company}</span>
+                            )}
+                            {lead.phone && (
+                              <span className="text-[10px] text-white/20 flex items-center gap-0.5">
+                                <Phone size={8} /> {lead.phone}
+                              </span>
+                            )}
+                            {lead.email && (
+                              <span className="text-[10px] text-white/20 flex items-center gap-0.5">
+                                <Mail size={8} /> {lead.email}
+                              </span>
+                            )}
+                            {lead.telegramUsername && (
+                              <span className="text-[10px] text-white/20 flex items-center gap-0.5">
+                                <MessageCircle size={8} /> @{lead.telegramUsername}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between p-6 pt-4 border-t border-white/5">
+              <p className="text-xs text-white/30">
+                {t
+                  ? `${filteredLeads.length} лідів знайдено`
+                  : `${filteredLeads.length} leads found`}
+              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setLeadsModalOpen(false)}
+                  className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors"
+                >
+                  {t ? "Скасувати" : "Cancel"}
+                </button>
+                <GlassButton
+                  className="glass-button-primary"
+                  size="sm"
+                  onClick={handleAssignLeads}
+                  disabled={selectedLeadIds.size === 0 || assigningLeads}
+                >
+                  {assigningLeads ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 size={14} className="animate-spin" />
+                      {t ? "Додаю..." : "Assigning..."}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <UserPlus size={14} />
+                      {t
+                        ? `Додати ${selectedLeadIds.size} лідів`
+                        : `Assign ${selectedLeadIds.size} Leads`}
+                    </span>
+                  )}
+                </GlassButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error toast */}
+      {error && !modalOpen && !leadsModalOpen && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm">
+          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+            <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+            <div className="flex-1">{error}</div>
+            <button onClick={() => setError(null)} className="shrink-0">
+              <X size={14} className="text-red-400/60 hover:text-red-400" />
+            </button>
           </div>
         </div>
       )}
