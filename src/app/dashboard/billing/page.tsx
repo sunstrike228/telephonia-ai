@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { GlassButton } from "@/components/ui/glass-button";
 import { useDashboardLang } from "@/hooks/use-dashboard-lang";
@@ -15,10 +15,18 @@ interface UsageData {
   limits: { minutes: number; telegram: number; emails: number };
 }
 
+interface PaymentMethods {
+  stripe: boolean;
+  liqpay: boolean;
+}
+
+type PaymentProvider = "stripe" | "liqpay";
+
 const PLANS = [
   {
     id: "starter",
-    price: 40,
+    priceUsd: 40,
+    priceUah: 1650,
     icon: Zap,
     color: "#0090f0",
     features: {
@@ -40,7 +48,8 @@ const PLANS = [
   },
   {
     id: "growth",
-    price: 99,
+    priceUsd: 99,
+    priceUah: 4100,
     icon: Rocket,
     color: "#a78bfa",
     popular: true,
@@ -65,7 +74,8 @@ const PLANS = [
   },
   {
     id: "enterprise",
-    price: 299,
+    priceUsd: 299,
+    priceUah: 12300,
     icon: Crown,
     color: "#f59e0b",
     features: {
@@ -118,12 +128,28 @@ function UsageBar({
       </div>
       <div className="w-full h-2 rounded-full bg-white/[0.05]">
         <div
-          className="h-2 rounded-full transition-all duration-500"
+          className="h-2 rounded-full transition-[width] duration-500"
           style={{ width: `${pct}%`, backgroundColor: color }}
         />
       </div>
     </div>
   );
+}
+
+/**
+ * Detect if user is likely Ukrainian based on browser locale/timezone
+ */
+function detectUkrainianUser(): boolean {
+  try {
+    const lang = navigator.language || "";
+    if (lang.startsWith("uk") || lang.startsWith("ua")) return true;
+
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    if (tz.includes("Kiev") || tz.includes("Kyiv") || tz.includes("Europe/Uzhgorod") || tz.includes("Europe/Zaporozhye")) return true;
+  } catch {
+    // ignore
+  }
+  return false;
 }
 
 export default function BillingPage() {
@@ -133,6 +159,36 @@ export default function BillingPage() {
   const [usage, setUsage] = useState<UsageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState<string | null>(null);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethods | null>(null);
+  const [provider, setProvider] = useState<PaymentProvider>("stripe");
+
+  // LiqPay form refs
+  const liqpayFormRef = useRef<HTMLFormElement>(null);
+  const liqpayDataRef = useRef<HTMLInputElement>(null);
+  const liqpaySignatureRef = useRef<HTMLInputElement>(null);
+
+  // Fetch available payment methods
+  useEffect(() => {
+    fetch("/api/dashboard/billing/payment-methods")
+      .then((res) => res.json())
+      .then((data: PaymentMethods) => {
+        setPaymentMethods(data);
+
+        // Auto-detect default provider
+        const isUa = detectUkrainianUser();
+        if (isUa && data.liqpay) {
+          setProvider("liqpay");
+        } else if (data.stripe) {
+          setProvider("stripe");
+        } else if (data.liqpay) {
+          setProvider("liqpay");
+        }
+      })
+      .catch(() => {
+        // Fallback: assume stripe only
+        setPaymentMethods({ stripe: true, liqpay: false });
+      });
+  }, []);
 
   const fetchUsage = useCallback(async () => {
     try {
@@ -156,7 +212,6 @@ export default function BillingPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("success") === "true") {
       toast.success(t ? "Тариф успішно оновлено!" : "Plan upgraded successfully!");
-      // Clean URL
       window.history.replaceState({}, "", "/dashboard/billing");
       fetchUsage();
     }
@@ -168,6 +223,17 @@ export default function BillingPage() {
 
   async function handleUpgrade(planId: string) {
     setUpgrading(planId);
+
+    if (provider === "liqpay") {
+      await handleLiqPayUpgrade(planId);
+    } else {
+      await handleStripeUpgrade(planId);
+    }
+
+    setUpgrading(null);
+  }
+
+  async function handleStripeUpgrade(planId: string) {
     try {
       const res = await fetch("/api/dashboard/billing/checkout", {
         method: "POST",
@@ -184,8 +250,32 @@ export default function BillingPage() {
       }
     } catch {
       toast.error(t ? "Не вдалося створити сесію оплати" : "Failed to create checkout session");
-    } finally {
-      setUpgrading(null);
+    }
+  }
+
+  async function handleLiqPayUpgrade(planId: string) {
+    try {
+      const res = await fetch("/api/dashboard/billing/liqpay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId }),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        toast.error(result.error || (t ? "Помилка" : "Error"));
+        return;
+      }
+
+      // Submit hidden LiqPay form
+      if (liqpayDataRef.current && liqpaySignatureRef.current && liqpayFormRef.current) {
+        liqpayDataRef.current.value = result.data;
+        liqpaySignatureRef.current.value = result.signature;
+        liqpayFormRef.current.submit();
+      }
+    } catch {
+      toast.error(
+        t ? "Не вдалося створити платіж LiqPay" : "Failed to create LiqPay payment"
+      );
     }
   }
 
@@ -217,10 +307,22 @@ export default function BillingPage() {
         : "Free"
       : currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1);
 
+  const isLiqPay = provider === "liqpay";
   const planPrice =
     currentPlan === "free"
       ? 0
-      : PLANS.find((p) => p.id === currentPlan)?.price || 0;
+      : isLiqPay
+        ? PLANS.find((p) => p.id === currentPlan)?.priceUah || 0
+        : PLANS.find((p) => p.id === currentPlan)?.priceUsd || 0;
+
+  const currencySymbol = isLiqPay ? "" : "$";
+  const currencySuffix = isLiqPay ? "₴" : "";
+
+  // Determine if toggle should be shown
+  const showToggle =
+    paymentMethods && paymentMethods.stripe && paymentMethods.liqpay;
+  const hasAnyProvider =
+    paymentMethods && (paymentMethods.stripe || paymentMethods.liqpay);
 
   return (
     <div>
@@ -232,6 +334,37 @@ export default function BillingPage() {
             : "Manage your plan and usage."
         }
       />
+
+      {/* Payment Method Toggle */}
+      {showToggle && (
+        <div className="mb-6 flex items-center gap-2">
+          <span className="text-sm text-white/50">
+            {t ? "Спосіб оплати:" : "Payment method:"}
+          </span>
+          <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-0.5">
+            <button
+              onClick={() => setProvider("stripe")}
+              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                provider === "stripe"
+                  ? "bg-white/10 text-white"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              Stripe (USD)
+            </button>
+            <button
+              onClick={() => setProvider("liqpay")}
+              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                provider === "liqpay"
+                  ? "bg-white/10 text-white"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              LiqPay (UAH)
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Current Plan + Usage */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -251,7 +384,7 @@ export default function BillingPage() {
             ) : (
               <>
                 <span className="text-3xl font-bold text-white font-display">
-                  ${planPrice}
+                  {currencySymbol}{planPrice}{currencySuffix}
                 </span>
                 <span className="text-sm text-white/40">
                   {t ? "/міс" : "/mo"}
@@ -332,11 +465,12 @@ export default function BillingPage() {
           const Icon = plan.icon;
           const isCurrent = currentPlan === plan.id;
           const features = t ? plan.features.ua : plan.features.en;
+          const displayPrice = isLiqPay ? plan.priceUah : plan.priceUsd;
 
           return (
             <div
               key={plan.id}
-              className={`relative rounded-2xl border p-6 transition-all ${
+              className={`relative rounded-2xl border p-6 transition-colors ${
                 isCurrent
                   ? "border-[#0090f0]/40 bg-[#0090f0]/5"
                   : "border-white/8 bg-[rgba(14,14,22,0.95)] hover:border-white/15"
@@ -369,7 +503,7 @@ export default function BillingPage() {
 
               <div className="mb-4">
                 <span className="text-3xl font-bold text-white font-display">
-                  ${plan.price}
+                  {currencySymbol}{displayPrice.toLocaleString()}{currencySuffix}
                 </span>
                 <span className="text-sm text-white/40">
                   {t ? "/міс" : "/mo"}
@@ -389,7 +523,7 @@ export default function BillingPage() {
                 <div className="w-full text-center text-sm font-medium text-[#0090f0] py-2">
                   {t ? "Поточний тариф" : "Current Plan"}
                 </div>
-              ) : (
+              ) : hasAnyProvider ? (
                 <GlassButton
                   size="sm"
                   className="w-full"
@@ -401,14 +535,34 @@ export default function BillingPage() {
                       ? "Завантаження..."
                       : "Loading..."
                     : t
-                      ? "Обрати"
-                      : "Upgrade"}
+                      ? isLiqPay
+                        ? "Оплатити"
+                        : "Обрати"
+                      : isLiqPay
+                        ? "Pay"
+                        : "Upgrade"}
                 </GlassButton>
+              ) : (
+                <div className="w-full text-center text-sm text-white/30 py-2">
+                  {t ? "Оплата недоступна" : "Payments unavailable"}
+                </div>
               )}
             </div>
           );
         })}
       </div>
+
+      {/* Hidden LiqPay form for form submission */}
+      <form
+        ref={liqpayFormRef}
+        method="POST"
+        action="https://www.liqpay.ua/api/3/checkout"
+        target="_blank"
+        className="hidden"
+      >
+        <input ref={liqpayDataRef} type="hidden" name="data" value="" />
+        <input ref={liqpaySignatureRef} type="hidden" name="signature" value="" />
+      </form>
     </div>
   );
 }
