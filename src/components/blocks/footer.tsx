@@ -1,10 +1,21 @@
 "use client";
 
-import { useLang } from "@/hooks/use-lang";
+import { useLang, type Lang } from "@/hooks/use-lang";
+
+const t: Record<Lang, { privacy: string; terms: string }> = {
+  en: { privacy: "Privacy", terms: "Terms" },
+  ua: { privacy: "Конфіденційність", terms: "Умови" },
+  de: { privacy: "Datenschutz", terms: "AGB" },
+  fr: { privacy: "Confidentialité", terms: "Conditions" },
+  es: { privacy: "Privacidad", terms: "Términos" },
+  pl: { privacy: "Prywatność", terms: "Regulamin" },
+  pt: { privacy: "Privacidade", terms: "Termos" },
+  ja: { privacy: "プライバシー", terms: "利用規約" },
+};
 
 export function Footer() {
   const [lang] = useLang();
-  const ua = lang === "ua";
+  const s = t[lang] || t.en;
 
   return (
     <footer className="border-t border-white/5 py-12 relative z-10 bg-[#0a0a0f]">
@@ -17,8 +28,8 @@ export function Footer() {
           <span className="text-[10px] text-white/20 mt-0.5">A product by Void Research</span>
         </div>
         <div className="flex gap-8 text-sm text-white/30">
-          <a href="#" className="hover:text-white/60 transition-colors">{ua ? "Конфіденційність" : "Privacy"}</a>
-          <a href="#" className="hover:text-white/60 transition-colors">{ua ? "Умови" : "Terms"}</a>
+          <a href="#" className="hover:text-white/60 transition-colors">{s.privacy}</a>
+          <a href="#" className="hover:text-white/60 transition-colors">{s.terms}</a>
           <a href="mailto:hello@projectnoir.ai" className="hover:text-white/60 transition-colors">
             hello@projectnoir.ai
           </a>

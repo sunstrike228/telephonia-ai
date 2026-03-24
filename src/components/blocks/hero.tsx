@@ -1,11 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useLang } from "@/hooks/use-lang";
+import { useLang, type Lang } from "@/hooks/use-lang";
 import { GlassButton } from "@/components/ui/glass-button";
 import { Phone, MessageCircle, Mail } from "lucide-react";
 
-const t = {
+const t: Record<Lang, {
+  h1_1: string; h1_2: string; h1_3: string;
+  sub1: string; sub2: string;
+  cta1: string; ctaCall: string; ctaTelegram: string; ctaEmail: string;
+  callBtn: string; callSuccess: string;
+  telegramBtn: string; telegramSuccess: string; telegramPlaceholder: string;
+  emailBtn: string; emailSuccess: string; emailPlaceholder: string;
+  searchPlaceholder: string; rateLimited: string;
+}> = {
   en: {
     h1_1: "AI agents that",
     h1_2: "sound human.",
@@ -47,6 +55,132 @@ const t = {
     emailPlaceholder: "ви@email.com",
     searchPlaceholder: "Пошук країни...",
     rateLimited: "Вже надіслано. Спробуйте пізніше.",
+  },
+  de: {
+    h1_1: "KI-Agenten, die",
+    h1_2: "menschlich klingen.",
+    h1_3: "Verkaufen wie Profis.",
+    sub1: "Ersetzen Sie Ihr Outreach-Team durch KI-Agenten, die Ihre Leads anrufen, anschreiben und mailen.",
+    sub2: "Nicht von echten Menschen zu unterscheiden.",
+    cta1: "Kontakt",
+    ctaCall: "Testanruf anfordern",
+    ctaTelegram: "Testnachricht erhalten",
+    ctaEmail: "Test-E-Mail erhalten",
+    callBtn: "Anrufen",
+    callSuccess: "Sie erhalten innerhalb einer Minute einen Anruf!",
+    telegramBtn: "Nachricht senden",
+    telegramSuccess: "Prüfen Sie Ihr Telegram!",
+    telegramPlaceholder: "ihr_username",
+    emailBtn: "E-Mail senden",
+    emailSuccess: "Prüfen Sie Ihren Posteingang!",
+    emailPlaceholder: "sie@email.de",
+    searchPlaceholder: "Land suchen...",
+    rateLimited: "Bereits gesendet. Versuchen Sie es später.",
+  },
+  fr: {
+    h1_1: "Des agents IA qui",
+    h1_2: "parlent comme des humains.",
+    h1_3: "Vendent comme des pros.",
+    sub1: "Remplacez votre équipe de prospection par des agents IA qui appellent, envoient des messages et des emails à vos prospects.",
+    sub2: "Impossibles à distinguer de vrais humains.",
+    cta1: "Contactez-nous",
+    ctaCall: "Demander un appel test",
+    ctaTelegram: "Recevoir un message test",
+    ctaEmail: "Recevoir un email test",
+    callBtn: "Appeler",
+    callSuccess: "Vous recevrez un appel dans la minute !",
+    telegramBtn: "Envoyer",
+    telegramSuccess: "Vérifiez votre Telegram !",
+    telegramPlaceholder: "votre_pseudo",
+    emailBtn: "Envoyer",
+    emailSuccess: "Vérifiez votre boîte mail !",
+    emailPlaceholder: "vous@email.fr",
+    searchPlaceholder: "Chercher un pays...",
+    rateLimited: "Déjà envoyé. Réessayez plus tard.",
+  },
+  es: {
+    h1_1: "Agentes de IA que",
+    h1_2: "suenan humanos.",
+    h1_3: "Venden como profesionales.",
+    sub1: "Reemplace su equipo de prospección con agentes de IA que llaman, envían mensajes y emails a sus leads.",
+    sub2: "Indistinguibles de humanos reales.",
+    cta1: "Contáctenos",
+    ctaCall: "Solicitar llamada de prueba",
+    ctaTelegram: "Recibir mensaje de prueba",
+    ctaEmail: "Recibir email de prueba",
+    callBtn: "Llamar",
+    callSuccess: "¡Recibirá una llamada en un minuto!",
+    telegramBtn: "Enviar",
+    telegramSuccess: "¡Revise su Telegram!",
+    telegramPlaceholder: "su_usuario",
+    emailBtn: "Enviar",
+    emailSuccess: "¡Revise su bandeja de entrada!",
+    emailPlaceholder: "usted@email.es",
+    searchPlaceholder: "Buscar país...",
+    rateLimited: "Ya enviado. Inténtelo más tarde.",
+  },
+  pl: {
+    h1_1: "Agenci AI, którzy",
+    h1_2: "brzmią jak ludzie.",
+    h1_3: "Sprzedają jak profesjonaliści.",
+    sub1: "Zastąp swój zespół sprzedaży agentami AI, którzy dzwonią, piszą i wysyłają maile do Twoich leadów.",
+    sub2: "Nie do odróżnienia od prawdziwych ludzi.",
+    cta1: "Skontaktuj się",
+    ctaCall: "Zamów połączenie testowe",
+    ctaTelegram: "Otrzymaj wiadomość testową",
+    ctaEmail: "Otrzymaj testowy email",
+    callBtn: "Zadzwoń",
+    callSuccess: "Otrzymasz połączenie w ciągu minuty!",
+    telegramBtn: "Wyślij",
+    telegramSuccess: "Sprawdź swojego Telegrama!",
+    telegramPlaceholder: "twoja_nazwa",
+    emailBtn: "Wyślij",
+    emailSuccess: "Sprawdź swoją skrzynkę!",
+    emailPlaceholder: "ty@email.pl",
+    searchPlaceholder: "Szukaj kraju...",
+    rateLimited: "Już wysłano. Spróbuj później.",
+  },
+  pt: {
+    h1_1: "Agentes de IA que",
+    h1_2: "soam humanos.",
+    h1_3: "Vendem como profissionais.",
+    sub1: "Substitua sua equipe de prospecção por agentes de IA que ligam, enviam mensagens e emails para seus leads.",
+    sub2: "Indistinguíveis de humanos reais.",
+    cta1: "Fale conosco",
+    ctaCall: "Solicitar ligação teste",
+    ctaTelegram: "Receber mensagem teste",
+    ctaEmail: "Receber email teste",
+    callBtn: "Ligar",
+    callSuccess: "Você receberá uma ligação em um minuto!",
+    telegramBtn: "Enviar",
+    telegramSuccess: "Verifique seu Telegram!",
+    telegramPlaceholder: "seu_usuario",
+    emailBtn: "Enviar",
+    emailSuccess: "Verifique sua caixa de entrada!",
+    emailPlaceholder: "voce@email.com.br",
+    searchPlaceholder: "Buscar país...",
+    rateLimited: "Já enviado. Tente novamente mais tarde.",
+  },
+  ja: {
+    h1_1: "人間そっくりの",
+    h1_2: "AIエージェント。",
+    h1_3: "プロのように売る。",
+    sub1: "電話、メッセージ、メールでリードにアプローチするAIエージェントで、営業チームを置き換えましょう。",
+    sub2: "本物の人間と区別がつきません。",
+    cta1: "お問い合わせ",
+    ctaCall: "テスト通話を依頼",
+    ctaTelegram: "テストメッセージを受信",
+    ctaEmail: "テストメールを受信",
+    callBtn: "電話する",
+    callSuccess: "1分以内にお電話いたします！",
+    telegramBtn: "送信",
+    telegramSuccess: "Telegramをご確認ください！",
+    telegramPlaceholder: "ユーザー名",
+    emailBtn: "送信",
+    emailSuccess: "受信トレイをご確認ください！",
+    emailPlaceholder: "you@email.jp",
+    searchPlaceholder: "国を検索...",
+    rateLimited: "送信済みです。後でもう一度お試しください。",
   },
 };
 
@@ -126,7 +260,7 @@ export function Hero() {
   const emailRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const s = t[lang];
+  const s = t[lang] || t.en;
 
   useEffect(() => {
     if (activeInput === "phone" && inputRef.current) inputRef.current.focus();
@@ -306,7 +440,7 @@ export function Hero() {
               </GlassButton>
 
               <GlassButton onClick={() => setActiveInput("email")} contentClassName="flex items-center gap-2">
-                <Mail size={18} className="text-[#34d399]" />
+                <Mail size={18} className="text-[#ff6b6b]" />
                 {s.ctaEmail}
               </GlassButton>
             </div>
@@ -316,7 +450,7 @@ export function Hero() {
           {activeInput === "phone" && (
             <form onSubmit={handleSubmitPhone} className="phone-input-wrap flex items-center gap-1 px-2 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-sm relative">
               {submitted === "phone" ? (
-                <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#34d399] font-medium">
+                <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#ff6b6b] font-medium">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                   {s.callSuccess}
                 </div>
@@ -455,14 +589,14 @@ export function Hero() {
           {activeInput === "email" && (
             <form onSubmit={handleSubmitEmail} className="phone-input-wrap flex items-center gap-1 px-2 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-sm relative">
               {submitted === "email" ? (
-                <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#34d399] font-medium">
+                <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#ff6b6b] font-medium">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                   {s.emailSuccess}
                 </div>
               ) : (
                 <>
                   <div className="flex items-center gap-1 px-3 py-2 text-white/50 text-sm">
-                    <Mail size={16} className="text-[#34d399]" />
+                    <Mail size={16} className="text-[#ff6b6b]" />
                   </div>
 
                   <input
@@ -477,7 +611,7 @@ export function Hero() {
                   <button
                     type="submit"
                     disabled={!email.includes("@") || email.length < 5 || loading}
-                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#34d399] hover:bg-[#34d399]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap"
+                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#ff6b6b] hover:bg-[#ff6b6b]/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap"
                   >
                     {loading ? "..." : s.emailBtn}
                   </button>

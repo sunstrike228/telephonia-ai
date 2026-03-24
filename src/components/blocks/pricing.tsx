@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { GlassButton } from "@/components/ui/glass-button";
 import { useInView } from "@/hooks/use-in-view";
-import { useLang } from "@/hooks/use-lang";
+import { useLang, type Lang } from "@/hooks/use-lang";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
 
@@ -118,39 +118,40 @@ const CheckIcon = ({ className }: { className?: string }) => (
 
 /* ── Types ── */
 interface PricingPlan {
-  name: string;
-  nameUa?: string;
+  name: Record<Lang, string>;
   price: string;
   yearlyPrice: string;
   period: string;
-  features: string[];
-  featuresUa?: string[];
-  description: string;
-  descriptionUa?: string;
-  buttonText: string;
-  buttonTextUa?: string;
+  features: Record<Lang, string[]>;
+  description: Record<Lang, string>;
+  buttonText: Record<Lang, string>;
   href: string;
   isPopular: boolean;
 }
 
 interface PricingProps {
   plans: PricingPlan[];
-  title?: string;
-  description?: string;
 }
 
+const sectionText: Record<Lang, { title: string; description: string; annual: string; save: string; monthly: string; yearly: string; mo: string; popular: string }> = {
+  en: { title: "Simple, Transparent Pricing", description: "Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support.", annual: "Annual billing", save: "Save 20%", monthly: "billed monthly", yearly: "billed annually", mo: "/mo", popular: "Most Popular" },
+  ua: { title: "Прості, прозорі ціни", description: "Оберіть план, який підходить вам\nУсі плани включають доступ до платформи, інструменти генерації лідів та підтримку.", annual: "Річна оплата", save: "Економія 20%", monthly: "щомісячна оплата", yearly: "річна оплата", mo: "/міс", popular: "Найпопулярніший" },
+  de: { title: "Einfache, transparente Preise", description: "Wählen Sie den Plan, der zu Ihnen passt\nAlle Pläne beinhalten Zugang zur Plattform, Lead-Generierung und dedizierten Support.", annual: "Jährliche Abrechnung", save: "20% sparen", monthly: "monatliche Abrechnung", yearly: "jährliche Abrechnung", mo: "/Mo", popular: "Am beliebtesten" },
+  fr: { title: "Tarifs simples et transparents", description: "Choisissez le plan qui vous convient\nTous les plans incluent l'accès à la plateforme, les outils de génération de leads et un support dédié.", annual: "Facturation annuelle", save: "Économisez 20%", monthly: "facturé mensuellement", yearly: "facturé annuellement", mo: "/mois", popular: "Le plus populaire" },
+  es: { title: "Precios simples y transparentes", description: "Elija el plan que mejor le funcione\nTodos los planes incluyen acceso a la plataforma, herramientas de generación de leads y soporte dedicado.", annual: "Facturación anual", save: "Ahorre 20%", monthly: "facturado mensualmente", yearly: "facturado anualmente", mo: "/mes", popular: "Más popular" },
+  pl: { title: "Proste, przejrzyste ceny", description: "Wybierz plan, który Ci odpowiada\nWszystkie plany obejmują dostęp do platformy, narzędzia do generowania leadów i dedykowane wsparcie.", annual: "Rozliczenie roczne", save: "Oszczędź 20%", monthly: "rozliczenie miesięczne", yearly: "rozliczenie roczne", mo: "/mies", popular: "Najpopularniejszy" },
+  pt: { title: "Preços simples e transparentes", description: "Escolha o plano que funciona para você\nTodos os planos incluem acesso à plataforma, ferramentas de geração de leads e suporte dedicado.", annual: "Cobrança anual", save: "Economize 20%", monthly: "cobrado mensalmente", yearly: "cobrado anualmente", mo: "/mês", popular: "Mais popular" },
+  ja: { title: "シンプルで透明な料金", description: "あなたに合ったプランをお選びください\nすべてのプランにプラットフォームへのアクセス、リード生成ツール、専任サポートが含まれます。", annual: "年間請求", save: "20%節約", monthly: "月額請求", yearly: "年間請求", mo: "/月", popular: "最も人気" },
+};
+
 /* ── Main Component ── */
-export function Pricing({
-  plans,
-  title = "Simple, Transparent Pricing",
-  description = "Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support.",
-}: PricingProps) {
+export function Pricing({ plans }: PricingProps) {
   const [isMonthly, setIsMonthly] = useState(true);
   const switchRef = useRef<HTMLButtonElement>(null);
   const { ref: sectionRef, isInView } = useInView();
   const v = isInView ? 'reveal-visible' : '';
   const [lang] = useLang();
-  const ua = lang === "ua";
+  const st = sectionText[lang] || sectionText.en;
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
@@ -179,10 +180,10 @@ export function Pricing({
         {/* Header */}
         <div className="text-center mb-14">
           <h2 className="text-[48px] md:text-[64px] font-extralight leading-tight tracking-[-0.03em] text-white font-display">
-            {ua ? "Прості, прозорі ціни" : title}
+            {st.title}
           </h2>
-          <p className="mt-3 text-base md:text-lg text-white/50 max-w-2xl mx-auto whitespace-pre-line">
-            {ua ? "Оберіть план, який підходить вам\nУсі плани включають доступ до платформи, інструменти генерації лідів та підтримку." : description}
+          <p className="mt-3 text-base md:text-lg text-white/80 max-w-2xl mx-auto whitespace-pre-line">
+            {st.description}
           </p>
         </div>
 
@@ -194,85 +195,92 @@ export function Pricing({
                 ref={switchRef as React.Ref<HTMLButtonElement>}
                 checked={!isMonthly}
                 onCheckedChange={handleToggle}
-                className="relative data-[state=checked]:bg-cyan-400 data-[state=unchecked]:bg-white/20"
+                className="relative data-[state=checked]:bg-red-400 data-[state=unchecked]:bg-white/20"
               />
             </Label>
           </label>
           <span className="ml-3 font-semibold text-white text-sm">
-            {ua ? "Річна оплата" : "Annual billing"} <span className="text-cyan-400">{ua ? "(Економія 20%)" : "(Save 20%)"}</span>
+            {st.annual} <span className="text-red-400">({st.save})</span>
           </span>
         </div>
 
         {/* Cards */}
         <div className="flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-center">
-          {plans.map((plan, index) => (
-            <div
-              key={plan.name}
-              className={cn(
-                `reveal-hidden ${v}`,
-                "rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300",
-                "border",
-                plan.isPopular
-                  ? "scale-105 relative ring-2 ring-cyan-400/20 border-cyan-400/30 shadow-2xl bg-[rgba(12,18,30,0.97)] mt-6"
-                  : "border-white/10 bg-[rgba(14,14,22,0.97)]"
-              )}
-            >
-              {plan.isPopular && (
-                <div className="absolute -top-4 right-4 px-3 py-1 text-[12px] font-semibold rounded-full bg-cyan-400 text-black">
-                  {ua ? "Найпопулярніший" : "Most Popular"}
-                </div>
-              )}
+          {plans.map((plan) => {
+            const planName = plan.name[lang] || plan.name.en;
+            const planDesc = plan.description[lang] || plan.description.en;
+            const planFeatures = plan.features[lang] || plan.features.en;
+            const planBtn = plan.buttonText[lang] || plan.buttonText.en;
 
-              {/* Plan name */}
-              <div className="mb-3">
-                <h3 className="text-[28px] md:text-[34px] font-extralight tracking-[-0.03em] text-white font-display leading-tight">
-                  {ua ? (plan.nameUa || plan.name) : plan.name}
-                </h3>
-                <p className="text-sm text-white/50 mt-1">{ua ? (plan.descriptionUa || plan.description) : plan.description}</p>
-              </div>
-
-              {/* Price */}
-              <div className="my-6 flex items-baseline gap-2">
-                <span className="text-[48px] font-extralight text-white font-display">
-                  <NumberFlow
-                    value={isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)}
-                    format={{ style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }}
-                    transformTiming={{ duration: 500, easing: "ease-out" }}
-                    willChange
-                    className="tabular-nums"
-                  />
-                </span>
-                <span className="text-sm text-white/40">{ua ? "/міс" : "/mo"}</span>
-              </div>
-              <p className="text-xs text-white/25 -mt-4 mb-4">
-                {isMonthly ? (ua ? "щомісячна оплата" : "billed monthly") : (ua ? "річна оплата" : "billed annually")}
-              </p>
-
-              {/* Divider */}
-              <div className="w-full mb-5 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-
-              {/* Features */}
-              <ul className="flex flex-col gap-2 text-sm text-white/70 mb-6">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <CheckIcon className="text-cyan-400 w-4 h-4 flex-shrink-0" />
-                    {ua ? (plan.featuresUa?.[idx] || feature) : feature}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Button */}
-              <GlassButton
+            return (
+              <div
+                key={plan.name.en}
                 className={cn(
-                  "mt-auto w-full",
-                  plan.isPopular ? "glass-button-cyan" : ""
+                  `reveal-hidden ${v}`,
+                  "rounded-2xl shadow-xl flex-1 max-w-xs px-7 py-8 flex flex-col transition-all duration-300",
+                  "border",
+                  plan.isPopular
+                    ? "scale-105 relative ring-2 ring-red-400/20 border-red-400/30 shadow-2xl bg-[rgba(12,18,30,0.97)] mt-6"
+                    : "border-white/10 bg-[rgba(14,14,22,0.97)]"
                 )}
-                size="sm"
               >
-                {ua ? (plan.buttonTextUa || plan.buttonText) : plan.buttonText}
-              </GlassButton>
-            </div>
-          ))}
+                {plan.isPopular && (
+                  <div className="absolute -top-4 right-4 px-3 py-1 text-[12px] font-semibold rounded-full bg-red-400 text-black">
+                    {st.popular}
+                  </div>
+                )}
+
+                {/* Plan name */}
+                <div className="mb-3">
+                  <h3 className="text-[28px] md:text-[34px] font-extralight tracking-[-0.03em] text-white font-display leading-tight">
+                    {planName}
+                  </h3>
+                  <p className="text-sm text-white/50 mt-1">{planDesc}</p>
+                </div>
+
+                {/* Price */}
+                <div className="my-6 flex items-baseline gap-2">
+                  <span className="text-[48px] font-extralight text-white font-display">
+                    <NumberFlow
+                      value={isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)}
+                      format={{ style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+                      transformTiming={{ duration: 500, easing: "ease-out" }}
+                      willChange
+                      className="tabular-nums"
+                    />
+                  </span>
+                  <span className="text-sm text-white/40">{st.mo}</span>
+                </div>
+                <p className="text-xs text-white/25 -mt-4 mb-4">
+                  {isMonthly ? st.monthly : st.yearly}
+                </p>
+
+                {/* Divider */}
+                <div className="w-full mb-5 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+                {/* Features */}
+                <ul className="flex flex-col gap-2 text-sm text-white/70 mb-6">
+                  {planFeatures.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <CheckIcon className="text-red-400 w-4 h-4 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Button */}
+                <GlassButton
+                  className={cn(
+                    "mt-auto w-full",
+                    plan.isPopular ? "glass-button-cyan" : ""
+                  )}
+                  size="sm"
+                >
+                  {planBtn}
+                </GlassButton>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
