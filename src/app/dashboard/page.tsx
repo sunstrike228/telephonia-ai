@@ -114,7 +114,7 @@ export default function DashboardOverview() {
         {/* Voice Card */}
         <Link
           href="/dashboard/calls"
-          className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#0090f0]/30 transition-colors duration-300"
+          className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-[#0090f0]/30 transition-colors duration-300"
         >
           <div className="flex items-center gap-3 mb-5">
             <div
@@ -157,7 +157,7 @@ export default function DashboardOverview() {
         {/* Telegram Card */}
         <Link
           href="/dashboard/telegram"
-          className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#a78bfa]/30 transition-colors duration-300"
+          className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-[#a78bfa]/30 transition-colors duration-300"
         >
           <div className="flex items-center gap-3 mb-5">
             <div
@@ -198,7 +198,7 @@ export default function DashboardOverview() {
         {/* Email Card */}
         <Link
           href="/dashboard/email"
-          className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#34d399]/30 transition-colors duration-300"
+          className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-[#34d399]/30 transition-colors duration-300"
         >
           <div className="flex items-center gap-3 mb-5">
             <div
@@ -245,7 +245,7 @@ export default function DashboardOverview() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href="/dashboard/scripts"
-            className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#0090f0]/30 transition-colors duration-300"
+            className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-[#0090f0]/30 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#0090f0]/10 border border-[#0090f0]/20 mb-4">
               <FileText size={18} className="text-[#0090f0]" />
@@ -259,7 +259,7 @@ export default function DashboardOverview() {
           </Link>
           <Link
             href="/dashboard/voice"
-            className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#a78bfa]/30 transition-colors duration-300"
+            className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-[#a78bfa]/30 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#a78bfa]/10 border border-[#a78bfa]/20 mb-4">
               <Mic size={18} className="text-[#a78bfa]" />
@@ -273,7 +273,7 @@ export default function DashboardOverview() {
           </Link>
           <Link
             href="/dashboard/leads"
-            className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-[#34d399]/30 transition-colors duration-300"
+            className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-[#34d399]/30 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#34d399]/10 border border-[#34d399]/20 mb-4">
               <Users size={18} className="text-[#34d399]" />
@@ -294,13 +294,13 @@ export default function DashboardOverview() {
           {t ? "Остання активність" : "Recent Activity"}
         </h3>
         {recentActivity.length === 0 ? (
-          <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-8 text-center">
+          <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-8 text-center">
             <p className="text-sm text-white/30">
               {t ? "Активності ще немає. Створіть скрипт та імпортуйте ліди, щоб почати." : "No activity yet. Create a script and import leads to get started."}
             </p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+          <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] overflow-hidden">
             {recentActivity.map((item) => {
               const channelIcon =
                 item.channel === "voice" ? <Phone size={14} stroke="#0090f0" /> :

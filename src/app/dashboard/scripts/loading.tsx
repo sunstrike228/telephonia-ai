@@ -13,7 +13,7 @@ export default function ScriptsLoading() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 h-[160px]"
+            className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 h-[160px]"
           >
             <div className="h-5 w-40 bg-white/5 rounded mb-3" />
             <div className="h-3 w-full bg-white/5 rounded mb-2" />

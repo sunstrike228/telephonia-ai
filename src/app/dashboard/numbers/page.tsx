@@ -297,7 +297,7 @@ export default function NumbersPage() {
           </GlassButton>
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[1fr_1fr_100px_100px_1fr_80px] gap-4 px-6 py-3 border-b border-white/8 text-xs font-medium text-white/30 uppercase tracking-wider">
             <span>{t ? "Номер" : "Number"}</span>
@@ -382,7 +382,7 @@ export default function NumbersPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-xl rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)] p-6 max-h-[85vh] overflow-y-auto"
+            className="relative w-full max-w-xl rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.98)] p-6 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
@@ -550,7 +550,7 @@ export default function NumbersPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-sm rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)] p-6"
+            className="relative w-full max-w-sm rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.98)] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 mb-4">

@@ -250,7 +250,7 @@ export function Pricing({ plans }: PricingProps) {
                   "border",
                   plan.isPopular
                     ? "scale-105 relative ring-2 ring-red-400/20 border-red-400/30 shadow-2xl bg-[rgba(14,14,14,0.97)] mt-6"
-                    : "border-white/10 bg-[rgba(12,12,12,0.97)]"
+                    : "border-white/10 bg-[rgba(0,0,0,0.97)]"
                 )}
               >
                 {plan.isPopular && (

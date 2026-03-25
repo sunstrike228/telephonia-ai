@@ -4,7 +4,7 @@
 @source "../hooks/**/*.ts";
 
 :root {
-  --background: #0a0a0f;
+  --background: #000000;
   --foreground: #e2e2ef;
   --primary: #ff4d4d;
   --primary-foreground: #ffffff;

@@ -2,7 +2,7 @@ import { MessageCircle, Users, Clock, Shield, AlertTriangle } from "lucide-react
 
 function CodeBlock({ children, title }: { children: string; title?: string }) {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-[rgba(14,14,22,0.95)] overflow-hidden my-4">
+    <div className="rounded-xl border border-white/[0.08] bg-[rgba(0,0,0,0.95)] overflow-hidden my-4">
       {title && (
         <div className="px-4 py-2.5 border-b border-white/[0.06] text-xs font-mono text-white/40">
           {title}

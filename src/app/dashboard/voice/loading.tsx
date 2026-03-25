@@ -8,7 +8,7 @@ export default function VoiceLoading() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Voice selection */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 h-[260px]">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 h-[260px]">
           <div className="h-5 w-32 bg-white/5 rounded mb-4" />
           <div className="h-12 w-full bg-white/5 rounded-xl mb-3" />
           <div className="space-y-2">
@@ -19,7 +19,7 @@ export default function VoiceLoading() {
         </div>
 
         {/* Language & personality */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 h-[260px]">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 h-[260px]">
           <div className="h-5 w-28 bg-white/5 rounded mb-4" />
           <div className="h-12 w-full bg-white/5 rounded-xl mb-6" />
           <div className="h-5 w-28 bg-white/5 rounded mb-4" />

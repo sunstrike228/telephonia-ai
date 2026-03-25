@@ -37,7 +37,7 @@ export function Topbar() {
   });
 
   return (
-    <header className="h-14 flex items-center justify-between px-8 border-b border-white/[0.04] bg-[#0a0a0f]/60 backdrop-blur-xl sticky top-0 z-30">
+    <header className="h-14 flex items-center justify-between px-8 border-b border-white/[0.04] bg-[#000000]/60 backdrop-blur-xl sticky top-0 z-30">
       <nav className="flex items-center gap-1.5 text-sm">
         {crumbs.map((c, i) => (
           <span key={c.href} className="flex items-center gap-1.5">

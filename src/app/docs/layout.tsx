@@ -150,9 +150,9 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-[#000000]">
       {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[rgba(10,10,15,0.95)] backdrop-blur-xl border-b border-white/[0.06]">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[rgba(0,0,0,0.95)] backdrop-blur-xl border-b border-white/[0.06]">
         <div className="flex items-center justify-between px-4 h-14">
           <Link href="/" className="flex items-center gap-1.5 font-display font-bold text-base">
             <span className="text-white">project</span>
@@ -177,11 +177,11 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 h-screen w-[280px] bg-[rgba(10,10,15,0.97)] border-r border-white/[0.06] overflow-y-auto transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 left-0 z-40 h-screen w-[280px] bg-[rgba(0,0,0,0.97)] border-r border-white/[0.06] overflow-y-auto transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="sticky top-0 z-10 bg-[rgba(10,10,15,0.97)] backdrop-blur-xl border-b border-white/[0.06] px-5 py-4">
+        <div className="sticky top-0 z-10 bg-[rgba(0,0,0,0.97)] backdrop-blur-xl border-b border-white/[0.06] px-5 py-4">
           <Link href="/" className="flex flex-col items-center w-full group">
             <span className="font-display font-bold text-2xl leading-none flex items-center gap-2">
               <span className="text-white">project</span>
@@ -214,7 +214,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       {/* Main content */}
       <main className="lg:pl-[280px] pt-14 lg:pt-0">
         {/* Top bar */}
-        <div className="sticky top-0 z-30 bg-[rgba(10,10,15,0.9)] backdrop-blur-xl border-b border-white/[0.06]">
+        <div className="sticky top-0 z-30 bg-[rgba(0,0,0,0.9)] backdrop-blur-xl border-b border-white/[0.06]">
           <div className="flex items-center justify-between px-6 lg:px-10 h-14">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-1.5 text-sm">

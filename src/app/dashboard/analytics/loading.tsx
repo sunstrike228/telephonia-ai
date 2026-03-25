@@ -11,7 +11,7 @@ export default function AnalyticsLoading() {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 h-[180px]"
+            className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 h-[180px]"
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="h-10 w-10 bg-white/5 rounded-xl" />
@@ -25,7 +25,7 @@ export default function AnalyticsLoading() {
       </div>
 
       {/* Chart skeleton */}
-      <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 h-[300px] mb-6">
+      <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 h-[300px] mb-6">
         <div className="h-5 w-40 bg-white/5 rounded mb-6" />
         <div className="h-[220px] w-full bg-white/5 rounded-xl" />
       </div>

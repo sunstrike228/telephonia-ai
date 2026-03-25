@@ -76,7 +76,7 @@ function LanguageDropdown({ lang, switchLang, size = "default" }: { lang: Lang; 
 
       {open && (
         <div className={cn(
-          "absolute z-[100] mt-2 w-48 py-1.5 rounded-xl border border-white/10 bg-[rgba(10,10,15,0.92)] backdrop-blur-xl shadow-2xl shadow-black/40",
+          "absolute z-[100] mt-2 w-48 py-1.5 rounded-xl border border-white/10 bg-[rgba(0,0,0,0.92)] backdrop-blur-xl shadow-2xl shadow-black/40",
           isSmall ? "bottom-full mb-2" : "top-full"
         )}>
           {LANGUAGES.map((option) => (
@@ -134,11 +134,11 @@ export function Navbar() {
     <>
       {/* Desktop nav */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-4 sm:pt-6 hidden md:flex items-center gap-3">
-        <a href="/dashboard" className="self-stretch flex items-center bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl px-4 rounded-full shadow-lg shadow-black/20 text-[13px] font-semibold text-white/60 hover:text-white transition-colors">
+        <a href="/dashboard" className="self-stretch flex items-center bg-[rgba(0,0,0,0.4)] border border-white/10 backdrop-blur-xl px-4 rounded-full shadow-lg shadow-black/20 text-[13px] font-semibold text-white/60 hover:text-white transition-colors">
           <span className="translate-y-[0.5px]">Dashboard</span>
         </a>
 
-        <nav className="flex items-center gap-1 bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl py-1.5 px-2 rounded-full shadow-lg shadow-black/20">
+        <nav className="flex items-center gap-1 bg-[rgba(0,0,0,0.4)] border border-white/10 backdrop-blur-xl py-1.5 px-2 rounded-full shadow-lg shadow-black/20">
           <a href="#" onClick={() => setActiveTab("")} className="font-display font-bold text-base tracking-[-0.04em] px-3 py-1.5 mr-1 inline-flex items-center gap-1.5">
             <span className="text-white">project</span>
             <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[13px] leading-none font-bold">noir</span>
@@ -183,14 +183,14 @@ export function Navbar() {
           </GlassButton>
         </nav>
 
-        <a href="/docs" className="self-stretch flex items-center bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl px-4 rounded-full shadow-lg shadow-black/20 text-[13px] font-semibold text-white/60 hover:text-white transition-colors">
+        <a href="/docs" className="self-stretch flex items-center bg-[rgba(0,0,0,0.4)] border border-white/10 backdrop-blur-xl px-4 rounded-full shadow-lg shadow-black/20 text-[13px] font-semibold text-white/60 hover:text-white transition-colors">
           <span className="translate-y-[0.5px]">Docs</span>
         </a>
       </div>
 
       {/* Mobile nav */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 mb-4 md:hidden">
-        <nav className="flex items-center gap-2 bg-[rgba(10,10,15,0.6)] border border-white/10 backdrop-blur-xl py-2 px-3 rounded-full shadow-lg">
+        <nav className="flex items-center gap-2 bg-[rgba(0,0,0,0.6)] border border-white/10 backdrop-blur-xl py-2 px-3 rounded-full shadow-lg">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (

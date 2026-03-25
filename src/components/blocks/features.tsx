@@ -191,7 +191,7 @@ export function Features() {
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
                 <Tilt rotationFactor={6} isRevese className="h-full">
-                  <div className="relative rounded-2xl border border-white/10 bg-[rgba(18,18,26,0.95)] p-8 h-full overflow-hidden group hover:border-[rgba(255,77,77,0.3)] transition-colors duration-300">
+                  <div className="relative rounded-2xl border border-white/10 bg-[rgba(0,0,0,0.95)] p-8 h-full overflow-hidden group hover:border-[rgba(255,77,77,0.3)] transition-colors duration-300">
                     <Spotlight size={200} />
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ background: `${f.color}15`, border: `1px solid ${f.color}30` }}>
                       <Icon size={24} stroke={f.color} />

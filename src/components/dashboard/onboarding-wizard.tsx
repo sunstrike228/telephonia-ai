@@ -220,7 +220,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(4,4,8,0.95)] backdrop-blur-xl p-4">
-      <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[rgba(14,14,22,0.98)] shadow-2xl">
+      <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[rgba(0,0,0,0.98)] shadow-2xl">
         {/* Header */}
         <div className="px-8 pt-8 pb-6">
           {/* Step indicator */}

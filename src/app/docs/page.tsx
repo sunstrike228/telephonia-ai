@@ -118,7 +118,7 @@ export default function DocsOverview() {
         <h2 className="font-display text-2xl font-bold text-white mb-6">
           System Architecture
         </h2>
-        <div className="rounded-xl border border-white/[0.08] bg-[rgba(14,14,22,0.95)] p-6 overflow-x-auto">
+        <div className="rounded-xl border border-white/[0.08] bg-[rgba(0,0,0,0.95)] p-6 overflow-x-auto">
           <pre className="text-xs text-white/60 font-mono leading-relaxed">
 {`                     +---------------------+
                      |   Landing Page      |

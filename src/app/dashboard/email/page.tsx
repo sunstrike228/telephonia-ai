@@ -136,7 +136,7 @@ export default function EmailPage() {
           }
         />
       ) : (
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] overflow-hidden">
           {/* Header */}
           <div className="grid grid-cols-[1fr_1.5fr_auto_auto] gap-4 px-6 py-3 border-b border-white/5 text-xs font-semibold uppercase tracking-wider text-white/25">
             <span>{t ? "Кому" : "To"}</span>

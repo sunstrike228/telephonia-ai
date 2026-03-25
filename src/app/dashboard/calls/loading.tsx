@@ -7,7 +7,7 @@ export default function CallsLoading() {
       </div>
 
       {/* Table skeleton */}
-      <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+      <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] overflow-hidden">
         <div className="border-b border-white/8 px-6 py-3 flex gap-6">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="h-4 w-20 bg-white/5 rounded" />

@@ -369,7 +369,7 @@ export default function BillingPage() {
       {/* Current Plan + Usage */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {/* Current Plan */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-semibold text-white font-display">
               {t ? "Поточний тариф" : "Current Plan"}
@@ -415,7 +415,7 @@ export default function BillingPage() {
         </div>
 
         {/* Usage Stats */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <h3 className="text-base font-semibold text-white font-display mb-4">
             {t ? "Використання за місяць" : "Usage This Month"}
           </h3>
@@ -473,7 +473,7 @@ export default function BillingPage() {
               className={`relative rounded-2xl border p-6 transition-colors ${
                 isCurrent
                   ? "border-[#0090f0]/40 bg-[#0090f0]/5"
-                  : "border-white/8 bg-[rgba(14,14,22,0.95)] hover:border-white/15"
+                  : "border-white/8 bg-[rgba(0,0,0,0.95)] hover:border-white/15"
               }`}
             >
               {plan.popular && (

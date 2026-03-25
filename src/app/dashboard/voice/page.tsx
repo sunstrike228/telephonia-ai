@@ -216,7 +216,7 @@ export default function VoicePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         {/* Voice Selection */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#a78bfa]/10 border border-[#a78bfa]/20 mb-4">
             <Mic size={18} className="text-[#a78bfa]" />
           </div>
@@ -279,7 +279,7 @@ export default function VoicePage() {
         </div>
 
         {/* Language */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#0090f0]/10 border border-[#0090f0]/20 mb-4">
             <Globe size={18} className="text-[#0090f0]" />
           </div>
@@ -317,7 +317,7 @@ export default function VoicePage() {
         </div>
 
         {/* Personality */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#34d399]/10 border border-[#34d399]/20 mb-4">
             <Brain size={18} className="text-[#34d399]" />
           </div>

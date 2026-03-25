@@ -14,7 +14,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, change, changeType = "neutral", icon: Icon, iconColor = "#0090f0" }: StatCardProps) {
   return (
-    <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-white/12 transition-colors">
+    <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-white/12 transition-colors">
       <div className="flex items-start justify-between mb-4">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center"

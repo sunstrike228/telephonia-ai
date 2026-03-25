@@ -131,7 +131,7 @@ export default function AnalyticsPage() {
           title={t ? "Аналітика" : "Analytics"}
           description={t ? "Відстежуйте конверсію, ефективність та тренди." : "Track conversion rates, performance, and trends."}
         />
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-12">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-12">
           <div className="flex flex-col items-center justify-center text-center py-12">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-white/[0.03] border border-white/8 mb-6">
               <BarChart3 size={28} className="text-white/20" />
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
       {/* Row 1: Channel overview cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Voice card */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="flex items-center gap-3 mb-5">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Telegram card */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="flex items-center gap-3 mb-5">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -229,7 +229,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Email card */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <div className="flex items-center gap-3 mb-5">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -260,7 +260,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Row 2: Activity chart */}
-      <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 mb-6">
+      <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 mb-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-base font-semibold text-white font-display">
@@ -347,7 +347,7 @@ export default function AnalyticsPage() {
       {/* Row 3: Two columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         {/* Top campaigns */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <h3 className="text-base font-semibold text-white font-display mb-4">
             {t ? "Топ кампанії" : "Top Campaigns"}
           </h3>
@@ -389,7 +389,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Lead status breakdown */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
           <h3 className="text-base font-semibold text-white font-display mb-4">
             {t ? "Статуси лідів" : "Lead Status Breakdown"}
           </h3>
@@ -428,7 +428,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Row 4: Recent activity */}
-      <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6">
+      <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6">
         <h3 className="text-base font-semibold text-white font-display mb-4">
           {t ? "Остання активність" : "Recent Activity"}
         </h3>

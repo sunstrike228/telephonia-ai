@@ -18,7 +18,7 @@ export function Footer() {
   const s = t[lang] || t.en;
 
   return (
-    <footer className="border-t border-white/5 py-12 relative z-10 bg-[#0a0a0f]">
+    <footer className="border-t border-white/5 py-12 relative z-10 bg-[#000000]">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col">
           <div className="font-display font-bold text-lg tracking-[-0.04em] inline-flex items-center gap-1.5">

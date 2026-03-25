@@ -209,7 +209,7 @@ export default function ScriptsPage() {
           {scripts.map((script) => (
             <div
               key={script.id}
-              className="group rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 hover:border-white/12 transition-colors cursor-pointer"
+              className="group rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 hover:border-white/12 transition-colors cursor-pointer"
               onClick={() => openEdit(script)}
             >
               <div className="flex items-start justify-between">
@@ -277,7 +277,7 @@ export default function ScriptsPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-md rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)] p-6"
+            className="relative w-full max-w-md rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.98)] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold text-white mb-2 font-display">
@@ -317,7 +317,7 @@ export default function ScriptsPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)] p-6"
+            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.98)] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">

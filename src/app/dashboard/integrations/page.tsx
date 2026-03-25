@@ -154,7 +154,7 @@ export default function IntegrationsPage() {
         <h3 className="text-sm font-medium text-white/30 mb-3 uppercase tracking-wider">
           {t ? "Канали комунiкацii" : "Communication Channels"}
         </h3>
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 flex items-center justify-between">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#0090f0]/10 border border-[#0090f0]/20">
               <Mail size={18} className="text-[#0090f0]" />
@@ -207,7 +207,7 @@ export default function IntegrationsPage() {
           {items.map((integration) => (
             <div
               key={integration.name}
-              className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-6 flex items-center justify-between"
+              className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-6 flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
                 <div
@@ -252,7 +252,7 @@ export default function IntegrationsPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-lg rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)] p-6"
+            className="relative w-full max-w-lg rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.98)] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">

@@ -16,7 +16,7 @@ export default function LeadsLoading() {
       <div className="h-10 w-full max-w-md bg-white/5 rounded-xl mb-4" />
 
       {/* Table skeleton */}
-      <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+      <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] overflow-hidden">
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="border-b border-white/5 px-6 py-4 flex gap-6">
             {Array.from({ length: 5 }).map((_, j) => (

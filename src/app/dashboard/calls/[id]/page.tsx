@@ -161,7 +161,7 @@ export default function CallDetailPage({
       {/* Metadata cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {/* Direction + Phone */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-4">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-4">
           <div className="flex items-center gap-2 text-white/30 text-xs mb-2">
             <Phone size={12} />
             {t ? "Напрямок" : "Direction"}
@@ -182,7 +182,7 @@ export default function CallDetailPage({
         </div>
 
         {/* Duration */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-4">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-4">
           <div className="flex items-center gap-2 text-white/30 text-xs mb-2">
             <Clock size={12} />
             {t ? "Тривалість" : "Duration"}
@@ -193,7 +193,7 @@ export default function CallDetailPage({
         </div>
 
         {/* Status + Sentiment */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-4">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-4">
           <div className="flex items-center gap-2 text-white/30 text-xs mb-2">
             <TrendingUp size={12} />
             {t ? "Статус" : "Status"}
@@ -205,7 +205,7 @@ export default function CallDetailPage({
         </div>
 
         {/* Date */}
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-4">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-4">
           <div className="flex items-center gap-2 text-white/30 text-xs mb-2">
             <Calendar size={12} />
             {t ? "Дата" : "Date"}
@@ -218,7 +218,7 @@ export default function CallDetailPage({
 
       {/* Phone numbers */}
       {(call.fromNumber || call.toNumber) && (
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-4 mb-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-4 mb-6">
           <div className="flex items-center gap-6 text-sm">
             {call.fromNumber && (
               <div>
@@ -239,7 +239,7 @@ export default function CallDetailPage({
 
       {/* Summary */}
       {call.summary && (
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-5 mb-6">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-5 mb-6">
           <h3 className="text-xs font-medium text-white/30 uppercase tracking-wider mb-3 flex items-center gap-2">
             <MessageSquare size={12} />
             {t ? "Резюме" : "Summary"}
@@ -249,7 +249,7 @@ export default function CallDetailPage({
       )}
 
       {/* Transcript */}
-      <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] p-5">
+      <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] p-5">
         <h3 className="text-xs font-medium text-white/30 uppercase tracking-wider mb-5 flex items-center gap-2">
           <MessageSquare size={12} />
           {t ? "Транскрипція" : "Transcript"}

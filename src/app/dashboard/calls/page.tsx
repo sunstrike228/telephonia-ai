@@ -196,9 +196,9 @@ export default function CallsPage() {
                 <div key={call.id}>
                   {/* Row */}
                   <div
-                    className={`group rounded-2xl border bg-[rgba(14,14,22,0.95)] px-6 py-4 cursor-pointer transition-colors ${
+                    className={`group rounded-2xl border bg-[rgba(0,0,0,0.95)] px-6 py-4 cursor-pointer transition-colors ${
                       isExpanded
-                        ? "border-[#0090f0]/30 bg-[rgba(14,14,22,1)]"
+                        ? "border-[#0090f0]/30 bg-[rgba(0,0,0,1)]"
                         : "border-white/8 hover:border-white/12"
                     }`}
                     onClick={() => toggleExpand(call.id)}

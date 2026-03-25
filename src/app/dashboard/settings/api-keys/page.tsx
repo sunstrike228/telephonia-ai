@@ -151,7 +151,7 @@ export default function ApiKeysPage() {
           onAction={() => setCreateModalOpen(true)}
         />
       ) : (
-        <div className="rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.95)] overflow-hidden">
+        <div className="rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.95)] overflow-hidden">
           <div className="grid grid-cols-[1fr_1fr_auto_auto] gap-4 px-6 py-3 border-b border-white/5 text-xs font-semibold uppercase tracking-wider text-white/25">
             <span>{t ? "Назва" : "Name"}</span>
             <span>{t ? "Ключ" : "Key"}</span>
@@ -192,7 +192,7 @@ export default function ApiKeysPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-md rounded-2xl border border-white/8 bg-[rgba(14,14,22,0.98)] p-6"
+            className="relative w-full max-w-md rounded-2xl border border-white/8 bg-[rgba(0,0,0,0.98)] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
