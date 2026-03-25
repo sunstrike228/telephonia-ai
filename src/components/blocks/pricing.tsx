@@ -227,7 +227,7 @@ export function Pricing({ plans }: PricingProps) {
         </div>
 
         {/* Cards */}
-        <div className="flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-center">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch">
           {plans.map((plan) => {
             const planName = plan.name[lang] || plan.name.en;
             const planDesc = plan.description[lang] || plan.description.en;
