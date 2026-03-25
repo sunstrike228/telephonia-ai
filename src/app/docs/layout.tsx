@@ -184,11 +184,11 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         <div className="sticky top-0 z-10 bg-[rgba(10,10,15,0.97)] backdrop-blur-xl border-b border-white/[0.06] px-5 py-4">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div>
-              <span className="font-display font-bold text-lg leading-none flex items-center gap-1.5">
+              <span className="font-display font-bold text-2xl leading-none flex items-center gap-2">
                 <span className="text-white">project</span>
-                <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[13px] leading-none font-bold">noir</span>
+                <span className="bg-white text-black px-2 py-1 rounded-[5px] text-[16px] leading-none font-bold">noir</span>
               </span>
-              <span className="text-[11px] text-white/40 leading-none block mt-1">Documentation</span>
+              <span className="text-[10px] text-white/30 leading-none block mt-1.5">by Blackhole Research</span>
             </div>
           </Link>
         </div>
