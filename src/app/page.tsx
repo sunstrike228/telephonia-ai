@@ -122,7 +122,7 @@ export default function Home() {
       <div className="fixed inset-0 z-0">
         <EtheralShadow
           color="rgba(128, 128, 128, 1)"
-          animation={{ scale: 80, speed: 72 }}
+          animation={{ scale: 80, speed: 86 }}
           noise={{ opacity: 0.6, scale: 1.2 }}
           sizing="fill"
         />
