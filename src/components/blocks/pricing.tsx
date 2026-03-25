@@ -80,75 +80,64 @@ function ShaderCanvas() {
         float angle=atan(d.y,d.x);
         float rawDist=length(d);
 
-        // Multiple ring layers for thickness
-        float m=0.0;
-        m+=ring(dist,r,0.035);
-        m+=ring(dist,r-0.015,0.01)*0.6;
-        m+=ring(dist,r+0.015,0.008)*0.5;
-        m+=ring(dist,r,0.055)*0.3; // soft glow layer
-        m=clamp(m,0.0,1.0);
+        // Single thick ring — no inner/outer sub-rings
+        float m = ring(dist, r, 0.038);
+        m += ring(dist, r, 0.06) * 0.2; // soft outer glow only
+        m = clamp(m, 0.0, 1.0);
 
-        // === LIQUID METAL SHADING ===
+        // === PURE LIQUID METAL — NO COLOR ===
 
-        // Surface normal approximation from distortion
-        float eps=0.002;
-        float d1=liquidDist(uv+vec2(eps,0),c,iTime);
-        float d2=liquidDist(uv-vec2(eps,0),c,iTime);
-        float d3=liquidDist(uv+vec2(0,eps),c,iTime);
-        float d4=liquidDist(uv-vec2(0,eps),c,iTime);
-        vec2 normal=vec2(d1-d2,d3-d4)/(2.0*eps);
+        // Surface normal from distortion
+        float eps = 0.002;
+        float d1 = liquidDist(uv + vec2(eps, 0), c, iTime);
+        float d2 = liquidDist(uv - vec2(eps, 0), c, iTime);
+        float d3 = liquidDist(uv + vec2(0, eps), c, iTime);
+        float d4 = liquidDist(uv - vec2(0, eps), c, iTime);
+        vec2 normal = vec2(d1 - d2, d3 - d4) / (2.0 * eps);
 
-        // Fake environment reflection (moving gradient bands)
-        vec2 refl=reflect(vec2(0,1),normalize(normal+vec2(0.001)));
-        float envAngle=angle+refl.x*3.0;
-        float env1=pow(0.5+0.5*sin(envAngle*4.0+iTime*0.6),2.0);
-        float env2=pow(0.5+0.5*sin(envAngle*7.0-iTime*0.9),3.0);
-        float env3=pow(0.5+0.5*sin(envAngle*2.0+iTime*0.3),1.5);
+        // Environment reflection bands
+        vec2 refl = reflect(vec2(0, 1), normalize(normal + vec2(0.001)));
+        float envAngle = angle + refl.x * 3.0;
+        float env1 = pow(0.5 + 0.5 * sin(envAngle * 3.0 + iTime * 0.5), 2.5);
+        float env2 = pow(0.5 + 0.5 * sin(envAngle * 6.0 - iTime * 0.7), 3.0);
+        float env3 = pow(0.5 + 0.5 * sin(envAngle * 2.0 + iTime * 0.3), 1.5);
 
-        // Fresnel effect - edges brighter than center
-        float ringPos=abs(dist-r)/0.035;
-        float fresnel=pow(clamp(ringPos,0.0,1.0),0.6);
+        // Fresnel — edges brighter
+        float ringPos = abs(dist - r) / 0.038;
+        float fresnel = pow(clamp(ringPos, 0.0, 1.0), 0.5);
 
-        // Specular highlights (sharp bright spots)
-        float spec1=pow(max(0.0,sin(angle*5.0+iTime*1.2)),16.0);
-        float spec2=pow(max(0.0,sin(angle*8.0-iTime*1.8)),24.0);
-        float spec3=pow(max(0.0,sin(angle*3.0+iTime*0.5)),32.0);
+        // Specular highlights — pure white, sharp
+        float spec1 = pow(max(0.0, sin(angle * 4.0 + iTime * 1.0)), 20.0);
+        float spec2 = pow(max(0.0, sin(angle * 7.0 - iTime * 1.5)), 32.0);
 
-        // Base chrome color - cool metallic gray
-        float base=0.35+0.1*env3;
-        vec3 col=vec3(base,base+0.01,base+0.03); // slight blue tint
+        // Base: neutral silver gray — NO color tint
+        float base = 0.3 + 0.12 * env3;
+        vec3 col = vec3(base);
 
-        // Environment reflections
-        col+=vec3(0.25,0.27,0.3)*env1;
-        col+=vec3(0.15,0.16,0.18)*env2;
+        // Environment reflections — pure gray bands
+        col += vec3(0.25) * env1;
+        col += vec3(0.15) * env2;
 
         // Fresnel brightening on edges
-        col=mix(col,vec3(0.85,0.87,0.92),fresnel*0.5);
+        col = mix(col, vec3(0.9), fresnel * 0.5);
 
-        // Sharp specular highlights (chrome-like)
-        col+=vec3(1.0,0.98,0.95)*spec1*0.7;
-        col+=vec3(1.0,1.0,1.0)*spec2*0.5;
-        col+=vec3(0.9,0.92,1.0)*spec3*0.4;
+        // Sharp white specular highlights
+        col += vec3(1.0) * spec1 * 0.7;
+        col += vec3(1.0) * spec2 * 0.4;
 
-        // Subtle color dispersion on edges (rainbow)
-        float dispersion=fresnel*0.15;
-        col.r+=sin(angle*6.0+iTime)*dispersion;
-        col.g+=sin(angle*6.0+iTime+2.094)*dispersion*0.7;
-        col.b+=sin(angle*6.0+iTime+4.188)*dispersion;
+        // Dark mercury bands — deep shadows
+        float caustic = pow(0.5 + 0.5 * sin(angle * 10.0 + iTime * 1.8 + fbm(vec2(angle * 3.0, iTime)) * 5.0), 5.0);
+        col = mix(col, col * 0.25, caustic * 0.4);
 
-        // Dark caustic bands (like mercury)
-        float caustic=pow(0.5+0.5*sin(angle*12.0+iTime*2.0+fbm(vec2(angle*3.0,iTime))*6.0),4.0);
-        col=mix(col,col*0.4,caustic*0.3);
+        // Moving bright streak
+        float streak = pow(max(0.0, cos(angle - iTime * 0.35)), 24.0);
+        col += vec3(1.0) * streak * 0.5;
 
-        // Moving bright streak (like light reflecting off liquid)
-        float streak=pow(max(0.0,cos(angle-iTime*0.4)),20.0);
-        col+=vec3(1.0,0.98,0.95)*streak*0.6;
+        // Second streak opposite side
+        float streak2 = pow(max(0.0, cos(angle + 3.14159 - iTime * 0.35)), 20.0);
+        col += vec3(0.8) * streak2 * 0.3;
 
-        // Edge glow
-        float edgeGlow=ring(dist,r,0.002);
-        col=mix(col,vec3(1.0),edgeGlow*0.8);
-
-        gl_FragColor=vec4(col,m);
+        gl_FragColor = vec4(col, m);
       }`;
 
     const compile = (type: number, src: string) => {
