@@ -182,6 +182,10 @@ export function Navbar() {
             {ctaText[lang] || ctaText.en}
           </GlassButton>
         </nav>
+
+        <a href="/docs" className="self-stretch flex items-center bg-[rgba(10,10,15,0.4)] border border-white/10 backdrop-blur-xl px-4 rounded-full shadow-lg shadow-black/20 text-[13px] font-semibold text-white/60 hover:text-white transition-colors">
+          <span className="translate-y-[0.5px]">Docs</span>
+        </a>
       </div>
 
       {/* Mobile nav */}
