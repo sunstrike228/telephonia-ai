@@ -198,13 +198,6 @@ export function Pricing({ plans }: PricingProps) {
 
   return (
     <div className="relative overflow-hidden py-28" ref={sectionRef}>
-      {/* Shader ring background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-end justify-center pb-0">
-        <div className="w-[1000px] h-[1000px] opacity-35 translate-y-[15%]">
-          <ShaderCanvas />
-        </div>
-      </div>
-
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-14">
