@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   BookOpen,
-  Zap,
   Layers,
   Phone,
   MessageCircle,
@@ -155,11 +154,9 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       {/* Mobile header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[rgba(10,10,15,0.95)] backdrop-blur-xl border-b border-white/[0.06]">
         <div className="flex items-center justify-between px-4 h-14">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#ff4d4d] to-[#ff2222] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display font-bold text-white text-lg">Project Noir</span>
+          <Link href="/" className="flex items-center gap-1.5 font-display font-bold text-base">
+            <span className="text-white">project</span>
+            <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[13px] leading-none font-bold">noir</span>
           </Link>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -186,14 +183,12 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       >
         <div className="sticky top-0 z-10 bg-[rgba(10,10,15,0.97)] backdrop-blur-xl border-b border-white/[0.06] px-5 py-4">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff4d4d] to-[#ff2222] flex items-center justify-center shadow-lg shadow-red-500/20">
-              <Zap className="w-4.5 h-4.5 text-white" />
-            </div>
             <div>
-              <span className="font-display font-bold text-white text-lg leading-none block">
-                Project Noir
+              <span className="font-display font-bold text-lg leading-none flex items-center gap-1.5">
+                <span className="text-white">project</span>
+                <span className="bg-white text-black px-1.5 py-0.5 rounded-[4px] text-[13px] leading-none font-bold">noir</span>
               </span>
-              <span className="text-[11px] text-white/40 leading-none">Documentation</span>
+              <span className="text-[11px] text-white/40 leading-none block mt-1">Documentation</span>
             </div>
           </Link>
         </div>
@@ -256,10 +251,19 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         {/* Page content */}
-        <div className="px-6 lg:px-10 py-8 lg:py-12 max-w-4xl">
+        <div className="px-6 lg:px-16 py-8 lg:py-12 max-w-5xl mx-auto">
           {children}
         </div>
       </main>
+
+      {/* Dark scrollbar */}
+      <style>{`
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        * { scrollbar-color: rgba(255,255,255,0.1) transparent; scrollbar-width: thin; }
+      `}</style>
     </div>
   );
 }
