@@ -262,6 +262,12 @@ export function Hero() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const s = t[lang] || t.en;
 
+  // Check which demo services are available
+  const [demoStatus, setDemoStatus] = useState({ call: true, telegram: false, email: false });
+  useEffect(() => {
+    fetch("/api/demo/status").then(r => r.json()).then(setDemoStatus).catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (activeInput === "phone" && inputRef.current) inputRef.current.focus();
     if (activeInput === "telegram" && telegramRef.current) telegramRef.current.focus();
@@ -429,19 +435,31 @@ export function Hero() {
           {/* Row of CTA buttons */}
           {activeInput === null && (
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-              <GlassButton onClick={() => setActiveInput("phone")} contentClassName="flex items-center gap-2">
+              <GlassButton
+                onClick={() => demoStatus.call && setActiveInput("phone")}
+                contentClassName="flex items-center gap-2"
+                className={!demoStatus.call ? "opacity-40 cursor-not-allowed" : ""}
+              >
                 <Phone size={18} className="text-[#ff4d4d]" />
-                {s.ctaCall}
+                {demoStatus.call ? s.ctaCall : "Coming soon"}
               </GlassButton>
 
-              <GlassButton onClick={() => setActiveInput("telegram")} contentClassName="flex items-center gap-2">
+              <GlassButton
+                onClick={() => demoStatus.telegram && setActiveInput("telegram")}
+                contentClassName="flex items-center gap-2"
+                className={!demoStatus.telegram ? "opacity-40 cursor-not-allowed" : ""}
+              >
                 <MessageCircle size={18} className="text-[#ff4d4d]" />
-                {s.ctaTelegram}
+                {demoStatus.telegram ? s.ctaTelegram : "Coming soon"}
               </GlassButton>
 
-              <GlassButton onClick={() => setActiveInput("email")} contentClassName="flex items-center gap-2">
+              <GlassButton
+                onClick={() => demoStatus.email && setActiveInput("email")}
+                contentClassName="flex items-center gap-2"
+                className={!demoStatus.email ? "opacity-40 cursor-not-allowed" : ""}
+              >
                 <Mail size={18} className="text-[#ff6b6b]" />
-                {s.ctaEmail}
+                {demoStatus.email ? s.ctaEmail : "Coming soon"}
               </GlassButton>
             </div>
           )}

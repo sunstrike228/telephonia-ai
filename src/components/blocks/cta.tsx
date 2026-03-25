@@ -89,7 +89,7 @@ export function CTA() {
             type="email"
             required
             placeholder="your@email.com"
-            className="flex-1 px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#0090f0] focus:ring-1 focus:ring-[#0090f0]/30 transition-colors"
+            className="flex-1 px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#ff4d4d] focus:ring-1 focus:ring-[#ff4d4d]/30 transition-colors"
           />
           <GlassButton type="submit" className="glass-button-primary" size="sm">
             {submitted ? s.thanks : s.btn}
