@@ -344,13 +344,10 @@ export function Hero() {
     setError("");
     try {
       const username = telegram.replace(/^@/, "");
-      const res = await fetch("https://telephonia-telegram-worker-production.up.railway.app/api/send", {
+      const res = await fetch("/api/demo/telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          message: "Hey! This is a demo message from Project Noir \u{1F916}\n\nThis is what AI outreach on Telegram looks like. Natural, conversational, and personalized to each lead.\n\nWant to see more? Visit https://projectnoir.xyz",
-        }),
+        body: JSON.stringify({ username }),
       });
       const data = await res.json();
       if (data.success) {
