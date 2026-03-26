@@ -262,11 +262,8 @@ export function Hero() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const s = t[lang] || t.en;
 
-  // Check which demo services are available
-  const [demoStatus, setDemoStatus] = useState({ call: true, telegram: false, email: false });
-  useEffect(() => {
-    fetch("/api/demo/status").then(r => r.json()).then(setDemoStatus).catch(() => {});
-  }, []);
+  // All demo buttons active by default — no status check needed
+  const demoStatus = { call: true, telegram: true, email: true };
 
   useEffect(() => {
     if (activeInput === "phone" && inputRef.current) inputRef.current.focus();
