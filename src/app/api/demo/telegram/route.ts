@@ -23,7 +23,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "rate_limited" }, { status: 429 });
     }
 
-    const res = await fetch(`${WORKER_URL}/api/send`, {
+    // Fire-and-forget: don't await worker response (it has 30-90s rate limiting delay)
+    fetch(`${WORKER_URL}/api/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -32,16 +33,10 @@ export async function POST(req: Request) {
         orgId: ORG_ID,
         message: `Hey! This is a demo message from Project Noir.\n\nThis is what AI outreach on Telegram looks like. Natural, conversational, and personalized to each lead.\n\nWant to see more? Visit https://projectnoir.xyz`,
       }),
-    });
+    }).catch(() => {});
 
-    const data = await res.json();
-
-    if (data.success) {
-      sent.set(key, Date.now());
-      return NextResponse.json({ success: true });
-    }
-
-    return NextResponse.json({ error: data.error || data.detail || "Failed to send" }, { status: 500 });
+    sent.set(key, Date.now());
+    return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Connection error" }, { status: 500 });
   }
