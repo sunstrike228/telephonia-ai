@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const WORKER_URL = process.env.RAILWAY_TELEGRAM_WORKER_URL || "https://telephonia-telegram-worker-production.up.railway.app";
-const ACCOUNT_ID = "a5cc159f-f6cf-41dc-9353-383682061d56";
+const ACCOUNT_ID = "ce084779-600c-4e24-9bd1-c850fa8cbd76";
 const ORG_ID = "9c64581a-385c-42ac-b29f-acff1b8b3fea";
 
 // Simple in-memory rate limiting
