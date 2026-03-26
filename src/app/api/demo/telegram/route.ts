@@ -23,17 +23,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "rate_limited" }, { status: 429 });
     }
 
-    // Fire-and-forget: don't await worker response (it has 30-90s rate limiting delay)
-    fetch(`${WORKER_URL}/api/send`, {
+    // Send immediately (no delay for demo) — await response since it's fast now
+    const res = await fetch(`${WORKER_URL}/api/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         accountId: ACCOUNT_ID,
         targetUsername: clean,
         orgId: ORG_ID,
-        message: `Hey! This is a demo message from Project Noir.\n\nThis is what AI outreach on Telegram looks like. Natural, conversational, and personalized to each lead.\n\nWant to see more? Visit https://projectnoir.xyz`,
+        message: "",
+        skipDelay: true,
       }),
-    }).catch(() => {});
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      return NextResponse.json({ error: data.detail || data.error || "Failed to send" }, { status: 500 });
+    }
 
     sent.set(key, Date.now());
     return NextResponse.json({ success: true });
