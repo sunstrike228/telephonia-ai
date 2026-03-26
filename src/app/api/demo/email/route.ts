@@ -5,7 +5,6 @@ const resend = new Resend(process.env.RESEND_API_KEY || "re_placeholder");
 // Simple in-memory rate limiting: one email per address per hour
 const sentEmails = new Map<string, number>();
 
-// Clean up old entries every 10 minutes
 if (typeof globalThis !== "undefined") {
   const cleanup = () => {
     const oneHourAgo = Date.now() - 60 * 60 * 1000;
@@ -27,7 +26,6 @@ export async function POST(request: Request) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Rate limit check
     const lastSent = sentEmails.get(normalizedEmail);
     if (lastSent && Date.now() - lastSent < 60 * 60 * 1000) {
       return Response.json(
@@ -37,45 +35,51 @@ export async function POST(request: Request) {
     }
 
     const { error } = await resend.emails.send({
-      from: "Project Noir <hello@projectnoir.xyz>",
+      from: "Blanco from Project Noir <blanco@projectnoir.xyz>",
+      replyTo: "blanco@projectnoir.xyz",
       to: [normalizedEmail],
-      subject: "This is what AI outreach looks like",
+      subject: "Quick question for you",
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 24px; color: #1a1a1a;">
-          <div style="text-align: center; margin-bottom: 32px;">
-            <div style="display: inline-block; background: linear-gradient(135deg, #0090f0, #a78bfa); border-radius: 12px; padding: 12px 16px;">
-              <span style="color: white; font-size: 20px; font-weight: 700; letter-spacing: -0.5px;">Project Noir</span>
-            </div>
-          </div>
-
-          <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 16px; line-height: 1.3;">
-            Hey there! This is a demo of AI email outreach.
-          </h1>
-
-          <p style="font-size: 16px; line-height: 1.7; color: #444; margin-bottom: 16px;">
-            Imagine receiving a personalized email like this for every lead in your pipeline. Crafted by AI, indistinguishable from a human sales rep.
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 20px; color: #1a1a1a;">
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 16px 0;">
+            Hey,
           </p>
 
-          <p style="font-size: 16px; line-height: 1.7; color: #444; margin-bottom: 24px;">
-            With Project Noir, you can:
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 16px 0;">
+            I'm Blanco, and I work with companies that want to scale their outreach without scaling their team. We built something at Project Noir that I think you'd find interesting.
           </p>
 
-          <ul style="font-size: 15px; line-height: 1.8; color: #444; padding-left: 20px; margin-bottom: 24px;">
-            <li><strong>Call</strong> leads with AI voice agents that sound human</li>
-            <li><strong>Message</strong> leads on Telegram from real accounts</li>
-            <li><strong>Email</strong> leads with personalized, AI-generated copy</li>
-            <li><strong>Orchestrate</strong> all channels with smart fallback sequences</li>
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 16px 0;">
+            In short — our AI agents handle cold calls, Telegram messages, and emails for you. They sound and write like real people, follow your sales script, and hand off qualified leads to your team.
+          </p>
+
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 16px 0;">
+            A few things that make us different:
+          </p>
+
+          <ul style="font-size: 15px; line-height: 1.9; color: #333; padding-left: 20px; margin: 0 0 20px 0;">
+            <li>Voice calls that pass the "is this a real person?" test</li>
+            <li>Telegram outreach from real accounts (not bots)</li>
+            <li>Multi-channel sequences with automatic fallback</li>
+            <li>Everything in one dashboard with real-time analytics</li>
           </ul>
 
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="https://projectnoir.xyz" style="display: inline-block; background: linear-gradient(135deg, #0090f0, #0070d0); color: white; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-weight: 600; font-size: 15px;">
-              Learn more at projectnoir.xyz
-            </a>
-          </div>
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 24px 0;">
+            Would you be open to a quick 15-min call this week to see if it's a fit? I can show you a live demo.
+          </p>
 
-          <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid #eee; text-align: center; font-size: 13px; color: #999;">
-            <p style="margin: 0;">This is a one-time demo email from Project Noir</p>
-            <p style="margin: 4px 0 0 0;">You won't receive any more emails unless you sign up.</p>
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 4px 0;">
+            Best,
+          </p>
+          <p style="font-size: 15px; line-height: 1.7; color: #333; margin: 0 0 0 0; font-weight: 600;">
+            Blanco
+          </p>
+          <p style="font-size: 13px; line-height: 1.5; color: #888; margin: 2px 0 0 0;">
+            Project Noir &middot; <a href="https://projectnoir.xyz" style="color: #888; text-decoration: underline;">projectnoir.xyz</a>
+          </p>
+
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 11px; color: #bbb; text-align: center;">
+            This is a one-time demo email. You won't receive any more unless you sign up.
           </div>
         </div>
       `,
@@ -89,9 +93,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Record the send time
     sentEmails.set(normalizedEmail, Date.now());
-
     return Response.json({ success: true });
   } catch (err) {
     console.error("Demo email error:", err);
