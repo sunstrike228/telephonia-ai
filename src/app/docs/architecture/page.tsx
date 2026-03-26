@@ -256,7 +256,7 @@ campaign-executor.ts: sendEmail()
     |  buildEmailPrompt() -> Generates subject + body template
     v
 Resend API: resend.emails.send()
-    |  from: configured sender (or noreply@projectnoir.ai)
+    |  from: configured sender (or noreply@projectnoir.xyz)
     |  to: lead's email address
     v
 On success: INSERT INTO messages (status: 'sent')

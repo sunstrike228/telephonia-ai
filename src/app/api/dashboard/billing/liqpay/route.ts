@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     const amount = PLAN_PRICES_UAH[planId];
-    const origin = request.headers.get("origin") || "https://projectnoir.ai";
+    const origin = request.headers.get("origin") || "https://projectnoir.xyz";
     const orderId = `liqpay_${userId}_${planId}_${Date.now()}`;
 
     const { data, signature } = createPaymentData({

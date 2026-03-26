@@ -30,8 +30,8 @@ export function Footer() {
         <div className="flex gap-8 text-sm text-white/30">
           <a href="#" className="hover:text-white/60 transition-colors">{s.privacy}</a>
           <a href="#" className="hover:text-white/60 transition-colors">{s.terms}</a>
-          <a href="mailto:hello@projectnoir.ai" className="hover:text-white/60 transition-colors">
-            hello@projectnoir.ai
+          <a href="mailto:hello@projectnoir.xyz" className="hover:text-white/60 transition-colors">
+            hello@projectnoir.xyz
           </a>
         </div>
         <div className="text-xs text-white/20">&copy; 2026 Blackhole Research</div>

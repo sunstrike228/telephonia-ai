@@ -146,7 +146,7 @@ POST /api/dashboard/email/send
 }`}
       </CodeBlock>
       <p className="text-sm text-white/40 mb-6">
-        If no email config is set, the default sender is <code className="px-1 py-0.5 rounded bg-white/[0.06] text-xs font-mono text-white/50">noreply@projectnoir.ai</code>.
+        If no email config is set, the default sender is <code className="px-1 py-0.5 rounded bg-white/[0.06] text-xs font-mono text-white/50">noreply@projectnoir.xyz</code>.
       </p>
 
       {/* Campaign Integration */}

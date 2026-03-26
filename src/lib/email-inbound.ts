@@ -124,7 +124,7 @@ export async function processInboundEmail(data: InboundEmailData): Promise<{
       replyTo?: string;
     } | null;
 
-    const senderEmail = emailConfig?.fromEmail || "noreply@projectnoir.ai";
+    const senderEmail = emailConfig?.fromEmail || "noreply@projectnoir.xyz";
     const senderName = emailConfig?.fromName || "Project Noir";
     const replyTo = emailConfig?.replyTo || senderEmail;
 

@@ -132,7 +132,7 @@ async function sendEmail(
       replyTo?: string;
     } | null;
 
-    const fromEmail = emailConfig?.fromEmail || "noreply@projectnoir.ai";
+    const fromEmail = emailConfig?.fromEmail || "noreply@projectnoir.xyz";
     const fromName = emailConfig?.fromName || "Project Noir";
     const replyTo = emailConfig?.replyTo || fromEmail;
 

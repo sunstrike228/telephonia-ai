@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     }
 
     const { error } = await resend.emails.send({
-      from: "Project Noir <hello@projectnoir.ai>",
+      from: "Project Noir <hello@projectnoir.xyz>",
       to: [normalizedEmail],
       subject: "This is what AI outreach looks like",
       html: `
@@ -68,8 +68,8 @@ export async function POST(request: Request) {
           </ul>
 
           <div style="text-align: center; margin: 32px 0;">
-            <a href="https://projectnoir.ai" style="display: inline-block; background: linear-gradient(135deg, #0090f0, #0070d0); color: white; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-weight: 600; font-size: 15px;">
-              Learn more at projectnoir.ai
+            <a href="https://projectnoir.xyz" style="display: inline-block; background: linear-gradient(135deg, #0090f0, #0070d0); color: white; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-weight: 600; font-size: 15px;">
+              Learn more at projectnoir.xyz
             </a>
           </div>
 
