@@ -89,7 +89,11 @@ export function EtheralShadow({
             <div
                 style={{
                     position: "absolute",
-                    inset: -displacementScale,
+                    top: -displacementScale,
+                    left: -displacementScale,
+                    right: -displacementScale,
+                    bottom: -displacementScale,
+                    minWidth: `calc(100% + ${displacementScale * 2}px)`,
                     filter: animationEnabled ? `url(#${id}) blur(4px)` : "none"
                 }}
             >
@@ -136,9 +140,12 @@ export function EtheralShadow({
                     style={{
                         backgroundColor: color,
                         maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
-                        maskSize: sizing === "stretch" ? "100% 100%" : "cover",
+                        maskSize: "cover",
                         maskRepeat: "no-repeat",
-                        maskPosition: "center",
+                        maskPosition: "center center",
+                        WebkitMaskSize: "cover",
+                        WebkitMaskRepeat: "no-repeat",
+                        WebkitMaskPosition: "center center",
                         width: "100%",
                         height: "100%"
                     }}
