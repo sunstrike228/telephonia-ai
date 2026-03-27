@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useId, useEffect, CSSProperties } from 'react';
+import React, { useRef, useId, useEffect, useState, CSSProperties } from 'react';
 import { animate, useMotionValue, AnimationPlaybackControls } from 'framer-motion';
 
 interface AnimationConfig {
@@ -51,10 +51,19 @@ export function EtheralShadow({
     const feColorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
     const hueRotateMotionValue = useMotionValue(180);
     const hueRotateAnimation = useRef<AnimationPlaybackControls | null>(null);
-    const displacementScale = animation ? mapRange(animation.scale, 1, 100, 20, 100) : 0;
-    // Two sequential feDisplacementMaps can shift pixels up to 2x scale.
-    // Use 2.5x for safe overflow padding on all sides.
-    const overflowPadding = displacementScale * 2.5;
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
+
+    // On mobile, use much smaller displacement to prevent visual shift
+    const rawScale = animation ? mapRange(animation.scale, 1, 100, 20, 100) : 0;
+    const displacementScale = isMobile ? Math.min(rawScale, 25) : rawScale;
+    const overflowPadding = displacementScale * 3;
     const animationDuration = animation ? mapRange(animation.speed, 1, 100, 1000, 50) : 1;
 
     useEffect(() => {
