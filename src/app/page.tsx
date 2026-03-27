@@ -119,7 +119,8 @@ const pricingPlans: PricingPlan[] = [
 export default function Home() {
   return (
     <>
-      <div className="fixed inset-0 z-0">
+      {/* Desktop: animated background, Mobile: static dark gradient */}
+      <div className="fixed inset-0 z-0 hidden md:block">
         <EtheralShadow
           color="rgba(128, 128, 128, 1)"
           animation={{ scale: 80, speed: 86 }}
@@ -127,6 +128,7 @@ export default function Home() {
           sizing="fill"
         />
       </div>
+      <div className="fixed inset-0 z-0 md:hidden bg-gradient-to-b from-[#111] via-black to-black" />
       <Navbar />
       <main className="relative z-10">
         <Hero />

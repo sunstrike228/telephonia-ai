@@ -188,26 +188,32 @@ export function Navbar() {
         </a>
       </div>
 
-      {/* Mobile nav */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 mb-4 md:hidden">
-        <nav className="flex items-center gap-2 bg-[rgba(0,0,0,0.6)] border border-white/10 backdrop-blur-xl py-2 px-3 rounded-full shadow-lg">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <a
-                key={item.name}
-                href={item.url}
-                onClick={() => setActiveTab(item.name)}
-                className={cn(
-                  "relative p-2 rounded-full transition-colors",
-                  activeTab === item.name ? "text-white bg-white/10" : "text-white/50"
-                )}
-              >
-                <Icon size={18} strokeWidth={2.5} />
-              </a>
-            );
-          })}
-          <LanguageDropdown lang={lang} switchLang={switchLang} size="small" />
+      {/* Mobile nav — fixed top */}
+      <div className="fixed top-0 left-0 right-0 z-50 md:hidden">
+        <nav className="flex items-center justify-between bg-[rgba(0,0,0,0.85)] border-b border-white/10 backdrop-blur-xl py-3 px-4">
+          <a href="#" className="font-display font-bold text-sm inline-flex items-center gap-1.5">
+            <span className="text-white">project</span>
+            <span className="bg-white text-black px-1 py-0.5 rounded-[3px] text-[11px] leading-none font-bold">noir</span>
+          </a>
+          <div className="flex items-center gap-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.name}
+                  href={item.url}
+                  onClick={() => setActiveTab(item.name)}
+                  className={cn(
+                    "p-2 rounded-full transition-colors",
+                    activeTab === item.name ? "text-white bg-white/10" : "text-white/50"
+                  )}
+                >
+                  <Icon size={16} strokeWidth={2.5} />
+                </a>
+              );
+            })}
+            <LanguageDropdown lang={lang} switchLang={switchLang} size="small" />
+          </div>
         </nav>
       </div>
     </>
