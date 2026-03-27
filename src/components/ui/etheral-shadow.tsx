@@ -51,7 +51,7 @@ export function EtheralShadow({
     const feColorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
     const hueRotateMotionValue = useMotionValue(180);
     const hueRotateAnimation = useRef<AnimationPlaybackControls | null>(null);
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(true); // default true for SSR/mobile-first
 
     useEffect(() => {
         const check = () => setIsMobile(window.innerWidth < 768);
@@ -151,10 +151,11 @@ export function EtheralShadow({
                     style={{
                         backgroundColor: color,
                         maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
-                        maskSize: "cover",
+                        WebkitMaskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
+                        maskSize: isMobile ? "150% 120%" : "cover",
                         maskRepeat: "no-repeat",
                         maskPosition: "center center",
-                        WebkitMaskSize: "cover",
+                        WebkitMaskSize: isMobile ? "150% 120%" : "cover",
                         WebkitMaskRepeat: "no-repeat",
                         WebkitMaskPosition: "center center",
                         width: "100%",
