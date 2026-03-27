@@ -48,7 +48,7 @@ export function InfiniteGrid() {
   const maskImage = useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, black, transparent)`;
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none">
+    <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
       {/* Base grid */}
       <div className="absolute inset-0 opacity-[0.06]">
         <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} />

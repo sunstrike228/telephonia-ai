@@ -91,9 +91,8 @@ export function EtheralShadow({
                     position: "absolute",
                     top: -displacementScale,
                     left: -displacementScale,
-                    right: -displacementScale,
-                    bottom: -displacementScale,
-                    minWidth: `calc(100% + ${displacementScale * 2}px)`,
+                    width: `calc(100% + ${displacementScale * 2}px)`,
+                    height: `calc(100% + ${displacementScale * 2}px)`,
                     filter: animationEnabled ? `url(#${id}) blur(4px)` : "none"
                 }}
             >
