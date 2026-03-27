@@ -52,6 +52,9 @@ export function EtheralShadow({
     const hueRotateMotionValue = useMotionValue(180);
     const hueRotateAnimation = useRef<AnimationPlaybackControls | null>(null);
     const displacementScale = animation ? mapRange(animation.scale, 1, 100, 20, 100) : 0;
+    // Two sequential feDisplacementMaps can shift pixels up to 2x scale.
+    // Use 2.5x for safe overflow padding on all sides.
+    const overflowPadding = displacementScale * 2.5;
     const animationDuration = animation ? mapRange(animation.speed, 1, 100, 1000, 50) : 1;
 
     useEffect(() => {
@@ -89,10 +92,10 @@ export function EtheralShadow({
             <div
                 style={{
                     position: "absolute",
-                    top: -displacementScale,
-                    left: -displacementScale,
-                    width: `calc(100% + ${displacementScale * 2}px)`,
-                    height: `calc(100% + ${displacementScale * 2}px)`,
+                    top: -overflowPadding,
+                    left: -overflowPadding,
+                    width: `calc(100% + ${overflowPadding * 2}px)`,
+                    height: `calc(100% + ${overflowPadding * 2}px)`,
                     filter: animationEnabled ? `url(#${id}) blur(4px)` : "none"
                 }}
             >
