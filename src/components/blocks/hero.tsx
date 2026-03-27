@@ -398,7 +398,7 @@ export function Hero() {
   const successMessage = submitted === "phone" ? s.callSuccess : submitted === "telegram" ? s.telegramSuccess : s.emailSuccess;
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+    <section className="relative flex items-center justify-center overflow-hidden pt-16" style={{ minHeight: '100dvh' }}>
       <style>{`
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .hero-h1 { animation: fadeInUp 0.8s ease-out 0.2s both; }
