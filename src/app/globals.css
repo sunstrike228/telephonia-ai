@@ -51,12 +51,11 @@ html {
 
 body {
   min-height: 100dvh;
-  background: var(--background);
+  background: red !important;
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  /* iOS safe areas — push content away from notch/home indicator */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
