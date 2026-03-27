@@ -60,10 +60,11 @@ export function EtheralShadow({
         return () => window.removeEventListener("resize", check);
     }, []);
 
-    // On mobile, use much smaller displacement to prevent visual shift
+    // On mobile, disable displacement entirely — it shifts the asymmetric mask
+    // and creates visible gaps on 375px screens. Keep hue animation only.
     const rawScale = animation ? mapRange(animation.scale, 1, 100, 20, 100) : 0;
-    const displacementScale = isMobile ? Math.min(rawScale, 25) : rawScale;
-    const overflowPadding = displacementScale * 3;
+    const displacementScale = isMobile ? 0 : rawScale;
+    const overflowPadding = isMobile ? 0 : displacementScale * 3;
     const animationDuration = animation ? mapRange(animation.speed, 1, 100, 1000, 50) : 1;
 
     useEffect(() => {
@@ -152,10 +153,10 @@ export function EtheralShadow({
                         backgroundColor: color,
                         maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
                         WebkitMaskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
-                        maskSize: isMobile ? "150% 120%" : "cover",
+                        maskSize: "cover",
                         maskRepeat: "no-repeat",
                         maskPosition: "center center",
-                        WebkitMaskSize: isMobile ? "150% 120%" : "cover",
+                        WebkitMaskSize: "cover",
                         WebkitMaskRepeat: "no-repeat",
                         WebkitMaskPosition: "center center",
                         width: "100%",
