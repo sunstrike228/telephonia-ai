@@ -3,6 +3,11 @@
 @source "../components/**/*.tsx";
 @source "../hooks/**/*.ts";
 
+html {
+  /* TEST: dark gray so you can see page edges against iPhone's black bezel */
+  background: #222 !important;
+}
+
 :root {
   --background: #000000;
   --foreground: #e2e2ef;
@@ -48,8 +53,6 @@ body {
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* DEBUG: red border to show viewport edges — remove after testing */
-  border: 3px solid red;
 }
 
 h1, h2, h3, h4, h5, h6 {
