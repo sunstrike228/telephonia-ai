@@ -189,7 +189,7 @@ export function Navbar() {
       </div>
 
       {/* Mobile nav — floating pill like desktop */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-3 md:hidden w-[calc(100%-24px)] max-w-md">
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 md:hidden w-[calc(100%-24px)] max-w-md" style={{ paddingTop: 'calc(12px + env(safe-area-inset-top))' }}>
         <nav className="flex items-center justify-between bg-[rgba(0,0,0,0.4)] border border-white/10 backdrop-blur-xl py-2 px-3 rounded-full shadow-lg shadow-black/20">
           <a href="#" className="font-display font-bold text-sm inline-flex items-center gap-1 px-1">
             <span className="text-white">project</span>

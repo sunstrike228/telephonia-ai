@@ -26,13 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider appearance={{ baseTheme: dark }}>
-      <html lang="en" className="h-full antialiased">
+      <html lang="en" className="antialiased" style={{ minHeight: '100dvh' }}>
         <head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
         </head>
-        <body className="min-h-full">{children}</body>
+        <body className="min-h-dvh">{children}</body>
       </html>
     </ClerkProvider>
   );

@@ -18,7 +18,7 @@ export function Footer() {
   const s = t[lang] || t.en;
 
   return (
-    <footer className="border-t border-white/5 py-12 relative z-10 bg-[#000000]">
+    <footer className="border-t border-white/5 py-12 relative z-10 bg-[#000000]" style={{ paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col">
           <div className="font-display font-bold text-xl tracking-[-0.04em] inline-flex items-baseline gap-1.5">
