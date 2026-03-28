@@ -119,7 +119,7 @@ const pricingPlans: PricingPlan[] = [
 export default function Home() {
   return (
     <>
-      <div className="fixed z-0" style={{ top: 'calc(-1 * env(safe-area-inset-top, 0px))', bottom: 'calc(-1 * env(safe-area-inset-bottom, 0px))', left: 'calc(-1 * env(safe-area-inset-left, 0px))', right: 'calc(-1 * env(safe-area-inset-right, 0px))' }}>
+      <div className="fixed inset-0 z-0 bg-[#151518]">
         <EtheralShadow
           color="rgba(128, 128, 128, 1)"
           animation={{ scale: 80, speed: 86 }}
