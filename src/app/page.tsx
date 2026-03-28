@@ -119,6 +119,8 @@ const pricingPlans: PricingPlan[] = [
 export default function Home() {
   return (
     <>
+      {/* DEBUG: green bar to test if viewport extends behind status bar */}
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '60px', background: '#00ff00', zIndex: 9999 }} />
       <div className="fixed inset-0 z-0 bg-[#151518]">
         <EtheralShadow
           color="rgba(128, 128, 128, 1)"
