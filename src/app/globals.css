@@ -4,7 +4,7 @@
 @source "../hooks/**/*.ts";
 
 :root {
-  --background: #1a1a22;
+  --background: #ffffff;
   --foreground: #e2e2ef;
   --primary: #ff4d4d;
   --primary-foreground: #ffffff;
@@ -72,7 +72,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #1a1a22 inset !important;
+  -webkit-box-shadow: 0 0 0 30px #404048 inset !important;
   -webkit-text-fill-color: #fff !important;
   caret-color: #fff !important;
   transition: background-color 5000s ease-in-out 0s;
