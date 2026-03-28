@@ -119,7 +119,14 @@ const pricingPlans: PricingPlan[] = [
 export default function Home() {
   return (
     <>
-      {/* TEMP: removed EtheralShadow for white bg test */}
+      <div className="fixed inset-0 z-0">
+        <EtheralShadow
+          color="rgba(128, 128, 128, 1)"
+          animation={{ scale: 80, speed: 86 }}
+          noise={{ opacity: 0.6, scale: 1.2 }}
+          sizing="fill"
+        />
+      </div>
       <Navbar />
       <main className="relative z-10">
         <Hero />

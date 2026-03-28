@@ -152,16 +152,14 @@ export function EtheralShadow({
                 <div
                     style={{
                         backgroundColor: color,
-                        ...(isMobile ? {} : {
-                            maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
-                            WebkitMaskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
-                            maskSize: "cover",
-                            maskRepeat: "no-repeat",
-                            maskPosition: "center center",
-                            WebkitMaskSize: "cover",
-                            WebkitMaskRepeat: "no-repeat",
-                            WebkitMaskPosition: "center center",
-                        }),
+                        maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
+                        WebkitMaskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
+                        maskSize: "cover",
+                        maskRepeat: "no-repeat",
+                        maskPosition: "center center",
+                        WebkitMaskSize: "cover",
+                        WebkitMaskRepeat: "no-repeat",
+                        WebkitMaskPosition: "center center",
                         width: "100%",
                         height: "100%"
                     }}

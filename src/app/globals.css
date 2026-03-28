@@ -4,7 +4,7 @@
 @source "../hooks/**/*.ts";
 
 :root {
-  --background: #ffffff;
+  --background: #000000;
   --foreground: #e2e2ef;
   --primary: #ff4d4d;
   --primary-foreground: #ffffff;
@@ -43,19 +43,21 @@
   --font-display: 'Space Grotesk', sans-serif;
 }
 
-html {
-  height: 100%;
-  scroll-behavior: smooth;
+html, body {
+  margin: 0;
+  padding: 0;
   background: var(--background);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  min-height: 100%;
-  background: var(--background);
+  min-height: 100vh;
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -72,7 +74,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #404048 inset !important;
+  -webkit-box-shadow: 0 0 0 30px #000 inset !important;
   -webkit-text-fill-color: #fff !important;
   caret-color: #fff !important;
   transition: background-color 5000s ease-in-out 0s;
